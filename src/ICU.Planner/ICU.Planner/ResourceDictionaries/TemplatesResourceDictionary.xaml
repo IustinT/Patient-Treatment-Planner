@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ICU.Planner.Controls;assembly=ICU.Planner">
+
+    <ControlTemplate x:Key="TemplateWithActivityIndicator">
+
+        <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill">
+
+            <!--  Actual content  -->
+            <ContentPresenter AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All" />
+
+            <!--  ActivityIndicator Gray area  -->
+            <BoxView
+                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                AbsoluteLayout.LayoutFlags="All"
+                BackgroundColor="WhiteSmoke"
+                IsVisible="{TemplateBinding BindingContext.IsBusy}"
+                Opacity="0.4" />
+
+            <ActivityIndicator
+                AbsoluteLayout.LayoutBounds="0, 0.25, 1, 0.25"
+                AbsoluteLayout.LayoutFlags="All"
+                HeightRequest="20"
+                IsRunning="{TemplateBinding BindingContext.IsBusy}"
+                IsVisible="{TemplateBinding BindingContext.IsBusy}"
+                Color="{StaticResource NhsUkBlueColor}" />
+
+        </AbsoluteLayout>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="DialogTemplate">
+        <ContentView BindingContext="{TemplateBinding BindingContext}" ControlTemplate="{StaticResource TemplateWithActivityIndicator}">
+
+            <Grid
+                ColumnDefinitions="Auto,*,Auto"
+                ColumnSpacing="0"
+                RowDefinitions="Auto,Auto,*,Auto"
+                RowSpacing="0">
+
+                <!--  Left  -->
+                <BoxView
+                    Grid.RowSpan="4"
+                    BackgroundColor="{DynamicResource DialogInsetColorLeft}"
+                    WidthRequest="{DynamicResource SafeAreaInsetsLeft}" />
+
+                <!--  Top  -->
+                <BoxView
+                    Grid.ColumnSpan="3"
+                    BackgroundColor="{StaticResource DialogInsetColorTop}"
+                    HeightRequest="{DynamicResource SafeAreaInsetsTop}" />
+
+                <!--  Right  -->
+                <BoxView
+                    Grid.RowSpan="4"
+                    Grid.Column="2"
+                    BackgroundColor="{StaticResource DialogInsetColorRight}"
+                    WidthRequest="{DynamicResource SafeAreaInsetsRight}" />
+
+                <!--  Bottom  -->
+                <BoxView
+                    Grid.Row="3"
+                    Grid.ColumnSpan="3"
+                    BackgroundColor="{StaticResource DialogInsetColorBottom}"
+                    HeightRequest="{DynamicResource SafeAreaInsetsBottom}" />
+
+                <controls:DialogHeader
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Padding="{DynamicResource DialogHeaderPadding}"
+                    BackgroundColor="{DynamicResource DialogHeaderBackgroundColor}"
+                    HeightRequest="{DynamicResource DialogHeaderHeigth}"
+                    IsRightSideButtonVisible="False"
+                    LeftSideButtonCommand="{TemplateBinding BindingContext.CloseDialogButtonPressedCommand}"
+                    TitleText="{TemplateBinding BindingContext.Title}" />
+
+                <ContentPresenter
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Padding="{DynamicResource MainContentPadding}"
+                    BackgroundColor="{DynamicResource DialogContentBackgroundColor}" />
+
+            </Grid>
+
+        </ContentView>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="TopOnlyDialogTemplate">
+        <ContentView BindingContext="{TemplateBinding BindingContext}" ControlTemplate="{StaticResource TemplateWithActivityIndicator}">
+            <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
+
+                <!--  Top  -->
+                <BoxView BackgroundColor="{StaticResource DialogInsetColorTop}" HeightRequest="{DynamicResource SafeAreaInsetsTop}" />
+
+                <controls:DialogHeader
+                    Grid.Row="1"
+                    Padding="{DynamicResource DialogHeaderPadding}"
+                    BackgroundColor="{DynamicResource DialogHeaderBackgroundColor}"
+                    HeightRequest="{DynamicResource DialogHeaderHeigth}"
+                    IsRightSideButtonVisible="False"
+                    LeftSideButtonCommand="{TemplateBinding BindingContext.CloseDialogButtonPressedCommand}"
+                    TitleText="{TemplateBinding BindingContext.Title}" />
+
+                <ContentPresenter
+                    Grid.Row="2"
+                    Padding="{DynamicResource MainContentPadding}"
+                    BackgroundColor="{DynamicResource DialogContentBackgroundColor}" />
+
+            </Grid>
+        </ContentView>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="TimesheetPageTemplate">
+        <ContentView BindingContext="{TemplateBinding BindingContext}" ControlTemplate="{StaticResource TemplateWithActivityIndicator}">
+
+            <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill">
+
+                <AbsoluteLayout.Resources>
+                    <Style
+                        x:Key="RoundButtonStyle"
+                        ApplyToDerivedTypes="True"
+                        TargetType="Button">
+                        <Setter Property="FontFamily" Value="FAL" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="CornerRadius" Value="{OnIdiom Default=40, Phone=30}" />
+                        <Setter Property="HeightRequest" Value="{OnIdiom Default=80, Phone=60}" />
+                        <Setter Property="WidthRequest" Value="{OnIdiom Default=80, Phone=60}" />
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="FontSize" Value="Large" />
+                        <Setter Property="TextColor" Value="White" />
+                    </Style>
+                </AbsoluteLayout.Resources>
+
+                <!--  Actual content  -->
+                <ContentPresenter
+                    Padding="{DynamicResource MainContentPadding}"
+                    AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                    AbsoluteLayout.LayoutFlags="All" />
+
+                <Button
+                    AbsoluteLayout.LayoutBounds="0,1,AutoSize,AutoSize"
+                    AbsoluteLayout.LayoutFlags="PositionProportional"
+                    Command="{TemplateBinding BindingContext.SubmitTimesheetsCommand}"
+                    Style="{StaticResource RoundButtonStyle}"
+                    Text="&#xf0ee;" />
+
+                <Button
+                    AbsoluteLayout.LayoutBounds="1,1,AutoSize,AutoSize"
+                    AbsoluteLayout.LayoutFlags="PositionProportional"
+                    Command="{TemplateBinding BindingContext.AddTimesheetCommand}"
+                    Style="{StaticResource RoundButtonStyle}"
+                    Text="&#xf271;" />
+
+            </AbsoluteLayout>
+        </ContentView>
+    </ControlTemplate>
+
+</ResourceDictionary>

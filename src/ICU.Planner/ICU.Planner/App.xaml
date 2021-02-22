@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<prism:PrismApplication
+    x:Class="ICU.Planner.App"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com">
+    <Application.Resources>
+
+        <ResourceDictionary>
+            <x:Boolean x:Key="IsInPortraitMode">True</x:Boolean>
+            <x:Boolean x:Key="IsInLandscapeMode">False</x:Boolean>
+
+            <Thickness x:Key="SafeAreaInsets">0</Thickness>
+            <x:Double x:Key="SafeAreaInsetsTop">0</x:Double>
+            <x:Double x:Key="SafeAreaInsetsBottom">0</x:Double>
+            <x:Double x:Key="SafeAreaInsetsLeft">0</x:Double>
+            <x:Double x:Key="SafeAreaInsetsRight">0</x:Double>
+            <x:Double x:Key="SafeAreaInsetsVertical">0</x:Double>
+            <x:Double x:Key="SafeAreaInsetsHorizontal">0</x:Double>
+
+            <Thickness x:Key="DialogHeaderPadding">2</Thickness>
+            <Thickness x:Key="DialogHeaderPaddingDefault">2</Thickness>
+
+            <Thickness x:Key="MainContentPaddingDefault">5</Thickness>
+            <Thickness x:Key="MainContentPadding">5</Thickness>
+
+            <x:Double x:Key="DialogHeaderDefaultHeigth">50</x:Double>
+            <x:Double x:Key="DialogHeaderLandscapeHeigth">40</x:Double>
+            <x:Double x:Key="DialogHeaderHeigth">50</x:Double>
+
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary Source="ResourceDictionaries/ColoursResourceDictionary.xaml" />
+
+                <ResourceDictionary Source="ResourceDictionaries/TemplatesResourceDictionary.xaml" />
+
+                <!--  Default styles  -->
+                <ResourceDictionary Source="ResourceDictionaries/DefaultStylesResourceDictionary.xaml" />
+
+
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</prism:PrismApplication>

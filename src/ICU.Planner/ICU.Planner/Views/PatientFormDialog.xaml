@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="ICU.Planner.Views.PatientFormDialog"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ICU.Planner.Controls;assembly=ICU.Planner"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:system="clr-namespace:System;assembly=netstandard"
+    xmlns:viewModels="clr-namespace:ICU.Planner.ViewModels"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    prism:DialogLayout.RelativeHeightRequest="1"
+    prism:DialogLayout.RelativeWidthRequest="1"
+    prism:DialogLayout.UseMask="False"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    ControlTemplate="{StaticResource TopOnlyDialogTemplate}"
+    mc:Ignorable="d">
+
+    <d:ContentView.BindingContext>
+        <viewModels:PatientFormDialogViewModel />
+    </d:ContentView.BindingContext>
+
+    <ContentView.Resources>
+        <xct:VariableMultiValueConverter x:Key="AllTrueConverter" ConditionType="All" />
+    </ContentView.Resources>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <ScrollView Grid.RowSpan="2">
+
+            <Grid RowDefinitions="Auto,*,Auto" VerticalOptions="Fill">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{OnIdiom Default='1*', Phone='0'}" />
+                    <ColumnDefinition Width="{OnIdiom Default='4*', Phone='*'}" />
+                    <ColumnDefinition Width="{OnIdiom Default='1*', Phone='0'}" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Form  -->
+                <StackLayout Grid.Column="1">
+                    <controls:PatientView Patient="{Binding Patient}" />
+
+                    <BoxView
+                        Margin="0,5"
+                        BackgroundColor="Transparent"
+                        HeightRequest="{Binding Height, Source={Reference ButtonsContainer}}" />
+                </StackLayout>
+            </Grid>
+
+        </ScrollView>
+
+        <StackLayout
+            x:Name="ButtonsContainer"
+            Grid.Row="1"
+            xct:SafeAreaEffect.SafeArea="false,false,false,true"
+            Orientation="Vertical"
+            VerticalOptions="End">
+
+            <Button
+                BackgroundColor="{StaticResource NhsUkBlueColor}"
+                Command="{Binding SaveCommand}"
+                IsVisible="{Binding IsSaveButtonVisible}"
+                Text="Create" />
+
+            <Button
+                BackgroundColor="{StaticResource NhsUkBlueColor}"
+                Command="{Binding SaveCommand}"
+                IsVisible="{Binding IsSubmitButtonVisible}"
+                Text="Submit Changes" />
+
+        </StackLayout>
+    </Grid>
+</ContentView>

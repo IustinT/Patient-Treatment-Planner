@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Color x:Key="NhsUkBlueColor">#005eb8</Color>
+    <Color x:Key="NhsUkRedColor">#d5281b</Color>
+    <Color x:Key="OrangeColor">#F57838</Color>
+
+    <Color x:Key="MainTextColor">#707070</Color>
+
+    <Color x:Key="CalendarDaySelectedColor">#4f99ff</Color>
+
+    <Color x:Key="DialogInsetColorLeft">#000000</Color>
+    <Color x:Key="DialogInsetColorTop">#005eb8</Color>
+    <Color x:Key="DialogInsetColorRight">#000000</Color>
+    <Color x:Key="DialogInsetColorBottom">#000000</Color>
+
+    <Color x:Key="DialogHeaderBackgroundColor">#707070</Color>
+
+    <Color x:Key="DialogHeaderCloseIconNormalBackgroundColor">#5C5C5C</Color>
+    <Color x:Key="DialogHeaderCloseIconPressedBackgroundColor">#F57838</Color>
+
+    <Color x:Key="DialogHeaderCloseIconForegroundColor">#F57838</Color>
+    <Color x:Key="DialogHeaderTitleTextColor">#FFFFFF</Color>
+
+    <Color x:Key="DialogContentBackgroundColor">#F8f8f8</Color>
+
+</ResourceDictionary>

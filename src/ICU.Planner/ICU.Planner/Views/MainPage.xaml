@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ICU.Planner.Views.MainPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    Title="{Binding Title}"
+    ControlTemplate="{StaticResource TemplateWithActivityIndicator}"
+    IsBusy="{Binding IsBusy}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid.ColumnDefinitions>
+
+            <ColumnDefinition>
+                <ColumnDefinition.Width>
+                    <OnIdiom
+                        x:TypeArguments="GridLength"
+                        Default="1*"
+                        Phone="0"
+                        Tablet="0,5*" />
+                </ColumnDefinition.Width>
+            </ColumnDefinition>
+
+            <ColumnDefinition>
+                <ColumnDefinition.Width>
+                    <OnIdiom
+                        x:TypeArguments="GridLength"
+                        Default="1.5*"
+                        Phone="1*"
+                        Tablet="*" />
+                </ColumnDefinition.Width>
+            </ColumnDefinition>
+
+            <ColumnDefinition>
+                <ColumnDefinition.Width>
+                    <OnIdiom
+                        x:TypeArguments="GridLength"
+                        Default="1*"
+                        Phone="0"
+                        Tablet="0,5*" />
+                </ColumnDefinition.Width>
+            </ColumnDefinition>
+
+        </Grid.ColumnDefinitions>
+
+        <StackLayout Grid.Column="1">
+
+            <SearchBar
+                Grid.Row="1"
+                IsSpellCheckEnabled="False"
+                Placeholder="Patient Phone Number"
+                SearchCommand="{Binding SearchCommand}"
+                Text="{Binding PatientPhoneNumber}" />
+
+            <Button
+                Grid.Row="2"
+                Command="{Binding CreateNewPatientRecordCommand}"
+                Text="Create New Record" />
+        </StackLayout>
+
+        <RefreshView
+            Grid.Row="1"
+            Grid.Column="1"
+            Command="{Binding SearchCommand}"
+            IsRefreshing="{Binding IsSearching}">
+
+            <CollectionView
+                ItemsSource="{Binding Patients}"
+                SelectionChangedCommand="{Binding PatientSelectionChangedCommand}"
+                SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Mode=Self}}"
+                SelectionMode="Single">
+
+                <CollectionView.Resources>
+                    <Style TargetType="FlexLayout">
+                        <Setter Property="Direction" Value="Row" />
+                        <Setter Property="JustifyContent" Value="SpaceBetween" />
+                        <Setter Property="AlignItems" Value="Center" />
+                    </Style>
+                </CollectionView.Resources>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame HasShadow="True">
+                            <StackLayout Orientation="Vertical">
+                                <Label
+                                    FontFamily="RM"
+                                    Text="{Binding Name}" />
+
+                                <FlexLayout>
+                                    <Label Text="{Binding PhoneNumber}" />
+                                    <Label Text="{Binding AdmissionDate, StringFormat='{0:dd MMM yy}'}" />
+                                </FlexLayout>
+
+                                <FlexLayout>
+                                    <Label Text="{Binding Hospital}" />
+                                    <Label Text="{Binding Ward}" />
+                                </FlexLayout>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </RefreshView>
+    </Grid>
+</ContentPage>

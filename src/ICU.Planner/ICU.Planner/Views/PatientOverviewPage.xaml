@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="ICU.Planner.Pages.PatientOverviewPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ICU.Planner.Controls"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    Title="{Binding Title}"
+    IsBusy="{Binding IsBusy}">
+
+    <StackLayout
+        Orientation="Vertical"
+        Spacing="15">
+
+        <Frame
+            BackgroundColor="White"
+            HasShadow="True">
+
+            <Grid
+                Margin="5,0"
+                ColumnDefinitions="*,Auto"
+                RowDefinitions="Auto,Auto">
+
+                <Label
+                    FontFamily="RM"
+                    Text="Personal Info" />
+
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding EditPatientCommand}"
+                    HorizontalOptions="Center"
+                    Style="{StaticResource EditButtonStyle}"
+                    Text="Edit" />
+
+                <controls:PatientView
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    IsEnabled="False"
+                    Patient="{Binding Patient}" />
+
+            </Grid>
+        </Frame>
+
+        <Frame
+            BackgroundColor="White"
+            HasShadow="True">
+            <Grid
+                Margin="5,0"
+                ColumnDefinitions="*,Auto"
+                RowDefinitions="Auto,Auto">
+
+                <Label
+                    FontFamily="RM"
+                    Text="Main Goal" />
+
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding AddMainGoalCommand}"
+                    HorizontalOptions="Center"
+                    Style="{StaticResource AddButtonStyle}" />
+
+                <Grid
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    ColumnDefinitions="*,Auto"
+                    IsVisible="{Binding MainGoal, Converter={xct:IsNotNullOrEmptyConverter}}">
+
+                    <Label Text="{Binding MainGoal.Value}" />
+
+                    <ImageButton
+                        Grid.Column="1"
+                        Command="{Binding DeleteGoalCommand}"
+                        CommandParameter="{Binding MainGoal}"
+                        Source="{StaticResource DeleteIcon}"
+                        Style="{StaticResource IconDeleteButtonStyle}" />
+                </Grid>
+
+            </Grid>
+        </Frame>
+
+        <Frame
+            BackgroundColor="White"
+            HasShadow="True">
+            <Grid
+                Margin="5,0"
+                ColumnDefinitions="*,Auto"
+                RowDefinitions="Auto,Auto">
+
+                <Label
+                    FontFamily="RM"
+                    Text="Other Goals" />
+
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding AddGoalCommand}"
+                    HorizontalOptions="Center"
+                    Style="{StaticResource AddButtonStyle}" />
+
+                <StackLayout
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    BindableLayout.ItemsSource="{Binding Goals}">
+
+                    <BindableLayout.EmptyView>
+                        <Label Text="No goals found." />
+                    </BindableLayout.EmptyView>
+
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Value}" />
+                                <ImageButton
+                                    Grid.Column="1"
+                                    Command="{Binding BindingContext.DeleteGoalCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={Type ContentPage}}}"
+                                    CommandParameter="{Binding}"
+                                    Source="{StaticResource DeleteIcon}"
+                                    Style="{StaticResource IconDeleteButtonStyle}" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+
+            </Grid>
+        </Frame>
+
+        <Frame />
+    </StackLayout>
+</ContentPage>

@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# Magic102: Install the Xamarin.Essentials.Interfaces and register the required interface with Prism's container
+dotnet_diagnostic.Magic102.severity = suggestion

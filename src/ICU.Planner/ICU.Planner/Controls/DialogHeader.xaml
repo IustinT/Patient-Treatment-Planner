@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="ICU.Planner.Controls.DialogHeader"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="ContentView"
+    mc:Ignorable="d">
+
+    <Grid ColumnDefinitions="Auto,*,Auto">
+
+        <Grid.Resources>
+            <Style TargetType="BoxView">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="Margin" Value="0" />
+            </Style>
+        </Grid.Resources>
+
+        <Label
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            FontFamily="RM"
+            FontSize="Subtitle"
+            HorizontalOptions="Fill"
+            HorizontalTextAlignment="Center"
+            IsVisible="{Binding IsTitleTextVisible, Source={Reference ContentView}}"
+            LineBreakMode="TailTruncation"
+            MaxLines="1"
+            Text="{Binding TitleText, Source={Reference ContentView}}"
+            TextColor="{DynamicResource DialogHeaderTitleTextColor}"
+            VerticalOptions="Fill"
+            VerticalTextAlignment="Center" />
+
+        <ImageButton
+            Grid.Column="0"
+            Padding="10,2"
+            BackgroundColor="{DynamicResource DialogHeaderCloseIconNormalBackgroundColor}"
+            BorderWidth="0"
+            Command="{Binding LeftSideButtonCommand, Source={Reference ContentView}}"
+            CornerRadius="5"
+            IsVisible="{Binding IsLeftSideButtonVisible, Source={Reference ContentView}}"
+            VerticalOptions="Fill">
+
+            <ImageButton.Source>
+                <FontImageSource
+                    FontFamily="FAL"
+                    Glyph="&#xf057;"
+                    Color="{DynamicResource DialogHeaderCloseIconForegroundColor}" />
+            </ImageButton.Source>
+
+        </ImageButton>
+
+        <ImageButton
+            Grid.Column="2"
+            BackgroundColor="#717171"
+            Command="{Binding RightSideButtonCommand, Source={Reference ContentView}}"
+            IsVisible="{Binding IsRightSideButtonVisible, Source={Reference ContentView}}"
+            Opacity="0.6">
+
+            <ImageButton.Source>
+                <FontImageSource
+                    FontFamily="RR"
+                    Glyph="{Binding RightSideButtonText, Source={Reference ContentView}}"
+                    Size="Subtitle"
+                    Color="White" />
+            </ImageButton.Source>
+        </ImageButton>
+
+    </Grid>
+
+</ContentView>
