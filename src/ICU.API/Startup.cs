@@ -5,17 +5,21 @@ using ICU.Data;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Net.Mime;
 
 [assembly: ApiController]
@@ -59,6 +63,13 @@ namespace ICU.API
 
             services.AddSwaggerGen();
 
+            services.Configure<FormOptions>(o =>
+            {
+                o.ValueLengthLimit = int.MaxValue;
+                o.MultipartBodyLengthLimit = int.MaxValue;
+                o.MemoryBufferThreshold = int.MaxValue;
+            });
+
         }
 
         static void OptionsAction(DbContextOptionsBuilder options) =>
@@ -101,7 +112,15 @@ namespace ICU.API
 
             });
 
-            app.UsePathBase("/api");
+            //allow static files for downloading patient images
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"PatientImages")),
+                RequestPath = new PathString("/StaticFiles/PatientImages")
+            });
+
+            //app.UsePathBase("/api");
 
             app.UseRouting();
 
