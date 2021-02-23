@@ -4,14 +4,16 @@ using ICU.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ICU.Data.Migrations
 {
     [DbContext(typeof(IcuContext))]
-    partial class IcuContextModelSnapshot : ModelSnapshot
+    [Migration("20210222112027_AddImageCategories")]
+    partial class AddImageCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace ICU.Data.Migrations
 
             modelBuilder.Entity("ICU.Data.Models.ImageCategory", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int?>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -54,15 +56,10 @@ namespace ICU.Data.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("ImageCategories");
                 });

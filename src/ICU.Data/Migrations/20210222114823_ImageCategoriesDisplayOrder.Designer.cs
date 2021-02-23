@@ -4,14 +4,16 @@ using ICU.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ICU.Data.Migrations
 {
     [DbContext(typeof(IcuContext))]
-    partial class IcuContextModelSnapshot : ModelSnapshot
+    [Migration("20210222114823_ImageCategoriesDisplayOrder")]
+    partial class ImageCategoriesDisplayOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
