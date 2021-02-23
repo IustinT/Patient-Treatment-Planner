@@ -3,8 +3,6 @@ using ICU.Data.Models;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
@@ -47,7 +45,7 @@ namespace ICU.API.Controllers
 
         // GET api/<PatientsController>/5
         [HttpGet()]
-        [Route("{phoneNumber}")]
+        [Route("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -25,12 +25,14 @@ namespace ICU.API.Controllers
 
         [HttpGet]
         [Route("{patientId}")]
+        [ProducesResponseType(typeof(IEnumerable<Goal>), StatusCodes.Status200OK)]
         public IEnumerable<Goal> Get(long patientId)
         {
             return Context.Goals.Where(goal => goal.PatientId == patientId);
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(Goal), StatusCodes.Status200OK)]
         public async Task<IActionResult> PostAsync([FromBody] Goal value)
         {
             //remove existing main goal, if required
@@ -45,6 +47,7 @@ namespace ICU.API.Controllers
 
         [HttpDelete()]
         [Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task DeleteAsync(Guid id)
         {
             var goal = await Context.Goals.FindAsync(id);
