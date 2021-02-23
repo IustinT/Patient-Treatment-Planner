@@ -28,5 +28,10 @@
     <ProjectReference Include="..\ICU.Data\ICU.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PatientImages\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
 
 </Project>
