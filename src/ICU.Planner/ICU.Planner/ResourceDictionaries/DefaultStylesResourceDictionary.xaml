@@ -131,6 +131,7 @@
         <Setter Property="BorderWidth" Value="0" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="VerticalOptions" Value="Start" />
+        <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource DeleteIcon}" />
     </Style>
 
     <Style

@@ -7,122 +7,194 @@
     xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     Title="{Binding Title}"
     IsBusy="{Binding IsBusy}">
+    <ScrollView>
+        <StackLayout
+            Orientation="Vertical"
+            Spacing="15">
 
-    <StackLayout
-        Orientation="Vertical"
-        Spacing="15">
-
-        <Frame
-            BackgroundColor="White"
-            HasShadow="True">
-
-            <Grid
-                Margin="5,0"
-                ColumnDefinitions="*,Auto"
-                RowDefinitions="Auto,Auto">
-
-                <Label
-                    FontFamily="RM"
-                    Text="Personal Info" />
-
-                <Button
-                    Grid.Column="1"
-                    Command="{Binding EditPatientCommand}"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource EditButtonStyle}"
-                    Text="Edit" />
-
-                <controls:PatientView
-                    Grid.Row="1"
-                    Grid.ColumnSpan="2"
-                    IsEnabled="False"
-                    Patient="{Binding Patient}" />
-
-            </Grid>
-        </Frame>
-
-        <Frame
-            BackgroundColor="White"
-            HasShadow="True">
-            <Grid
-                Margin="5,0"
-                ColumnDefinitions="*,Auto"
-                RowDefinitions="Auto,Auto">
-
-                <Label
-                    FontFamily="RM"
-                    Text="Main Goal" />
-
-                <Button
-                    Grid.Column="1"
-                    Command="{Binding AddMainGoalCommand}"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource AddButtonStyle}" />
+            <Frame
+                BackgroundColor="White"
+                HasShadow="True">
 
                 <Grid
-                    Grid.Row="1"
-                    Grid.ColumnSpan="2"
+                    Margin="5,0"
                     ColumnDefinitions="*,Auto"
-                    IsVisible="{Binding MainGoal, Converter={xct:IsNotNullOrEmptyConverter}}">
+                    RowDefinitions="Auto,Auto">
 
-                    <Label Text="{Binding MainGoal.Value}" />
+                    <Label
+                        FontFamily="RM"
+                        Text="Personal Info" />
 
-                    <ImageButton
+                    <Button
                         Grid.Column="1"
-                        Command="{Binding DeleteGoalCommand}"
-                        CommandParameter="{Binding MainGoal}"
-                        Source="{StaticResource DeleteIcon}"
-                        Style="{StaticResource IconDeleteButtonStyle}" />
+                        Command="{Binding EditPatientCommand}"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource EditButtonStyle}"
+                        Text="Edit" />
+
+                    <controls:PatientView
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        IsEnabled="False"
+                        Patient="{Binding Patient}" />
+
                 </Grid>
+            </Frame>
 
-            </Grid>
-        </Frame>
+            <Frame
+                BackgroundColor="White"
+                HasShadow="True">
+                <Grid
+                    Margin="5,0"
+                    ColumnDefinitions="*,Auto"
+                    RowDefinitions="Auto,Auto">
 
-        <Frame
-            BackgroundColor="White"
-            HasShadow="True">
-            <Grid
-                Margin="5,0"
-                ColumnDefinitions="*,Auto"
-                RowDefinitions="Auto,Auto">
+                    <Label
+                        FontFamily="RM"
+                        Text="Main Goal" />
 
-                <Label
-                    FontFamily="RM"
-                    Text="Other Goals" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding AddMainGoalCommand}"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource AddButtonStyle}" />
 
-                <Button
-                    Grid.Column="1"
-                    Command="{Binding AddGoalCommand}"
-                    HorizontalOptions="Center"
-                    Style="{StaticResource AddButtonStyle}" />
+                    <Grid
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        ColumnDefinitions="*,Auto"
+                        IsVisible="{Binding MainGoal, Converter={xct:IsNotNullOrEmptyConverter}}">
 
-                <StackLayout
-                    Grid.Row="1"
-                    Grid.ColumnSpan="2"
-                    BindableLayout.ItemsSource="{Binding Goals}">
+                        <Label Text="{Binding MainGoal.Value}" />
 
-                    <BindableLayout.EmptyView>
-                        <Label Text="No goals found." />
-                    </BindableLayout.EmptyView>
+                        <ImageButton
+                            Grid.Column="1"
+                            Command="{Binding DeleteGoalCommand}"
+                            CommandParameter="{Binding MainGoal}"
+                            Source="{StaticResource DeleteIcon}"
+                            Style="{StaticResource IconDeleteButtonStyle}" />
+                    </Grid>
 
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate>
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Text="{Binding Value}" />
-                                <ImageButton
+                </Grid>
+            </Frame>
+
+            <Frame
+                BackgroundColor="White"
+                HasShadow="True">
+                <Grid
+                    Margin="5,0"
+                    ColumnDefinitions="*,Auto"
+                    RowDefinitions="Auto,Auto">
+
+                    <Label
+                        FontFamily="RM"
+                        Text="Other Goals" />
+
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding AddGoalCommand}"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource AddButtonStyle}" />
+
+                    <StackLayout
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        BindableLayout.ItemsSource="{Binding Goals}">
+
+                        <BindableLayout.EmptyView>
+                            <Label Text="No goals found." />
+                        </BindableLayout.EmptyView>
+
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="{Binding Value}" />
+                                    <ImageButton
+                                        Grid.Column="1"
+                                        Command="{Binding BindingContext.DeleteGoalCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={Type ContentPage}}}"
+                                        CommandParameter="{Binding}"
+                                        Source="{StaticResource DeleteIcon}"
+                                        Style="{StaticResource IconDeleteButtonStyle}" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+
+                </Grid>
+            </Frame>
+            <StackLayout BindableLayout.ItemsSource="{Binding ImagesByCategory}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                            BackgroundColor="White"
+                            HasShadow="True">
+                            <Grid
+                                Margin="5,0"
+                                ColumnDefinitions="*,Auto"
+                                RowDefinitions="Auto,Auto">
+
+                                <Label
+                                    FontFamily="RM"
+                                    Text="{Binding Category.Name}" />
+
+                                <Button
                                     Grid.Column="1"
-                                    Command="{Binding BindingContext.DeleteGoalCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={Type ContentPage}}}"
-                                    CommandParameter="{Binding}"
-                                    Source="{StaticResource DeleteIcon}"
-                                    Style="{StaticResource IconDeleteButtonStyle}" />
+                                    Command="{Binding BindingContext.AddImageCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={Type ContentPage}}}"
+                                    CommandParameter="{Binding Category}"
+                                    HorizontalOptions="Center"
+                                    Style="{StaticResource AddButtonStyle}" />
+
+                                <FlexLayout
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    AlignItems="Start"
+                                    BindableLayout.ItemsSource="{Binding Uris}"
+                                    Direction="Row"
+                                    HorizontalOptions="Fill"
+                                    JustifyContent="SpaceAround"
+                                    Wrap="Wrap">
+
+                                    <BindableLayout.EmptyView>
+                                        <Label Text="No images found." />
+                                    </BindableLayout.EmptyView>
+
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame
+                                                Margin="5"
+                                                Padding="4"
+                                                BorderColor="LightGray">
+                                                <AbsoluteLayout
+                                                    HeightRequest="{OnIdiom Default=250,
+                                                                            Phone=150}"
+                                                    WidthRequest="{OnIdiom Default=250,
+                                                                           Phone=150}">
+                                                    <Image
+                                                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                                        AbsoluteLayout.LayoutFlags="All"
+                                                        Aspect="AspectFill"
+                                                        Source="{Binding}" />
+
+                                                    <ImageButton
+                                                        AbsoluteLayout.LayoutBounds=".90,.90,50,50 "
+                                                        AbsoluteLayout.LayoutFlags="PositionProportional"
+                                                        BackgroundColor="Red"
+                                                        Command="{Binding BindingContext.DeleteImageCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={Type ContentPage}}}"
+                                                        CommandParameter="{Binding}"
+                                                        Style="{StaticResource IconDeleteButtonStyle}" />
+
+                                                </AbsoluteLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </FlexLayout>
+
                             </Grid>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
 
-            </Grid>
-        </Frame>
-
-        <Frame />
-    </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

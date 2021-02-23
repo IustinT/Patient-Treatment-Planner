@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace ICU.Planner
 {
     public class Constants
@@ -12,15 +8,16 @@ namespace ICU.Planner
 
         public static class URLs
         {
-
             public static string ApiBaseUri =>
 
-            "http://localhost/ICU.API/api/";
-            //"http://192.168.0.3/ICU.API/api/";
+            "http://localhost/ICU.API/";
+            //"http://192.168.0.3/ICU.API/";
             // "https://azure api here /api/";
 
             public static string PatientsApi = $"{ApiBaseUri}Patients";
             public static string GoalsApi = $"{ApiBaseUri}Goals";
+            public static string PatientImagesApi = $"{ApiBaseUri}PatientImages";
+            public static string SystemConfigApi = $"{ApiBaseUri}SystemConfig";
         }
         public static readonly string[] FormsFlags = { };
 

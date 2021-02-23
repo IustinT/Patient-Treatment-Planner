@@ -7,6 +7,7 @@ using ICU.Data.Models;
 
 using Prism.Commands;
 using Prism.Magician;
+using Prism.Navigation;
 
 using Shiny;
 using Shiny.Logging;
@@ -176,6 +177,7 @@ namespace ICU.Planner.ViewModels
             finally
             {
                 PatientPhoneNumber = null;
+                Patients.Clear();
                 ClearIsBusy();
             }
         }
@@ -186,6 +188,13 @@ namespace ICU.Planner.ViewModels
             new DelegateCommand(() => phoneNumberSubject.OnNext(PatientPhoneNumber));
 
         #endregion
+
+        protected override Task InitializeAsync(INavigationParameters parameters)
+        {
+
+            GetSystemConfig(); //don't await so the execution is not blocked
+            return base.InitializeAsync(parameters);
+        }
 
         #region GetData
 
@@ -218,6 +227,23 @@ namespace ICU.Planner.ViewModels
             }
         }
 
+        private async Task GetSystemConfig()
+        {
+            //attempt to download the system config untill successfull
+            while (true)
+            {
+                try
+                {
+                    SystemConfig = await Constants.URLs.SystemConfigApi.GetJsonAsync<SystemConfig>();
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Log.Write(e);
+                    await Task.Delay(.5.Seconds());
+                }
+            }
+        }
         #endregion
 
     }

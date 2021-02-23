@@ -29,6 +29,7 @@ namespace ICU.Planner.Modules
             services.AddTransient<IVersionTracking, VersionTrackingImplementation>();
             services.AddTransient<IWebAuthenticator, WebAuthenticatorImplementation>();
             services.AddTransient<IVersionTracking, VersionTrackingImplementation>();
+            services.AddTransient<IMediaPicker, MediaPickerImplementation>();
             //services.AddTransient<IEmail, EmailImplementation>();
             //services.AddTransient<ISms, SmsImplementation>();
             // and so on...

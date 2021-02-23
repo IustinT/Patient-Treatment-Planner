@@ -1,7 +1,6 @@
 ﻿
 using Prism.Commands;
 using Prism.Mvvm;
-using Prism.Services;
 
 using System;
 using System.Diagnostics;
@@ -9,6 +8,8 @@ using System.Threading.Tasks;
 using Prism.Magician;
 using Prism.Services.Dialogs;
 using System.Windows.Input;
+using System.Collections.Generic;
+using ICU.Data.Models;
 
 namespace ICU.Planner.ViewModels
 {
@@ -16,9 +17,11 @@ namespace ICU.Planner.ViewModels
     [AutoInitialize]
     public partial class ViewModelBase : BindableBase
     {
+        public static SystemConfig SystemConfig { get; set; }
+
         private const string ButtonTextOK = "OK";
         private const string CaptionError = "Error";
-         
+
         /// <summary>
         /// Clears the is busy flag on the device main thread.
         /// </summary>
@@ -158,7 +161,7 @@ namespace ICU.Planner.ViewModels
                 await HandleException(ex);
                 return false;
             }
-        } 
-         
+        }
+
     }
 }
