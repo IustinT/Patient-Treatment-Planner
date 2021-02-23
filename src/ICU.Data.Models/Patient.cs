@@ -8,6 +8,11 @@ using System.Linq;
 
 namespace ICU.Data.Models
 {
+    public class SystemConfig
+    {
+        public List<ImageCategory> ImageCategories { get; set; }
+    }
+
     public class DataTransferObject
     {
         public Patient Patient { get; set; }
@@ -83,4 +88,17 @@ namespace ICU.Data.Models
         public DateTime DateTime { get; set; }
     }
 
+    public class ImageCategory
+    {
+        public int? Id { get; set; }
+        public string Name { get; set; }
+        public int DisplayOrder { get; set; }
+        public bool Deleted { get; set; }
+    }
+
+    public class PatientImagesByCategoryId
+    {
+        public int CategoryId { get; set; }
+        public List<string> Names { get; set; }
+    }
 }
