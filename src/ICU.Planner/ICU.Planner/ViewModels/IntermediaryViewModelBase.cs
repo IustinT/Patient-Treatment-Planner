@@ -1,6 +1,4 @@
 
-using Prism.Magician;
-
 namespace ICU.Planner.ViewModels
 {
     public partial class IntermediaryViewModelBase : ViewModelBase
@@ -8,11 +6,11 @@ namespace ICU.Planner.ViewModels
         public IntermediaryViewModelBase() : base(null)
         { }
 
-        protected IntermediaryViewModelBase(BaseServices baseServices) : base(baseServices)
+        protected IntermediaryViewModelBase(
+            BaseServices baseServices) : base(baseServices)
         {
             IsNotBusy = true;
         }
-
 
     }
 }

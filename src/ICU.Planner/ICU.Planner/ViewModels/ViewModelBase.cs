@@ -14,7 +14,6 @@ using ICU.Data.Models;
 namespace ICU.Planner.ViewModels
 {
     [ViewModelBase]
-    [AutoInitialize]
     public partial class ViewModelBase : BindableBase
     {
         public static SystemConfig SystemConfig { get; set; }
@@ -74,8 +73,10 @@ namespace ICU.Planner.ViewModels
         }
 
         private DelegateCommand<string> showDialogAsyncCommand;
+
         public ICommand ShowDialogAsyncCommand => showDialogAsyncCommand ??=
             new DelegateCommand<string>(async name => await ShowDialogAsync(name));
+
         public virtual Task<IDialogResult> ShowDialogAsync(string dialogName, DialogParameters parameters = null)
         => DialogService.ShowDialogAsync(dialogName, parameters ?? new DialogParameters());
 

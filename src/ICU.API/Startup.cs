@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net.Mime;
+using System.Reflection;
 
 [assembly: ApiController]
 
@@ -58,8 +59,11 @@ namespace ICU.API
                     fv => fv.RegisterValidatorsFromAssemblyContaining<PatientValidator>()
                 );
 
-            services.AddDbContext<IcuContext>(OptionsAction);
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
+            // Add framework services.
+            services.AddDbContext<IcuContext>(options =>
+                   options.UseSqlServer(connectionString));
 
             services.AddSwaggerGen();
 
@@ -72,13 +76,11 @@ namespace ICU.API
 
         }
 
-        static void OptionsAction(DbContextOptionsBuilder options) =>
-            options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
-
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IcuContext context)
         {
+            context.Database.Migrate();
+
             var cultures = new List<CultureInfo> { new CultureInfo("en-GB") };
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
@@ -107,7 +109,7 @@ namespace ICU.API
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/ICU.API/swagger/v1/swagger.json", "ICU API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICU API V1");
                 c.RoutePrefix = string.Empty;
 
             });

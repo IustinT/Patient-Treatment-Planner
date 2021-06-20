@@ -24,7 +24,7 @@
             IsSpellCheckEnabled="False"
             IsTextPredictionEnabled="False"
             IsVisible="{Binding IsVisible, Source={Reference DatePicker}, Converter={xct:InvertedBoolConverter}}"
-            Placeholder="Date"
+            Placeholder="Admission Date"
             Text="{Binding Patient.AdmissionDate, StringFormat='{0:d MMMM yyyy}', Mode=OneWay}"
             VerticalTextAlignment="Center" />
 

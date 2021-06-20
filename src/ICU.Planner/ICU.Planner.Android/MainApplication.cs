@@ -2,10 +2,8 @@ using System;
 using Android.App;
 using Android.Runtime;
 
-using Shiny;
-
 namespace ICU.Planner.Droid
-{ 
+{
 #if DEBUG
     [Application(Debuggable = true,
         Theme = "@style/MainTheme")]
@@ -23,7 +21,7 @@ namespace ICU.Planner.Droid
         public override void OnCreate()
         {
             base.OnCreate();
-            this.ShinyOnCreate(new Startup());
+            Xamarin.Essentials.Platform.Init(this);
         }
     }
 }

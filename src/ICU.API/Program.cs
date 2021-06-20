@@ -4,9 +4,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Serilog;
-using Serilog.Exceptions;
-using Serilog.Exceptions.Core;
-using Serilog.Exceptions.EntityFrameworkCore.Destructurers;
+//using Serilog.Exceptions;
+//using Serilog.Exceptions.Core;
+//using Serilog.Exceptions.EntityFrameworkCore.Destructurers;
 using Serilog.Formatting.Json;
 
 using System;
@@ -25,9 +25,9 @@ namespace ICU.API
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
-                .Enrich.WithExceptionDetails(new DestructuringOptionsBuilder()
-                .WithDefaultDestructurers()
-                .WithDestructurers(new[] { new DbUpdateExceptionDestructurer() }))
+                //.Enrich.WithExceptionDetails(new DestructuringOptionsBuilder()
+                //.WithDefaultDestructurers()
+                //.WithDestructurers(new[] { new DbUpdateExceptionDestructurer() }))
                 .CreateLogger();
 
             try
@@ -72,7 +72,7 @@ namespace ICU.API
 
             if (isDevelopment)
             {
-               // configurationBuilder.AddUserSecrets<Startup>();
+                // configurationBuilder.AddUserSecrets<Startup>();
             }
 
             configurationBuilder.AddCommandLine(args);

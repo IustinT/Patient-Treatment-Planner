@@ -4,26 +4,22 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:ICU.Planner.Controls"
+    xmlns:prism="http://prismlibrary.com"
     xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     Title="{Binding Title}"
     IsBusy="{Binding IsBusy}">
-    <ScrollView>
-        <StackLayout
-            Orientation="Vertical"
-            Spacing="15">
 
-            <Frame
-                BackgroundColor="White"
-                HasShadow="True">
+    <ScrollView>
+        <StackLayout Orientation="Vertical" Spacing="15">
+
+            <Frame BackgroundColor="White" HasShadow="True">
 
                 <Grid
-                    Margin="5,0"
+                    Margin="0"
                     ColumnDefinitions="*,Auto"
                     RowDefinitions="Auto,Auto">
 
-                    <Label
-                        FontFamily="RM"
-                        Text="Personal Info" />
+                    <Label FontFamily="RM" Text="Personal Info" />
 
                     <Button
                         Grid.Column="1"
@@ -41,17 +37,13 @@
                 </Grid>
             </Frame>
 
-            <Frame
-                BackgroundColor="White"
-                HasShadow="True">
+            <Frame BackgroundColor="White" HasShadow="True">
                 <Grid
                     Margin="5,0"
                     ColumnDefinitions="*,Auto"
                     RowDefinitions="Auto,Auto">
 
-                    <Label
-                        FontFamily="RM"
-                        Text="Main Goal" />
+                    <Label FontFamily="RM" Text="Main Goal" />
 
                     <Button
                         Grid.Column="1"
@@ -78,17 +70,13 @@
                 </Grid>
             </Frame>
 
-            <Frame
-                BackgroundColor="White"
-                HasShadow="True">
+            <Frame BackgroundColor="White" HasShadow="True">
                 <Grid
                     Margin="5,0"
                     ColumnDefinitions="*,Auto"
                     RowDefinitions="Auto,Auto">
 
-                    <Label
-                        FontFamily="RM"
-                        Text="Other Goals" />
+                    <Label FontFamily="RM" Text="Other Goals" />
 
                     <Button
                         Grid.Column="1"
@@ -122,20 +110,17 @@
 
                 </Grid>
             </Frame>
+
             <StackLayout BindableLayout.ItemsSource="{Binding ImagesByCategory}">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <Frame
-                            BackgroundColor="White"
-                            HasShadow="True">
+                        <Frame BackgroundColor="White" HasShadow="True">
                             <Grid
                                 Margin="5,0"
                                 ColumnDefinitions="*,Auto"
                                 RowDefinitions="Auto,Auto">
 
-                                <Label
-                                    FontFamily="RM"
-                                    Text="{Binding Category.Name}" />
+                                <Label FontFamily="RM" Text="{Binding Category.Name}" />
 
                                 <Button
                                     Grid.Column="1"
@@ -164,11 +149,8 @@
                                                 Margin="5"
                                                 Padding="4"
                                                 BorderColor="LightGray">
-                                                <AbsoluteLayout
-                                                    HeightRequest="{OnIdiom Default=250,
-                                                                            Phone=150}"
-                                                    WidthRequest="{OnIdiom Default=250,
-                                                                           Phone=150}">
+
+                                                <AbsoluteLayout HeightRequest="{OnIdiom Default=250, Phone=150}" WidthRequest="{OnIdiom Default=250, Phone=150}">
                                                     <Image
                                                         AbsoluteLayout.LayoutBounds="0,0,1,1"
                                                         AbsoluteLayout.LayoutFlags="All"

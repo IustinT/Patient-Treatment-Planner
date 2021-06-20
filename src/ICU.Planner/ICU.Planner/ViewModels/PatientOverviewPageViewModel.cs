@@ -17,17 +17,17 @@ using Prism.Commands;
 using Prism.Magician;
 using Prism.Navigation;
 using ICU.Planner.Models;
-using Shiny;
-using Shiny.Logging;
+
 using Xamarin.Essentials.Interfaces;
 using System.IO;
+using Prism.Logging;
+using ShinyExtensions;
 
 namespace ICU.Planner.ViewModels
 {
-    [AutoInitialize]
     public partial class PatientOverviewPageViewModel : IntermediaryViewModelBase
     {
-        private readonly Subject<long> patientIdChangedSubject = new Subject<long>();
+        private readonly Subject<long> patientIdChangedSubject = new();
 
         private ICommand editPatientCommand;
         private ICommand addMainGoalCommand;
@@ -38,22 +38,27 @@ namespace ICU.Planner.ViewModels
         private List<Goal> _goals;
         private List<ImagesByCategoryModel> imagesByCategory;
 
-        protected PatientOverviewPageViewModel(BaseServices baseServices, IMediaPicker mediaPicker, IFileSystem fileSystem) : base(baseServices)
+        protected PatientOverviewPageViewModel(BaseServices baseServices,
+                                               IMediaPicker mediaPicker,
+                                               IFileSystem fileSystem)
+            : base(baseServices)
         {
+            Title = "Patient Page";
+
+            _goals = new List<Goal>();
             MediaPicker = mediaPicker;
             FileSystem = fileSystem;
-            _goals = new List<Goal>();
+
             imagesByCategory = SystemConfig.ImageCategories
                 .Where(category => !category.Deleted)
                 .OrderBy(category => category.DisplayOrder)
                 .Select(category => new ImagesByCategoryModel { Category = category })
                 .ToList();
 
-            Title = "Patient Page";
 
             patientIdChangedSubject
                 .Throttle(.5.Seconds())
-                .SubscribeAsync(id => Log.SafeExecute(() => Task.WhenAll(RefreshGoals(id), RefreshImages(id))))
+                .Subscribe(id => Task.WhenAll(RefreshGoals(id), RefreshImages(id)))
                 .DisposedBy(Disposables);
         }
 
@@ -133,7 +138,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally
             {
@@ -170,7 +175,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally { }
         }
@@ -194,7 +199,7 @@ namespace ICU.Planner.ViewModels
                     "New Main Goal",
                     "Please type in the patient's main goal",
                     maxLength: 450,
-                    keyboard: Xamarin.Forms.Keyboard.Plain);
+                    keyboardType: Prism.AppModel.KeyboardType.Plain);
 
                 if (!string.IsNullOrWhiteSpace(goalValue))
                 {
@@ -211,7 +216,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
         }
 
@@ -231,7 +236,7 @@ namespace ICU.Planner.ViewModels
                     "New Goal",
                     "Please type in the patient's new goal",
                     maxLength: 450,
-                    keyboard: Xamarin.Forms.Keyboard.Plain);
+                    keyboardType: Prism.AppModel.KeyboardType.Plain);
 
                 if (!string.IsNullOrWhiteSpace(goalValue))
                 {
@@ -251,7 +256,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
         }
 
@@ -290,7 +295,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally { }
         }

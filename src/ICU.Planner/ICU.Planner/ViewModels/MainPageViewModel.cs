@@ -6,12 +6,10 @@ using Humanizer;
 using ICU.Data.Models;
 
 using Prism.Commands;
+using Prism.Logging;
 using Prism.Magician;
 using Prism.Navigation;
-
-using Shiny;
-using Shiny.Logging;
-
+using ShinyExtensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -40,8 +38,9 @@ namespace ICU.Planner.ViewModels
 
         #region Ctor
 
-        public MainPageViewModel(BaseServices baseServices, IMainThread mainThread)
-            : base(baseServices)
+        public MainPageViewModel(BaseServices baseServices,
+                                 IMainThread mainThread)
+                                : base(baseServices)
         {
             Patients = new ObservableCollection<Patient>();
             MainThread = mainThread;
@@ -51,7 +50,7 @@ namespace ICU.Planner.ViewModels
                 .DistinctUntilChanged()
                 .Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
                 .Throttle(500.Milliseconds())
-                .SubscribeAsync(phoneNumber => Log.SafeExecute(() => SearchPatientRecords(phoneNumber)))
+                .Subscribe(async phoneNumber => await SearchPatientRecords(phoneNumber))
                 .DisposedBy(Disposables);
 
         }
@@ -122,7 +121,7 @@ namespace ICU.Planner.ViewModels
                         }
                         catch (Exception postException)
                         {
-                            Log.Write(postException);
+                            Logger.Log(postException);
                             shouldRetryPost = await DisplayDialog("Save Failed. Retry?", postException.Message, "Retry", "Cancel");
                             await Task.Delay(.5.Seconds());
                         }
@@ -140,7 +139,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally
             {
@@ -172,7 +171,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally
             {
@@ -219,7 +218,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally
             {
@@ -239,7 +238,7 @@ namespace ICU.Planner.ViewModels
                 }
                 catch (Exception e)
                 {
-                    Log.Write(e);
+                    Logger.Log(e);
                     await Task.Delay(.5.Seconds());
                 }
             }
