@@ -13,6 +13,7 @@ using ShinyExtensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -47,10 +48,23 @@ namespace ICU.Planner.ViewModels
             Title = "ICU Planner - Find Patient";
 
             phoneNumberSubject
+                .Select(phoneNumber => phoneNumber?.Trim())
                 .DistinctUntilChanged()
-                .Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
+                //.Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
                 .Throttle(500.Milliseconds())
-                .Subscribe(async phoneNumber => await SearchPatientRecords(phoneNumber))
+                .Subscribe(async phoneNumber =>
+                {
+                    if (phoneNumber is null || phoneNumber.Length <= 5)
+                    {
+                        if (Patients.Any())
+                            await MainThread.InvokeOnMainThreadAsync(() =>
+                            {
+                                Patients.Clear();
+                            });
+                    }
+                    else if (phoneNumber.Length > 5)
+                        await SearchPatientRecords(phoneNumber);
+                })
                 .DisposedBy(Disposables);
 
         }
@@ -239,7 +253,6 @@ namespace ICU.Planner.ViewModels
                 catch (Exception e)
                 {
                     Logger.Log(e);
-                    await Task.Delay(.5.Seconds());
                 }
             }
         }
