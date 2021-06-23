@@ -361,3 +361,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /src/ICU.API/PatientImages/1
+src/ICU.API/.DS_Store
