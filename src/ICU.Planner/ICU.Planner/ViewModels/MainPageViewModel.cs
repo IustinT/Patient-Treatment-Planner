@@ -8,7 +8,6 @@ using ICU.Data.Models;
 using Prism.Commands;
 using Prism.Logging;
 using Prism.Magician;
-using Prism.Navigation;
 using ShinyExtensions;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -49,8 +47,8 @@ namespace ICU.Planner.ViewModels
 
             phoneNumberSubject
                 .Select(phoneNumber => phoneNumber?.Trim())
-                .DistinctUntilChanged()
-                //.Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
+                .DistinctUntilChanged()// - interferes with the pull to refresh as it never executes
+                                       //.Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
                 .Throttle(500.Milliseconds())
                 .Subscribe(async phoneNumber =>
                 {
@@ -176,11 +174,16 @@ namespace ICU.Planner.ViewModels
         {
             if (IsBusy || selectedPatient is null) return;
 
-
             try
             {
                 SetIsBusy();
-                var r = await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), selectedPatient));
+
+                //get all the patient data
+                var payload = await Constants.URLs.PatientsApi
+                    .AppendPathSegment(selectedPatient.Id)
+                    .GetJsonAsync<Patient>();
+
+                var r = await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), payload));
 
             }
             catch (Exception e)
@@ -197,17 +200,14 @@ namespace ICU.Planner.ViewModels
 
         #endregion
 
+        #region SearchCommand
         public ICommand SearchCommand => _searchCommand ??=
             new DelegateCommand(() => phoneNumberSubject.OnNext(PatientPhoneNumber));
 
         #endregion
 
-        protected override Task InitializeAsync(INavigationParameters parameters)
-        {
+        #endregion
 
-            GetSystemConfig(); //don't await so the execution is not blocked
-            return base.InitializeAsync(parameters);
-        }
 
         #region GetData
 
@@ -240,22 +240,7 @@ namespace ICU.Planner.ViewModels
             }
         }
 
-        private async Task GetSystemConfig()
-        {
-            //attempt to download the system config untill successfull
-            while (true)
-            {
-                try
-                {
-                    SystemConfig = await Constants.URLs.SystemConfigApi.GetJsonAsync<SystemConfig>();
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(e);
-                }
-            }
-        }
+
         #endregion
 
     }

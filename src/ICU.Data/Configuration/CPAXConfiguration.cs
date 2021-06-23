@@ -6,9 +6,9 @@ using ICU.Data.Models;
 
 namespace ICU.Data.Configuration
 {
-    public class GoalConfiguration : IEntityTypeConfiguration<Goal>
+    public class CPAXConfiguration : IEntityTypeConfiguration<CPAX>
     {
-        public void Configure(EntityTypeBuilder<Goal> builder)
+        public void Configure(EntityTypeBuilder<CPAX> builder)
         {
             builder.HasKey(p => p.Id);
 
@@ -16,17 +16,13 @@ namespace ICU.Data.Configuration
                 .ValueGeneratedOnAdd();
 
             builder.HasOne(p => p.Patient)
-                .WithMany(m => m.Goals)
+                .WithMany(m => m.CPAXes)
                 .HasForeignKey(p => p.PatientId);
 
-            builder.Property(p => p.Value)
-                .IsRequired()
-                .HasMaxLength(450);
-
-            builder.Property(p => p.IsMainGoal)
+            builder.Property(p => p.IsGoal)
                 .IsRequired();
 
-            builder.HasIndex(p => new { p.PatientId, p.IsMainGoal })
+            builder.HasIndex(p => new { p.PatientId, p.IsGoal })
                 .IsUnique(false);
         }
 

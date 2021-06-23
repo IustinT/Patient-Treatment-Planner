@@ -25,24 +25,32 @@
         <!--<Setter Property="ControlTemplate" Value="{StaticResource TemplateWithActivityIndicator}" />-->
     </Style>
 
-    <Style
-        ApplyToDerivedTypes="True"
-        TargetType="InputView">
-        <Setter Property="PlaceholderColor" Value="#707070" />
-        <Setter Property="TextColor" Value="#707070" />
+    <Style ApplyToDerivedTypes="True" TargetType="InputView">
+        <Setter Property="PlaceholderColor" Value="Black" />
+        <Setter Property="TextColor" Value="Black" />
+
+        <Style.Triggers>
+            <Trigger TargetType="InputView" Property="IsReadOnly" Value="True">
+                <Setter Property="PlaceholderColor" Value="#707070" />
+                <Setter Property="TextColor" Value="#707070" />
+            </Trigger>
+            <Trigger TargetType="InputView" Property="IsEnabled" Value="False">
+                <!--  Does not work, at least not when the parent is disabled  -->
+                <Setter Property="PlaceholderColor" Value="#707070" />
+                <Setter Property="TextColor" Value="#707070" />
+            </Trigger>
+        </Style.Triggers>
+
+
     </Style>
 
-    <Style
-        ApplyToDerivedTypes="True"
-        TargetType="Picker">
+    <Style ApplyToDerivedTypes="True" TargetType="Picker">
         <Setter Property="TitleColor" Value="#707070" />
         <Setter Property="TextColor" Value="#707070" />
         <Setter Property="ios:Picker.UpdateMode" Value="WhenFinished" />
     </Style>
 
-    <Style
-        ApplyToDerivedTypes="True"
-        TargetType="Label">
+    <Style ApplyToDerivedTypes="True" TargetType="Label">
         <Setter Property="TextColor" Value="#707070" />
         <Setter Property="FontFamily" Value="RR" />
         <Setter Property="VerticalTextAlignment" Value="Center" />
@@ -89,7 +97,7 @@
         x:Key="DeleteIcon"
         FontFamily="FAS"
         Glyph="&#xf1f8;"
-        Size="Micro"
+        Size="Subtitle"
         Color="White" />
 
     <Style
@@ -97,11 +105,11 @@
         BasedOn="{StaticResource BaseButtonStyle}"
         TargetType="Button">
         <Setter Property="Text" Value="Add" />
-        <Setter Property="Padding" Value="10" />
+        <Setter Property="Padding" Value="5" />
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="BorderWidth" Value="0" />
         <Setter Property="Margin" Value="0" />
-        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Start" />
         <Setter Property="IsVisible" Value="{Binding IsEnabled, Source={RelativeSource Mode=Self}}" />
         <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource AddIcon}" />
     </Style>
@@ -111,19 +119,19 @@
         BasedOn="{StaticResource BaseButtonStyle}"
         TargetType="Button">
         <Setter Property="Text" Value="Edit" />
-        <Setter Property="Padding" Value="10" />
+        <Setter Property="Padding" Value="5" />
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="BorderWidth" Value="0" />
         <Setter Property="Margin" Value="0" />
-        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Start" />
         <Setter Property="IsVisible" Value="{Binding IsEnabled, Source={RelativeSource Mode=Self}}" />
         <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource EditIcon}" />
     </Style>
 
     <Style
         x:Key="IconDeleteButtonStyle"
-        BasedOn="{StaticResource BaseImageButtonStyle}"
-        TargetType="ImageButton">
+        BasedOn="{StaticResource BaseButtonStyle}"
+        TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource NhsUkRedColor}" />
         <Setter Property="Padding" Value="5" />
         <Setter Property="CornerRadius" Value="5" />
@@ -144,9 +152,7 @@
         BasedOn="{StaticResource BaseImageButtonStyle}"
         TargetType="ImageButton" />
 
-    <Style
-        ApplyToDerivedTypes="True"
-        TargetType="ActivityIndicator">
+    <Style ApplyToDerivedTypes="True" TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{StaticResource NhsUkBlueColor}" />
     </Style>
 

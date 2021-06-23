@@ -6,9 +6,9 @@ using ICU.Data.Models;
 
 namespace ICU.Data.Configuration
 {
-    public class GoalConfiguration : IEntityTypeConfiguration<Goal>
+    public class AchievemtConfiguration : IEntityTypeConfiguration<Achievement>
     {
-        public void Configure(EntityTypeBuilder<Goal> builder)
+        public void Configure(EntityTypeBuilder<Achievement> builder)
         {
             builder.HasKey(p => p.Id);
 
@@ -16,18 +16,16 @@ namespace ICU.Data.Configuration
                 .ValueGeneratedOnAdd();
 
             builder.HasOne(p => p.Patient)
-                .WithMany(m => m.Goals)
+                .WithMany(m => m.Achievemts)
                 .HasForeignKey(p => p.PatientId);
 
             builder.Property(p => p.Value)
                 .IsRequired()
                 .HasMaxLength(450);
 
-            builder.Property(p => p.IsMainGoal)
+            builder.Property(p => p.DateTime)
                 .IsRequired();
 
-            builder.HasIndex(p => new { p.PatientId, p.IsMainGoal })
-                .IsUnique(false);
         }
 
     }

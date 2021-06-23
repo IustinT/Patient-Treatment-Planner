@@ -25,7 +25,7 @@ namespace ICU.Planner.ViewModels
         protected PatientFormDialogViewModel(BaseServices baseServices)
             : base(baseServices)
         {
-            Title = "Patient Info";
+            Title = "Patient Information";
             ClearIsBusy();
         }
 

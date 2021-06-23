@@ -32,7 +32,9 @@ namespace ICU.Data
 
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Goal> Goals { get; set; }
+        public DbSet<Achievement> Achievements { get; set; }
         public DbSet<ImageCategory> ImageCategories { get; set; }
+        public DbSet<CPAX> CPAXes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

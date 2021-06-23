@@ -27,7 +27,6 @@ namespace ICU.Planner.ViewModels
 {
     public partial class PatientOverviewPageViewModel : IntermediaryViewModelBase
     {
-        private readonly Subject<long> patientIdChangedSubject = new();
 
         private ICommand editPatientCommand;
         private ICommand addMainGoalCommand;
@@ -35,8 +34,6 @@ namespace ICU.Planner.ViewModels
         private ICommand deleteGoalCommand;
         private ICommand addImageCommand;
         private ICommand _deleteImageCommand;
-        private List<Goal> _goals;
-        private List<ImagesByCategoryModel> imagesByCategory;
 
         protected PatientOverviewPageViewModel(BaseServices baseServices,
                                                IMediaPicker mediaPicker,
@@ -45,31 +42,14 @@ namespace ICU.Planner.ViewModels
         {
             Title = "Patient Page";
 
-            _goals = new List<Goal>();
             MediaPicker = mediaPicker;
             FileSystem = fileSystem;
 
-            imagesByCategory = SystemConfig.ImageCategories
-                .Where(category => !category.Deleted)
-                .OrderBy(category => category.DisplayOrder)
-                .Select(category => new ImagesByCategoryModel { Category = category })
-                .ToList();
-
-
-            patientIdChangedSubject
-                .Throttle(.5.Seconds())
-                .Subscribe(id => Task.WhenAll(RefreshGoals(id), RefreshImages(id)))
-                .DisposedBy(Disposables);
         }
 
         #region Properties
 
         [Bindable] public Patient Patient { get; set; }
-
-        public List<Goal> Goals { get => _goals; set => SetProperty(ref _goals, value); }
-        [Bindable] public Goal MainGoal { get; set; }
-
-        public List<ImagesByCategoryModel> ImagesByCategory { get => imagesByCategory; set => SetProperty(ref imagesByCategory, value); }
 
         public IMediaPicker MediaPicker { get; }
         public IFileSystem FileSystem { get; }
@@ -81,7 +61,6 @@ namespace ICU.Planner.ViewModels
             if (parameters.TryGetValue(nameof(Patient), out Patient patient) && patient != null && patient.Id.HasValue)
             {
                 Patient = patient;
-                patientIdChangedSubject.OnNext(patient.Id.Value);
             }
             else
                 await HandleGoBackRequest(parameters);
@@ -123,9 +102,8 @@ namespace ICU.Planner.ViewModels
                                 .ReceiveJson<Patient>();
 
                             shouldRetryPost = false;
-                            Patient = patient;
+                            Patient = newPatient;
 
-                            RaisePropertyChanged(nameof(Patient));
                         }
                         catch (Exception postException)
                         {
@@ -155,7 +133,8 @@ namespace ICU.Planner.ViewModels
 
         public ICommand DeleteGoalCommand => deleteGoalCommand ??=
             new DelegateCommand<Goal>(async goal => await DeleteGoalCommandExecute(goal))
-            .ObservesProperty(() => Goals);
+            .ObservesProperty(() => IsNotBusy)
+            .ObservesProperty(() => Patient);
 
         private async Task DeleteGoalCommandExecute(Goal goal)
         {
@@ -165,13 +144,13 @@ namespace ICU.Planner.ViewModels
             {
                 await Constants.URLs.GoalsApi.AppendPathSegment(goal.Id).DeleteAsync();
 
-                Goals.Remove(goal);
 
                 if (goal.IsMainGoal is true)
-                    MainGoal = null;
+                    Patient.MainGoal = null;
                 else
-                    Goals = Goals.ToList();
+                    Patient.MiniGoals.Remove(goal);
 
+                RaisePropertyChangedPatient();
             }
             catch (Exception e)
             {
@@ -180,15 +159,25 @@ namespace ICU.Planner.ViewModels
             finally { }
         }
 
-        #endregion 
+        private void RaisePropertyChangedPatient()
+        {
+            //RaisePropertyChanged(nameof(this.Patient)); //does not work for nested objects
+
+            var temp = Patient;
+            Patient = null;
+            Patient = temp;
+        }
+
+        #endregion
 
         #region AddMainGoalCommand
 
         public ICommand AddMainGoalCommand => addMainGoalCommand ??=
             new DelegateCommand(async () => await AddMainGoalCommandExecute(), AddMainGoalCommandCanExecute)
-            .ObservesProperty(() => MainGoal);
+            .ObservesProperty(() => IsNotBusy)
+            .ObservesProperty(() => Patient);
 
-        private bool AddMainGoalCommandCanExecute() => MainGoal is null;
+        private bool AddMainGoalCommandCanExecute() => Patient != null && Patient.MainGoal is null;
 
         private async Task AddMainGoalCommandExecute()
         {
@@ -203,7 +192,7 @@ namespace ICU.Planner.ViewModels
 
                 if (!string.IsNullOrWhiteSpace(goalValue))
                 {
-                    MainGoal = await Constants.URLs.GoalsApi
+                    Patient.MainGoal = await Constants.URLs.GoalsApi
                         .PostJsonAsync(new Goal
                         {
                             PatientId = Patient.Id.Value,
@@ -212,6 +201,7 @@ namespace ICU.Planner.ViewModels
                         })
                         .ReceiveJson<Goal>();
 
+                    RaisePropertyChangedPatient();
                 }
             }
             catch (Exception e)
@@ -249,9 +239,12 @@ namespace ICU.Planner.ViewModels
                         })
                         .ReceiveJson<Goal>();
 
-                    Goals.Add(newGoal);
+                    if (Patient.MiniGoals is null)
+                        Patient.MiniGoals = new List<Goal>();
 
-                    Goals = Goals.ToList();
+                    Patient.MiniGoals.Add(newGoal);
+
+                    RaisePropertyChangedPatient();
                 }
             }
             catch (Exception e)
@@ -265,32 +258,27 @@ namespace ICU.Planner.ViewModels
         #region DeleteImageCommand
 
         public ICommand DeleteImageCommand => _deleteImageCommand ??=
-            new DelegateCommand<Uri>(async imageUri => await DeleteImageCommandExecute(imageUri, Patient.Id.Value));
+            new DelegateCommand<ImageFile>(async imageUri => await DeleteImageCommandExecute(imageUri, Patient.Id.Value))
+            .ObservesProperty(() => IsNotBusy)
+            .ObservesProperty(() => Patient);
 
-        private async Task DeleteImageCommandExecute(Uri uri, long patientId)
+        private async Task DeleteImageCommandExecute(ImageFile imageFile, long patientId)
         {
-            if (uri is null || IsBusy) return;
+            if (imageFile is null || IsBusy) return;
 
             try
             {
-                //TODO: the uri migth require unescaping
-                string[] reversedSegments = uri.Segments.Reverse().Select(s => s.Replace("/", "").Trim()).ToArray();
-                var fileName = reversedSegments[0] as string;
-
-                if (string.IsNullOrWhiteSpace(fileName) || !(reversedSegments.Length > 1) || !int.TryParse(reversedSegments[1], out var categoryId)) return;
-
                 await Constants.URLs.PatientImagesApi
-                    .AppendPathSegments(patientId, categoryId, fileName)
+                    .AppendPathSegments(patientId, imageFile.CategoryId, imageFile.FileName)
                     .DeleteAsync();
 
-                var group = ImagesByCategory.FirstOrDefault(category => category.CategoryId == categoryId);
+                var group = Patient.Images.FirstOrDefault(category => category.Id == imageFile.CategoryId);
 
                 if (group != null)
                 {
-                    group.Names.Remove(fileName);
-                    group.Uris.Remove(uri);
+                    group.ImageFiles.Remove(imageFile);
 
-                    ImagesByCategory = ImagesByCategory.ToList();
+                    RaisePropertyChangedPatient();
                 }
             }
             catch (Exception e)
@@ -304,7 +292,9 @@ namespace ICU.Planner.ViewModels
 
         #region AddImageCommand
         public ICommand AddImageCommand => addImageCommand ??=
-            new DelegateCommand<ImageCategory>(async imageCategory => await AddImageCommandExecute(imageCategory, Patient.Id.Value));
+            new DelegateCommand<ImageCategory>(async imageCategory => await AddImageCommandExecute(imageCategory, Patient.Id.Value))
+            .ObservesProperty(() => IsNotBusy)
+            .ObservesProperty(() => Patient);
 
         private async Task AddImageCommandExecute(ImageCategory imageCategory, long patientId)
         {
@@ -340,19 +330,18 @@ namespace ICU.Planner.ViewModels
                     await Constants.URLs.PatientImagesApi
                     .AppendPathSegments(patientId, imageCategory.Id.Value)
                     .PostMultipartAsync(builder => builder.AddFile("file1", newFilePath))
-                    .ReceiveJson<List<string>>())
+                    .ReceiveJson<List<ImageFile>>())
                     .FirstOrDefault(); //we're uploading only one image
 
                 //display the added image
-                if (!string.IsNullOrWhiteSpace(serverFileName))
+                if (serverFileName != null)
                 {
-                    var group = ImagesByCategory.FirstOrDefault(f => f.CategoryId == imageCategory.Id);
+                    var group = Patient.Images.FirstOrDefault(f => f.Id == imageCategory.Id);
                     if (group != null)
                     {
-                        group.Names.Add(serverFileName);
-                        group.Uris.Add(CreateImageUrl(patientId, serverFileName, imageCategory.Id.Value).ToUri());
+                        group.ImageFiles.Add(serverFileName);
 
-                        ImagesByCategory = ImagesByCategory.ToList();
+                        RaisePropertyChangedPatient();
                     }
                 }
             }
@@ -366,48 +355,6 @@ namespace ICU.Planner.ViewModels
         #endregion
 
         #region GetData
-
-        private async Task RefreshGoals(long patientId)
-        {
-            var goals = await Constants.URLs.GoalsApi.AppendPathSegment(patientId)
-                .GetJsonAsync<List<Goal>>();
-
-            MainGoal = goals.FirstOrDefault(goal => goal.IsMainGoal is true);
-            Goals = goals.Where(goal => goal.IsMainGoal != true).ToList();
-        }
-
-        private async Task RefreshImages(long patientId)
-        {
-            var fromServer = await Constants.URLs.PatientImagesApi
-                            .AppendPathSegments("Urls", patientId)
-                            .GetJsonAsync<List<PatientImagesByCategoryId>>();
-
-            var groupList = SystemConfig
-                .ImageCategories
-                .Select(category => new ImagesByCategoryModel
-                {
-                    Category = category,
-                    CategoryId = category.Id.Value,
-
-                    Names = fromServer
-                    .Where(w => w.CategoryId == category.Id.Value)
-                    .SelectMany(s => s.Names)
-                    .ToList()
-                })
-                .ToList();
-
-            foreach (var group in groupList)
-                group.Uris = group
-                    .Names
-                    .Select(fileName => CreateImageUrl(patientId, fileName, group.CategoryId).ToUri())
-                    .ToList();
-
-            ImagesByCategory = groupList;
-        }
-
-        private static Url CreateImageUrl(long patientId, string fileName, int imageCategoryId) =>
-            Constants.URLs.ApiBaseUri
-            .AppendPathSegments("StaticFiles", "PatientImages", patientId, imageCategoryId, fileName);
 
         #endregion
     }

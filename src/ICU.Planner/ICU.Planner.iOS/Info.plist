@@ -36,5 +36,9 @@
 	<string>1.0</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Using photos.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Using camera.</string>
 </dict>
 </plist>

@@ -24,7 +24,6 @@ using Xamarin.Essentials;
 using Xamarin.Essentials.Implementation;
 using Xamarin.Essentials.Interfaces;
 
-
 namespace ICU.Planner
 {
     [AutoRegisterViews]

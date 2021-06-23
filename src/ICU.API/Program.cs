@@ -32,6 +32,11 @@ namespace ICU.API
 
             try
             {
+                //create static images directory if not exists
+                string patientImagesPath = Path.Combine(Directory.GetCurrentDirectory(), Constants.PatientImagesFolder);
+                if (!Directory.Exists(patientImagesPath))
+                    Directory.CreateDirectory(patientImagesPath);
+
                 var host = CreateHostBuilder(args).Build();
 
                 Log.Information("Starting host...");

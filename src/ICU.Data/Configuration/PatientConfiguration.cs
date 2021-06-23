@@ -34,6 +34,14 @@ namespace ICU.Data.Configuration
 
             builder.Property(p => p.AdmissionDate)
                 .IsRequired();
+
+            builder.Ignore(i => i.Images);
+
+            builder.Ignore(i => i.CurrentCPAX);
+            builder.Ignore(i => i.GoalCPAX);
+
+            builder.Ignore(i => i.MiniGoals);
+            builder.Ignore(i => i.MainGoal);
         }
 
     }

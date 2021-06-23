@@ -1,25 +1,25 @@
 ﻿{
-  "Serilog": {
-    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Debug", "Serilog.Sinks.File" ],
-    "Enrich": [ "FromLogContext", "WithExceptionDetails", "WithMachineName", "WithThreadId" ],
-    "MinimumLevel": {
-      "Default": "Verbose",
-      "Override": {
-        "System": "Information",
-        "Microsoft": "Information",
-        "Microsoft.EntityFrameworkCore": "Information"
-      }
-    },
-    "WriteTo": [
-      { "Name": "Console" },
-      { "Name": "Debug" },
-      {
-        "Name": "File",
-        "Args": {
-          "path": "C:\\Log\\ICUAPI\\ICU.API.Log.txt",
-          "rollingInterval": "Day"
-        }
-      }
-    ]
-  }
+    "Serilog": {
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Debug", "Serilog.Sinks.File" ],
+        "Enrich": [ "FromLogContext", "WithExceptionDetails", "WithMachineName", "WithThreadId" ],
+        "MinimumLevel": {
+            "Default": "Verbose",
+            "Override": {
+                "System": "Information",
+                "Microsoft": "Information",
+                "Microsoft.EntityFrameworkCore": "Information"
+            }
+        },
+        "WriteTo": [
+            { "Name": "Console" },
+            { "Name": "Debug" },
+            {
+                "Name": "File",
+                "Args": {
+                    "path": "ICU.API.Log.txt",
+                    "rollingInterval": "Day"
+                }
+            }
+        ]
+    }
 }

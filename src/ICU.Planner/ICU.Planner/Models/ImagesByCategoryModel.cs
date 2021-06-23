@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ICU.Planner.Models
 {
-    public class ImagesByCategoryModel : PatientImagesByCategoryId
+    public class ImagesByCategoryModel : ImageCategoryWithFiles
     {
         public ImageCategory Category { get; set; }
         public List<Uri> Uris { get; set; }

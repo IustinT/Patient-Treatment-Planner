@@ -8,7 +8,7 @@
     ControlTemplate="{StaticResource TemplateWithActivityIndicator}"
     IsBusy="{Binding IsBusy}">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid ColumnSpacing="0" RowDefinitions="Auto,*">
 
         <Grid.ColumnDefinitions>
 
@@ -86,18 +86,29 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Orientation="Vertical">
-                            <Label FontFamily="RM" Text="{Binding Name}" />
+                            <StackLayout Margin="5,0" Orientation="Vertical">
 
-                            <FlexLayout>
-                                <Label Text="{Binding PhoneNumber}" />
-                                <Label Text="{Binding AdmissionDate, StringFormat='{0:dd MMM yy}'}" />
-                            </FlexLayout>
+                                <FlexLayout>
+                                    <Label FontFamily="RM" Text="{Binding Name}" />
+                                    <Label Text="{Binding PhoneNumber}" />
+                                </FlexLayout>
 
-                            <FlexLayout>
-                                <Label Text="{Binding Hospital}" />
-                                <Label Text="{Binding Ward}" />
-                            </FlexLayout>
+                                <FlexLayout Margin="0,5,0,0">
+                                    <Label>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Hospital}" />
+                                                <Span Text=", " />
+                                                <Span Text="{Binding Ward}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
 
+                                    <Label Text="{Binding AdmissionDate, StringFormat='{0:dd MMM yy}'}" />
+                                </FlexLayout>
+
+
+                            </StackLayout>
 
                             <Line
                                 xct:ShadowEffect.Color="Black"
@@ -107,7 +118,6 @@
                                 HorizontalOptions="Fill"
                                 StrokeLineCap="Flat"
                                 VerticalOptions="Center" />
-
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

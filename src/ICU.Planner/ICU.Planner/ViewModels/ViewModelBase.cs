@@ -16,7 +16,6 @@ namespace ICU.Planner.ViewModels
     [ViewModelBase]
     public partial class ViewModelBase : BindableBase
     {
-        public static SystemConfig SystemConfig { get; set; }
 
         private const string ButtonTextOK = "OK";
         private const string CaptionError = "Error";

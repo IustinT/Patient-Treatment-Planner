@@ -23,14 +23,6 @@ namespace ICU.API.Controllers
         public GoalsController(IcuContext context) : base(context)
         { }
 
-        [HttpGet]
-        [Route("{patientId}")]
-        [ProducesResponseType(typeof(IEnumerable<Goal>), StatusCodes.Status200OK)]
-        public IEnumerable<Goal> Get(long patientId)
-        {
-            return Context.Goals.Where(goal => goal.PatientId == patientId);
-        }
-
         [HttpPost]
         [ProducesResponseType(typeof(Goal), StatusCodes.Status200OK)]
         public async Task<IActionResult> PostAsync([FromBody] Goal value)
