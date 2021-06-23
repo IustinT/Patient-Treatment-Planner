@@ -183,7 +183,7 @@
 
             </StackLayout>
 
-            <!--  Current CPAX  -->
+            <!--  CPAX  -->
             <Frame BackgroundColor="White" HasShadow="True">
 
                 <Grid
@@ -191,20 +191,19 @@
                     ColumnDefinitions="*,Auto"
                     RowDefinitions="Auto,Auto">
 
-                    <Label FontFamily="RM" Text="Current CPAX" />
+                    <Label FontFamily="RM" Text="CPAX" />
 
                     <Button
                         Grid.Column="1"
                         Command="{Binding EditCpaxCommand}"
-                        CommandParameter="{Binding Patient.AdmissionDate}"
                         HorizontalOptions="Center"
                         Style="{StaticResource EditButtonStyle}" />
 
-                    <controls:PatientView
+                    <controls:CpaxView
                         Grid.Row="1"
                         Grid.ColumnSpan="2"
-                        IsEnabled="False"
-                        Patient="{Binding Patient}" />
+                        CurrentCpax="{Binding Patient.CurrentCpax}"
+                        GoalCpax="{Binding Patient.CurrentCpax}" />
 
                 </Grid>
             </Frame>

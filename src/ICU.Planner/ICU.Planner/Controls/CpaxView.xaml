@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="ICU.Planner.Controls.CpaxView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ICU.Planner.Controls"
+    xmlns:system="clr-namespace:System;assembly=netstandard"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit">
+
+    <StackLayout Orientation="Vertical" Spacing="10">
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Respiratory}"
+            GoalValue="{Binding GoalCpax.Respiratory}"
+            HeaderValue="Respiratory Function" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Grip}"
+            GoalValue="{Binding GoalCpax.Grip}"
+            HeaderValue="Grip" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Cough}"
+            GoalValue="{Binding GoalCpax.Cough}"
+            HeaderValue="Cough" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.BedMovement}"
+            GoalValue="{Binding GoalCpax.BedMovement}"
+            HeaderValue="Bed Movement" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.DynamicSitting}"
+            GoalValue="{Binding GoalCpax.DynamicSitting}"
+            HeaderValue="Dynamic Sitting" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.StandingBalance}"
+            GoalValue="{Binding GoalCpax.StandingBalance}"
+            HeaderValue="Standing Balance" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.SitToStand}"
+            GoalValue="{Binding GoalCpax.SitToStand}"
+            HeaderValue="Sit To Stand" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.BedToChair}"
+            GoalValue="{Binding GoalCpax.BedToChair}"
+            HeaderValue="Bed To Chair" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Stepping}"
+            GoalValue="{Binding GoalCpax.Stepping}"
+            HeaderValue="Stepping" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Transfer}"
+            GoalValue="{Binding GoalCpax.Transfer}"
+            HeaderValue="Transfer" />
+
+    </StackLayout>
+
+</ContentView>

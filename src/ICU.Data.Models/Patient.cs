@@ -54,9 +54,6 @@ namespace ICU.Data.Models
         public int Stepping { get; set; }
         public int Transfer { get; set; }
 
-        /// <summary>
-        /// The Goal CPAX values for the <see cref="Patient"/>
-        /// </summary>
         public bool IsGoal { get; set; }
     }
 

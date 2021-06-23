@@ -143,6 +143,10 @@ namespace ICU.Planner.ViewModels
                     if (newPatientRecord.Id.HasValue)
                     {
                         PatientPhoneNumber = null;
+
+                        if (newPatientRecord.CurrentCPAX is null) newPatientRecord.CurrentCPAX = new CPAX();
+                        if (newPatientRecord.GoalCPAX is null) newPatientRecord.GoalCPAX = new CPAX();
+
                         await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), newPatientRecord));
                     }
                     else
@@ -182,6 +186,9 @@ namespace ICU.Planner.ViewModels
                 var payload = await Constants.URLs.PatientsApi
                     .AppendPathSegment(selectedPatient.Id)
                     .GetJsonAsync<Patient>();
+
+                if (payload.CurrentCPAX is null) payload.CurrentCPAX = new CPAX();
+                if (payload.GoalCPAX is null) payload.GoalCPAX = new CPAX();
 
                 var r = await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), payload));
 
