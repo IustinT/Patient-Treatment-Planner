@@ -172,7 +172,12 @@
                     <StackLayout
                         Padding="5"
                         Orientation="Vertical"
-                        Spacing="5">
+                        Spacing="25">
+
+                        <Button
+                            Command="{Binding SaveCpaxCommand}"
+                            Style="{StaticResource SaveButtonStyle}"
+                            Text="Save CPAX values" />
 
                         <controls:CpaxView CurrentCpax="{Binding BindingContext.CurrentCPAX, Source={Reference this}}" GoalCpax="{Binding BindingContext.GoalCPAX, Source={Reference this}}" />
 
