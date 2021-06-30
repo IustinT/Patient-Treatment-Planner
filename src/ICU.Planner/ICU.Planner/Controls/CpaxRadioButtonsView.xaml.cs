@@ -18,11 +18,11 @@ namespace ICU.Planner.Controls
 
         public static readonly BindableProperty ChechedBgColorProperty =
           BindableProperty
-          .Create(nameof(Value), typeof(Color), typeof(CpaxRadioButtonsView), Color.Orange);
+          .Create(nameof(ChechedBgColor), typeof(Color), typeof(CpaxRadioButtonsView), Color.Orange, BindingMode.OneTime);
 
-        public static readonly BindableProperty ChechedFontColorProperty =
+        public static readonly BindableProperty ChechedBorderColorProperty =
           BindableProperty
-          .Create(nameof(Value), typeof(Color), typeof(CpaxRadioButtonsView), Color.Black);
+          .Create(nameof(ChechedBorderColor), typeof(Color), typeof(CpaxRadioButtonsView), Color.Red, BindingMode.OneTime);
 
         /*
          
@@ -38,10 +38,10 @@ namespace ICU.Planner.Controls
          */
 
 
-        public Color ChechedFontColor
+        public Color ChechedBorderColor
         {
-            get => (Color)GetValue(ChechedFontColorProperty);
-            set => SetValue(ChechedFontColorProperty, value);
+            get => (Color)GetValue(ChechedBorderColorProperty);
+            set => SetValue(ChechedBorderColorProperty, value);
         }
 
         public Color ChechedBgColor

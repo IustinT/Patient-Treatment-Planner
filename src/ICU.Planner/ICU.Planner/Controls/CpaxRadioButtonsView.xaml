@@ -29,9 +29,10 @@
                         <Grid Margin="4">
 
                             <Label
-                                Margin="10"
+                                Margin="16,10"
                                 FontAttributes="Bold"
                                 FontFamily="RM"
+                                FontSize="Subtitle"
                                 Text="{TemplateBinding Value}" />
 
                         </Grid>
@@ -41,8 +42,8 @@
                                 <VisualStateGroup x:Name="CheckedStates">
                                     <VisualState x:Name="Checked">
                                         <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="Orange" />
-                                            <Setter Property="BorderColor" Value="Red" />
+                                            <Setter Property="BackgroundColor" Value="{Binding ChechedBgColor, Source={Reference this}}" />
+                                            <Setter Property="BorderColor" Value="{Binding ChechedBorderColor, Source={Reference this}}" />
                                         </VisualState.Setters>
                                     </VisualState>
 
@@ -57,8 +58,8 @@
 
                 <Style TargetType="RadioButton">
                     <Setter Property="ControlTemplate" Value="{StaticResource CpaxRadioButtonControlTemplate}" />
-                    <Setter Property="BackgroundColor" Value="LightGray" />
-                    <Setter Property="BorderColor" Value="LightGray" />
+                    <Setter Property="BackgroundColor" Value="White" />
+                    <Setter Property="BorderColor" Value="Black" />
                     <Setter Property="TextColor" Value="Black" />
                     <Setter Property="BorderWidth" Value="1" />
                 </Style>
