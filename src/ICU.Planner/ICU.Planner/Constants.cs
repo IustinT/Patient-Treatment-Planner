@@ -17,6 +17,7 @@ namespace ICU.Planner
 
             public static string PatientsApi = $"{ApiBaseUri}Patients";
             public static string GoalsApi = $"{ApiBaseUri}Goals";
+            public static string CpaxApi = $"{ApiBaseUri}CPAX";
             public static string PatientImagesApi = $"{ApiBaseUri}PatientImages";
             public static string SystemConfigApi = $"{ApiBaseUri}SystemConfig";
         }
