@@ -36,12 +36,12 @@ namespace ICU.Data.Models
 
     public class CPAX
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
-        public long PatientId { get; set; }
+        public long? PatientId { get; set; }
         [JsonIgnore]
         public virtual Patient Patient { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
 
         public int Grip { get; set; }
         public int Respiratory { get; set; }
@@ -55,6 +55,35 @@ namespace ICU.Data.Models
         public int Transfer { get; set; }
 
         public bool IsGoal { get; set; }
+
+        /// <summary>
+        /// Compares all values of both objects' properties.
+        /// </summary>
+        /// <param name="obj">The other <see cref="CPAX"/> object.</param>
+        /// <returns><see langword="True"/> if all properties have same values in both objects. <see langword="False"/> otherwise.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is CPAX other
+                && Grip == other.Grip
+                && Respiratory == other.Respiratory
+                && Cough == other.Cough
+                && BedMovement == other.BedMovement
+                && DynamicSitting == other.DynamicSitting
+                && StandingBalance == other.StandingBalance
+                && SitToStand == other.SitToStand
+                && BedToChair == other.BedToChair
+                && Stepping == other.Stepping
+                && Transfer == other.Transfer;
+        }
+
+        /// <summary>
+        /// Indicates if all properties have default value of zero.
+        /// </summary>
+        /// <returns><see langword="True"/> if all properties have value of zero. <see langword="False"/> otherwise.</returns>
+        public bool IsEmpty() =>
+            (Grip + Respiratory + Cough + BedMovement
+            + DynamicSitting + StandingBalance + SitToStand + BedToChair
+            + Stepping + Transfer) is 0;
     }
 
     public class Goal
@@ -99,5 +128,11 @@ namespace ICU.Data.Models
         public int CategoryId { get; set; }
         public string FileName { get; set; }
         public string Uri { get; set; }
+    }
+
+    public class CpaxDTO
+    {
+        public CPAX CurrentCpax { get; set; }
+        public CPAX GoalCpax { get; set; }
     }
 }
