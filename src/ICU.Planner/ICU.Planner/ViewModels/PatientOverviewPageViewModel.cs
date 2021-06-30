@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -16,12 +15,10 @@ using ICU.Data.Models;
 using Prism.Commands;
 using Prism.Magician;
 using Prism.Navigation;
-using ICU.Planner.Models;
 
 using Xamarin.Essentials.Interfaces;
 using System.IO;
 using Prism.Logging;
-using ShinyExtensions;
 
 namespace ICU.Planner.ViewModels
 {
@@ -31,6 +28,7 @@ namespace ICU.Planner.ViewModels
         private ICommand editPatientCommand;
         private ICommand addMainGoalCommand;
         private ICommand addGoalCommand;
+        private ICommand saveCpaxCommand;
         private ICommand deleteGoalCommand;
         private ICommand addImageCommand;
         private ICommand _deleteImageCommand;
@@ -50,6 +48,14 @@ namespace ICU.Planner.ViewModels
         #region Properties
 
         [Bindable] public Patient Patient { get; set; }
+        [Bindable] public CPAX CurrentCPAX { get; set; }
+        [Bindable] public CPAX GoalCPAX { get; set; }
+        [Bindable] public int Dfg { get; set; } = 4;
+
+        public ICommand PersonalInfoForceUpdateSizeCommand { get; set; }
+        public ICommand MainGoalForceUpdateSizeCommand { get; set; }
+        public ICommand MiniGoalsForceUpdateSizeCommand { get; set; }
+        public ICommand CpaxForceUpdateSizeCommand { get; set; }
 
         public IMediaPicker MediaPicker { get; }
         public IFileSystem FileSystem { get; }
@@ -60,7 +66,16 @@ namespace ICU.Planner.ViewModels
         {
             if (parameters.TryGetValue(nameof(Patient), out Patient patient) && patient != null && patient.Id.HasValue)
             {
+                Title = $"Patient - {patient.Name}";
                 Patient = patient;
+                CurrentCPAX = patient.CurrentCPAX;
+                GoalCPAX = patient.GoalCPAX;
+
+                PersonalInfoForceUpdateSizeCommand?.Execute(null);
+                MainGoalForceUpdateSizeCommand?.Execute(null);
+                MiniGoalsForceUpdateSizeCommand?.Execute(null);
+                CpaxForceUpdateSizeCommand?.Execute(null);
+
             }
             else
                 await HandleGoBackRequest(parameters);
@@ -112,6 +127,8 @@ namespace ICU.Planner.ViewModels
                         }
                     } while (shouldRetryPost);
 
+                    PersonalInfoForceUpdateSizeCommand?.Execute(null);
+
                 }
             }
             catch (Exception e)
@@ -151,21 +168,16 @@ namespace ICU.Planner.ViewModels
                     Patient.MiniGoals.Remove(goal);
 
                 RaisePropertyChangedPatient();
+
+                MainGoalForceUpdateSizeCommand?.Execute(null);
+                MiniGoalsForceUpdateSizeCommand?.Execute(null);
+
             }
             catch (Exception e)
             {
                 Logger.Log(e);
             }
             finally { }
-        }
-
-        private void RaisePropertyChangedPatient()
-        {
-            //RaisePropertyChanged(nameof(this.Patient)); //does not work for nested objects
-
-            var temp = Patient;
-            Patient = null;
-            Patient = temp;
         }
 
         #endregion
@@ -202,6 +214,7 @@ namespace ICU.Planner.ViewModels
                         .ReceiveJson<Goal>();
 
                     RaisePropertyChangedPatient();
+                    MainGoalForceUpdateSizeCommand?.Execute(null);
                 }
             }
             catch (Exception e)
@@ -215,7 +228,9 @@ namespace ICU.Planner.ViewModels
         #region AddGoalCommand
 
         public ICommand AddGoalCommand => addGoalCommand ??=
-            new DelegateCommand(async () => await AddGoalCommandExecute());
+            new DelegateCommand(async () => await AddGoalCommandExecute())
+            .ObservesProperty(() => IsNotBusy)
+            .ObservesProperty(() => Patient);
 
         private async Task AddGoalCommandExecute()
         {
@@ -245,11 +260,55 @@ namespace ICU.Planner.ViewModels
                     Patient.MiniGoals.Add(newGoal);
 
                     RaisePropertyChangedPatient();
+                    MiniGoalsForceUpdateSizeCommand?.Execute(null);
                 }
             }
             catch (Exception e)
             {
                 Logger.Log(e);
+            }
+        }
+
+        #endregion
+
+        #region SaveCpaxCommand
+
+        public ICommand SaveCpaxCommand => saveCpaxCommand ??=
+            new DelegateCommand(async () => await SaveCpaxCommandExecute())
+            .ObservesProperty(() => IsNotBusy)
+            .ObservesProperty(() => Patient);
+
+        private async Task SaveCpaxCommandExecute()
+        {
+            try
+            {
+                SetIsBusy();
+
+                var t = Constants.URLs.CpaxApi
+                      .PostJsonAsync(new CpaxDTO
+                      {
+                          CurrentCpax = CurrentCPAX,
+                          GoalCpax = GoalCPAX
+                      });
+
+                var payload = await t.ReceiveJson<CpaxDTO>();
+
+                Patient.CurrentCPAX = payload.CurrentCpax;
+                Patient.GoalCPAX = payload.GoalCpax;
+
+                CurrentCPAX = payload.CurrentCpax;
+                GoalCPAX = payload.GoalCpax;
+
+                RaisePropertyChangedPatient();
+                CpaxForceUpdateSizeCommand?.Execute(null);
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e);
+            }
+            finally
+            {
+                ClearIsBusy();
             }
         }
 
@@ -357,5 +416,15 @@ namespace ICU.Planner.ViewModels
         #region GetData
 
         #endregion
+
+        private void RaisePropertyChangedPatient()
+        {
+            //RaisePropertyChanged(nameof(this.Patient)); //does not work for nested objects
+
+            var temp = Patient;
+            Patient = null;
+            Patient = temp;
+
+        }
     }
 }

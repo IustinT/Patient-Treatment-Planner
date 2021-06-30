@@ -28,6 +28,7 @@
 		<None Remove="Resources\Fonts\Roboto\Roboto-Regular.ttf" />
 		<None Remove="Prism.Plugin.Logging.AppCenter" />
 		<None Remove="Xamarin.Forms" />
+		<None Remove="Converters\" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\Fonts\FontAwesome\FA5Pro-Light.otf">
@@ -86,5 +87,8 @@
 		<EmbeddedResource Update="Views\PatientFormDialog.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Converters\" />
 	</ItemGroup>
 </Project>

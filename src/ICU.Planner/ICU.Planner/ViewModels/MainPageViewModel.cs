@@ -144,8 +144,7 @@ namespace ICU.Planner.ViewModels
                     {
                         PatientPhoneNumber = null;
 
-                        if (newPatientRecord.CurrentCPAX is null) newPatientRecord.CurrentCPAX = new CPAX();
-                        if (newPatientRecord.GoalCPAX is null) newPatientRecord.GoalCPAX = new CPAX();
+                        SetDefaultCpaxObjects(newPatientRecord);
 
                         await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), newPatientRecord));
                     }
@@ -187,8 +186,7 @@ namespace ICU.Planner.ViewModels
                     .AppendPathSegment(selectedPatient.Id)
                     .GetJsonAsync<Patient>();
 
-                if (payload.CurrentCPAX is null) payload.CurrentCPAX = new CPAX();
-                if (payload.GoalCPAX is null) payload.GoalCPAX = new CPAX();
+                SetDefaultCpaxObjects(payload);
 
                 var r = await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), payload));
 
@@ -204,6 +202,7 @@ namespace ICU.Planner.ViewModels
                 ClearIsBusy();
             }
         }
+
 
         #endregion
 
@@ -250,5 +249,10 @@ namespace ICU.Planner.ViewModels
 
         #endregion
 
+        private static void SetDefaultCpaxObjects(Patient patient)
+        {
+            if (patient.CurrentCPAX is null) patient.CurrentCPAX = new CPAX { PatientId = patient.Id.Value };
+            if (patient.GoalCPAX is null) patient.GoalCPAX = new CPAX { PatientId = patient.Id.Value };
+        }
     }
 }

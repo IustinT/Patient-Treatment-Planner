@@ -13,11 +13,11 @@ namespace ICU.Planner.Controls
 
         public static readonly BindableProperty CurrentCpaxProperty =
             BindableProperty
-            .Create(nameof(CurrentCpax), typeof(CPAX), typeof(CpaxView));
+            .Create(nameof(CurrentCpax), typeof(CPAX), typeof(CpaxView), null, BindingMode.OneWay);
 
         public static readonly BindableProperty GoalCpaxProperty =
             BindableProperty
-            .Create(nameof(GoalCpax), typeof(CPAX), typeof(CpaxView));
+            .Create(nameof(GoalCpax), typeof(CPAX), typeof(CpaxView), null, BindingMode.OneWay);
 
         public CPAX CurrentCpax
         {
@@ -30,6 +30,5 @@ namespace ICU.Planner.Controls
             get => (CPAX)GetValue(GoalCpaxProperty);
             set => SetValue(GoalCpaxProperty, value);
         }
-
     }
 }

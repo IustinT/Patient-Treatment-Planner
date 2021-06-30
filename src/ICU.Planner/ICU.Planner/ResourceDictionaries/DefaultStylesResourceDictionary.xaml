@@ -56,6 +56,48 @@
         <Setter Property="VerticalTextAlignment" Value="Center" />
     </Style>
 
+    <FontImageSource
+        x:Key="SaveIcon"
+        FontFamily="FAL"
+        Glyph="&#xf0c7;"
+        Size="Subtitle"
+        Color="White" />
+
+    <FontImageSource
+        x:Key="AddIcon"
+        FontFamily="FAL"
+        Glyph="&#xf055;"
+        Size="Subtitle"
+        Color="White" />
+
+    <FontImageSource
+        x:Key="EditIcon"
+        FontFamily="FAL"
+        Glyph="&#xf31c;"
+        Size="Subtitle"
+        Color="White" />
+
+    <FontImageSource
+        x:Key="DeleteIcon"
+        FontFamily="FAS"
+        Glyph="&#xf1f8;"
+        Size="Subtitle"
+        Color="White" />
+
+    <FontImageSource
+        x:Key="ExpandIcon"
+        FontFamily="FAS"
+        Glyph="&#xf078;"
+        Size="Subtitle"
+        Color="#707070" />
+
+    <FontImageSource
+        x:Key="CollapseIcon"
+        FontFamily="FAS"
+        Glyph="&#xf077;"
+        Size="Subtitle"
+        Color="#707070" />
+
     <Style
         x:Key="BaseButtonStyle"
         ApplyToDerivedTypes="True"
@@ -79,27 +121,6 @@
         <Setter Property="CornerRadius" Value="2" />
     </Style>
 
-    <FontImageSource
-        x:Key="AddIcon"
-        FontFamily="FAL"
-        Glyph="&#xf055;"
-        Size="Subtitle"
-        Color="White" />
-
-    <FontImageSource
-        x:Key="EditIcon"
-        FontFamily="FAL"
-        Glyph="&#xf31c;"
-        Size="Subtitle"
-        Color="White" />
-
-    <FontImageSource
-        x:Key="DeleteIcon"
-        FontFamily="FAS"
-        Glyph="&#xf1f8;"
-        Size="Subtitle"
-        Color="White" />
-
     <Style
         x:Key="AddButtonStyle"
         BasedOn="{StaticResource BaseButtonStyle}"
@@ -112,6 +133,14 @@
         <Setter Property="VerticalOptions" Value="Start" />
         <Setter Property="IsVisible" Value="{Binding IsEnabled, Source={RelativeSource Mode=Self}}" />
         <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource AddIcon}" />
+    </Style>
+
+    <Style
+        x:Key="SaveButtonStyle"
+        BasedOn="{StaticResource AddButtonStyle}"
+        TargetType="Button">
+        <Setter Property="Text" Value="Save" />
+        <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource SaveIcon}" />
     </Style>
 
     <Style

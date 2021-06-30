@@ -3,16 +3,19 @@
     x:Class="ICU.Planner.Controls.CpaxPropertyView"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ICU.Planner.Controls"
     xmlns:system="clr-namespace:System;assembly=netstandard"
-    xmlns:xct="http://xamarin.com/schemas/2020/toolkit">
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    x:Name="this">
 
-    <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto">
+    <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,1*,1*">
 
         <Label
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Text="{Binding HeaderValue}" />
+            FontFamily="RM"
+            Text="{Binding HeaderValue, Source={Reference this}}" />
 
         <Label
             Grid.Row="1"
@@ -22,37 +25,22 @@
         <Label
             Grid.Row="2"
             Grid.Column="0"
-            Text="Goal" />
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            Text="Goal"
+            VerticalOptions="Center"
+            VerticalTextAlignment="Center" />
 
-        <StackLayout
+        <controls:CpaxRadioButtonsView
             Grid.Row="1"
             Grid.Column="1"
-            Orientation="Horizontal"
-            RadioButtonGroup.SelectedValue="{Binding CurrentValue}"
-            Spacing="5">
+            Value="{Binding CurrentValue, Source={Reference this}}" />
 
-            <RadioButton Content="1" Value="1" />
-            <RadioButton Content="2" Value="2" />
-            <RadioButton Content="3" Value="3" />
-            <RadioButton Content="4" Value="4" />
-            <RadioButton Content="5" Value="5" />
-
-        </StackLayout>
-
-        <StackLayout
+        <controls:CpaxRadioButtonsView
             Grid.Row="2"
             Grid.Column="1"
-            Orientation="Horizontal"
-            RadioButtonGroup.SelectedValue="{Binding GoalValue}"
-            Spacing="5">
+            Value="{Binding GoalValue, Source={Reference this}}" />
 
-            <RadioButton Content="1" Value="1" />
-            <RadioButton Content="2" Value="2" />
-            <RadioButton Content="3" Value="3" />
-            <RadioButton Content="4" Value="4" />
-            <RadioButton Content="5" Value="5" />
-
-        </StackLayout>
     </Grid>
 
 </ContentView>
