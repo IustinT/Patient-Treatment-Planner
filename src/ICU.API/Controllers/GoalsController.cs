@@ -24,6 +24,7 @@ namespace ICU.API.Controllers
         { }
 
         [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(Goal), StatusCodes.Status200OK)]
         public async Task<IActionResult> PostAsync([FromBody] Goal value)
         {
