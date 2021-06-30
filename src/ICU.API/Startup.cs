@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net.Mime;
-using System.Reflection;
 
 [assembly: ApiController]
 
@@ -45,7 +44,13 @@ namespace ICU.API
             {
                 options.Filters.Add(new HttpResponseExceptionFilter());
             })
-                .AddNewtonsoftJson()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
+                })
                 .ConfigureApiBehaviorOptions(options =>
                 {
                     options.InvalidModelStateResponseFactory = context =>
@@ -83,13 +88,14 @@ namespace ICU.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IcuContext context)
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            //config done when service is registered
+            //jsonconvert.defaultsettings = () => new jsonserializersettings
+            //{
+            //    nullvaluehandling = nullvaluehandling.ignore,
+            //    defaultvaluehandling = defaultvaluehandling.ignore,
+            //    referenceloophandling = referenceloophandling.ignore,
 
-            };
+            //};
 
             context.Database.Migrate();
 
