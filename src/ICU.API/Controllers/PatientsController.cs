@@ -73,7 +73,9 @@ namespace ICU.API.Controllers
             Context.Patients.Add(newPatient);
             await Context.SaveChangesAsync();
 
-            return Ok(newPatient);
+            newPatient = await GetPatient(newPatient.Id.Value);
+
+            return base.Ok(newPatient);
         }
 
         // PUT api/<PatientsController>/5
