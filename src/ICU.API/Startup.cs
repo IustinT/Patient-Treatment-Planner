@@ -74,7 +74,8 @@ namespace ICU.API
 
             services.AddHealthChecks().AddDbContextCheck<IcuContext>();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen()
+                .AddSwaggerGenNewtonsoftSupport();
 
             services.Configure<FormOptions>(o =>
             {
