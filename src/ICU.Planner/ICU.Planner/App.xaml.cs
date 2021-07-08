@@ -3,24 +3,26 @@ using Flurl.Http.Configuration;
 
 using ICU.Planner.Polly;
 using ICU.Planner.Views;
-
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Prism;
 using Prism.Ioc;
 using Prism.Magician;
+using Prism.Navigation;
 using Prism.Services;
 
-using Shiny.Logging;
-
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
 using Xamarin.Essentials;
+using Xamarin.Essentials.Implementation;
 using Xamarin.Essentials.Interfaces;
-
 
 namespace ICU.Planner
 {
@@ -29,8 +31,27 @@ namespace ICU.Planner
     {
         public App(IPlatformInitializer platformInitializer) : base(platformInitializer) { }
 
-        protected override async void OnInitialized()
+        protected override void RegisterRequiredTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterAppCenterLogger(
+                "android=460b1a09-1d2c-4296-a19c-7ffa5e4e819f;" +
+                  "uwp=e1b15925-b698-4b7f-9852-155269e75de7;" +
+                  "ios=2502b1af-3ea3-4906-990a-d7fc0b494a04");
+
+            containerRegistry.Register<IVersionTracking, VersionTrackingImplementation>();
+            containerRegistry.Register<IMainThread, MainThreadImplementation>();
+            containerRegistry.Register<IDeviceInfo, DeviceInfoImplementation>();
+            containerRegistry.Register<IMediaPicker, MediaPickerImplementation>();
+            containerRegistry.Register<IFileSystem, FileSystemImplementation>();
+
+            base.RegisterRequiredTypes(containerRegistry);
+        }
+
+        protected override void OnInitialized()
+        {
+
+            FlurlHttp.Configure(FlurlConfigAction);
+
 #if DEBUG
             var assembly = typeof(MainPage).GetTypeInfo().Assembly;
             foreach (var res in assembly.GetManifestResourceNames())
@@ -38,7 +59,11 @@ namespace ICU.Planner
                 System.Diagnostics.Debug.WriteLine("############### found resource: " + res);
             }
 #endif
-            await NavigationService.NavigateAsync($"/{Navigation.NavigationKeys.NavigationPage}/{Navigation.NavigationKeys.MainPage}");
+            NavigationService
+                .NavigateAsync(
+                $"/{Navigation.NavigationKeys.NavigationPage}/{Navigation.NavigationKeys.MainPage}",
+                new NavigationParameters())
+                .OnNavigationError(OnNavigationError);
         }
 
         protected override void OnStart()
@@ -49,7 +74,6 @@ namespace ICU.Planner
             if (versionTracking != null)
                 versionTracking.Track();
 
-            FlurlHttp.Configure(FlurlConfigAction);
         }
 
         private void FlurlConfigAction(GlobalFlurlHttpSettings settings)
@@ -58,18 +82,18 @@ namespace ICU.Planner
 
             settings.JsonSerializer = new NewtonsoftJsonSerializer(Constants.FlurlHttp.JsonSettings);
 
-            settings.OnErrorAsync += call => Log.SafeExecute(() => OnFlurlErrorAsync(call));
+            settings.OnErrorAsync += call => OnFlurlErrorAsync(call);
             settings.AfterCall += (call) => { };
         }
 
         private async Task OnFlurlErrorAsync(FlurlCall httpCall)
         {
-            Log.Write(httpCall.Exception,
-                 ("action", nameof(OnFlurlErrorAsync)),
-                ("RequestUri", httpCall.Request.Url?.ToString()),
-                ("RequestMethod", httpCall.Request.Verb?.ToString()),
-                ("HttpStatus", httpCall.Response?.StatusCode.ToString()),
-                ("ResponseMessage", httpCall.Response?.ResponseMessage?.ToString())
+            Logger.Report(httpCall.Exception, new Dictionary<string, string> {
+                { "action", nameof(OnFlurlErrorAsync) },
+                { "RequestUri", httpCall.Request.Url?.ToString() },
+                { "RequestMethod", httpCall.Request.Verb?.ToString() },
+                { "HttpStatus", httpCall.Response?.StatusCode.ToString() },
+                { "ResponseMessage", httpCall.Response?.ResponseMessage?.ToString()} }
             );
 
             if (httpCall.Response?.StatusCode == (int)System.Net.HttpStatusCode.Unauthorized)
@@ -111,6 +135,14 @@ namespace ICU.Planner
                 }
             }
         }
+
+        private void OnNavigationError(Exception ex)
+        {
+            System.Diagnostics.Debugger.Break();
+            Logger.Report(ex, null);
+
+        }
+
 
     }
 }

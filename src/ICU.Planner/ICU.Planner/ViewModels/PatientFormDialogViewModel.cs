@@ -5,11 +5,11 @@ using System.Windows.Input;
 using ICU.Data.Models;
 
 using Prism.Commands;
+using Prism.Logging;
 using Prism.Magician;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
 
-using Shiny.Logging;
 
 namespace ICU.Planner.ViewModels
 {
@@ -22,9 +22,10 @@ namespace ICU.Planner.ViewModels
         public PatientFormDialogViewModel()
         { }
 
-        protected PatientFormDialogViewModel(BaseServices baseServices) : base(baseServices)
+        protected PatientFormDialogViewModel(BaseServices baseServices)
+            : base(baseServices)
         {
-            Title = "Patient Info";
+            Title = "Patient Information";
             ClearIsBusy();
         }
 
@@ -117,8 +118,8 @@ namespace ICU.Planner.ViewModels
             {
                 RaiseRequestClose();
 
-                Log.Write($"{nameof(PatientFormDialogViewModel)} received bad parameters",
-                    $"Received both {patientKey} and {Constants.Keys.PatientIdentifierKey} but was expencting only one of them.");
+                Logger.Log(new InvalidOperationException($"{nameof(PatientFormDialogViewModel)} received bad parameters" +
+                    $"Received both {patientKey} and {Constants.Keys.PatientIdentifierKey} but was expencting only one of them."));
 
                 return;
             }
@@ -133,15 +134,15 @@ namespace ICU.Planner.ViewModels
                 && parameters.TryGetValue(Constants.Keys.PatientIdentifierKey, out string patientIdentifier)
                 && !string.IsNullOrWhiteSpace(patientIdentifier))
             {
-                Patient = new Patient { PhoneNumber = patientIdentifier.Trim(), AdmissionDate = DateTime.Today };
+                Patient = new Patient { PhoneNumber = patientIdentifier.Trim(), AdmissionDate = DateTime.Today, Hospital = Constants.DefaultHospitalValue, Ward = Constants.DefaultWardValue, };
                 IsSaveButtonVisible = true;
             }
 
             if (Patient is null)
             {
                 RaiseRequestClose();
-                Log.Write($"{nameof(PatientFormDialogViewModel)} received bad parameters",
-                    $"{nameof(PatientFormDialogViewModel)} dis not receive a value for {patientKey} or {Constants.Keys.PatientIdentifierKey}");
+                Logger.Log(new InvalidOperationException($"{nameof(PatientFormDialogViewModel)} received bad parameters" +
+                $"{nameof(PatientFormDialogViewModel)} dis not receive a value for {patientKey} or {Constants.Keys.PatientIdentifierKey}"));
             }
 
             return;

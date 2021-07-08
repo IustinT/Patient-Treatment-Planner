@@ -16,7 +16,7 @@ namespace ICU.Data.Configuration
                 .ValueGeneratedOnAdd();
 
             builder.HasOne(p => p.Patient)
-                .WithMany()
+                .WithMany(m => m.Goals)
                 .HasForeignKey(p => p.PatientId);
 
             builder.Property(p => p.Value)

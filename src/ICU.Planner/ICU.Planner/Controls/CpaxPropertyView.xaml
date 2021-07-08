@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="ICU.Planner.Controls.CpaxPropertyView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ICU.Planner.Controls"
+    xmlns:system="clr-namespace:System;assembly=netstandard"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    x:Name="this">
+
+    <AbsoluteLayout>
+        <!--  Using AbsoluteLayout so the header Label can display on top of the Frame element  -->
+
+        <!--
+            Frame has Y location 10 to allow space for half of the label's height.
+            WidthProportional is proportional only.
+        -->
+        <Frame
+            Margin="0"
+            Padding="10,22,5,10"
+            AbsoluteLayout.LayoutBounds="0,14,1,AutoSize"
+            AbsoluteLayout.LayoutFlags="WidthProportional"
+            BorderColor="DimGray"
+            HasShadow="False">
+
+            <Grid
+                ColumnDefinitions="Auto,*"
+                ColumnSpacing="10"
+                RowDefinitions="1*,1*"
+                RowSpacing="5">
+
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    HorizontalOptions="Center"
+                    Text="Current"
+                    VerticalOptions="Center" />
+
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    HorizontalOptions="End"
+                    Text="Goal"
+                    VerticalOptions="Center"
+                    VerticalTextAlignment="Center" />
+
+                <controls:CpaxRadioButtonsView
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    Value="{Binding CurrentValue, Source={Reference this}}" />
+
+                <controls:CpaxRadioButtonsView
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    ChechedBgColor="LightGreen"
+                    ChechedBorderColor="Green"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    Value="{Binding GoalValue, Source={Reference this}}" />
+
+            </Grid>
+        </Frame>
+
+        <!--
+            header Label has X position 10 to push it towards the center
+            and let the Frame border visible.
+            
+            Has BG color to hide the frame border and horizontal padding so
+            there's some space between text and Frame's border.
+        -->
+
+        <Label
+            Padding="5,0"
+            AbsoluteLayout.LayoutBounds="10,0,AutoSize,AutoSize"
+            AbsoluteLayout.LayoutFlags="None"
+            BackgroundColor="White"
+            FontFamily="RR"
+            FontSize="20"
+            Text="{Binding HeaderValue, Source={Reference this}}"
+            TextColor="Black" />
+
+    </AbsoluteLayout>
+
+</ContentView>  

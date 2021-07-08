@@ -4,6 +4,7 @@ using ICU.API.Models.FluentValidation;
 using ICU.Data;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -12,9 +13,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-
+using Newtonsoft.Json;
 using Serilog;
 
 using System.Collections.Generic;
@@ -42,7 +44,13 @@ namespace ICU.API
             {
                 options.Filters.Add(new HttpResponseExceptionFilter());
             })
-                .AddNewtonsoftJson()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
+                })
                 .ConfigureApiBehaviorOptions(options =>
                 {
                     options.InvalidModelStateResponseFactory = context =>
@@ -58,10 +66,16 @@ namespace ICU.API
                     fv => fv.RegisterValidatorsFromAssemblyContaining<PatientValidator>()
                 );
 
-            services.AddDbContext<IcuContext>(OptionsAction);
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
+            // Add framework services.
+            services.AddDbContext<IcuContext>(options =>
+                   options.UseSqlServer(connectionString));
 
-            services.AddSwaggerGen();
+            services.AddHealthChecks().AddDbContextCheck<IcuContext>();
+
+            services.AddSwaggerGen()
+                .AddSwaggerGenNewtonsoftSupport();
 
             services.Configure<FormOptions>(o =>
             {
@@ -72,13 +86,20 @@ namespace ICU.API
 
         }
 
-        static void OptionsAction(DbContextOptionsBuilder options) =>
-            options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
-
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IcuContext context)
         {
+            //config done when service is registered
+            //jsonconvert.defaultsettings = () => new jsonserializersettings
+            //{
+            //    nullvaluehandling = nullvaluehandling.ignore,
+            //    defaultvaluehandling = defaultvaluehandling.ignore,
+            //    referenceloophandling = referenceloophandling.ignore,
+
+            //};
+
+            context.Database.Migrate();
+
             var cultures = new List<CultureInfo> { new CultureInfo("en-GB") };
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
@@ -107,17 +128,16 @@ namespace ICU.API
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/ICU.API/swagger/v1/swagger.json", "ICU API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICU API V1");
                 c.RoutePrefix = string.Empty;
-
             });
 
             //allow static files for downloading patient images
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"PatientImages")),
-                RequestPath = new PathString("/StaticFiles/PatientImages")
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), Constants.PatientImagesFolder)),
+                RequestPath = new PathString($"/StaticFiles/{Constants.PatientImagesFolder}")
             });
 
             //app.UsePathBase("/api");
@@ -129,6 +149,20 @@ namespace ICU.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    ResultStatusCodes =
+                    {
+                        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+                    },
+                    AllowCachingResponses = false
+                });
             });
         }
     }

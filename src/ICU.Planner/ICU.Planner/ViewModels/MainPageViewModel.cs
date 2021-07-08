@@ -6,18 +6,15 @@ using Humanizer;
 using ICU.Data.Models;
 
 using Prism.Commands;
+using Prism.Logging;
 using Prism.Magician;
-using Prism.Navigation;
-
-using Shiny;
-using Shiny.Logging;
-
+using ShinyExtensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -40,18 +37,32 @@ namespace ICU.Planner.ViewModels
 
         #region Ctor
 
-        public MainPageViewModel(BaseServices baseServices, IMainThread mainThread)
-            : base(baseServices)
+        public MainPageViewModel(BaseServices baseServices,
+                                 IMainThread mainThread)
+                                : base(baseServices)
         {
             Patients = new ObservableCollection<Patient>();
             MainThread = mainThread;
             Title = "ICU Planner - Find Patient";
 
             phoneNumberSubject
-                .DistinctUntilChanged()
-                .Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
+                .Select(phoneNumber => phoneNumber?.Trim())
+                .DistinctUntilChanged()// - interferes with the pull to refresh as it never executes
+                                       //.Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
                 .Throttle(500.Milliseconds())
-                .SubscribeAsync(phoneNumber => Log.SafeExecute(() => SearchPatientRecords(phoneNumber)))
+                .Subscribe(async phoneNumber =>
+                {
+                    if (phoneNumber is null || phoneNumber.Length <= 5)
+                    {
+                        if (Patients.Any())
+                            await MainThread.InvokeOnMainThreadAsync(() =>
+                            {
+                                Patients.Clear();
+                            });
+                    }
+                    else if (phoneNumber.Length > 5)
+                        await SearchPatientRecords(phoneNumber);
+                })
                 .DisposedBy(Disposables);
 
         }
@@ -122,7 +133,7 @@ namespace ICU.Planner.ViewModels
                         }
                         catch (Exception postException)
                         {
-                            Log.Write(postException);
+                            Logger.Log(postException);
                             shouldRetryPost = await DisplayDialog("Save Failed. Retry?", postException.Message, "Retry", "Cancel");
                             await Task.Delay(.5.Seconds());
                         }
@@ -132,7 +143,12 @@ namespace ICU.Planner.ViewModels
                     if (newPatientRecord.Id.HasValue)
                     {
                         PatientPhoneNumber = null;
-                        await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), newPatientRecord));
+
+                        SetDefaultCpaxObjects(newPatientRecord);
+
+                        await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage,
+                            (nameof(Patient), newPatientRecord),
+                            (Constants.Keys.IsNewPatientRecord, true));
                     }
                     else
                         PatientPhoneNumber = newPatientRecord.PhoneNumber;
@@ -140,7 +156,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally
             {
@@ -163,16 +179,23 @@ namespace ICU.Planner.ViewModels
         {
             if (IsBusy || selectedPatient is null) return;
 
-
             try
             {
                 SetIsBusy();
-                var r = await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), selectedPatient));
+
+                //get all the patient data
+                var payload = await Constants.URLs.PatientsApi
+                    .AppendPathSegment(selectedPatient.Id)
+                    .GetJsonAsync<Patient>();
+
+                SetDefaultCpaxObjects(payload);
+
+                var r = await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), payload));
 
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally
             {
@@ -182,19 +205,17 @@ namespace ICU.Planner.ViewModels
             }
         }
 
+
         #endregion
 
+        #region SearchCommand
         public ICommand SearchCommand => _searchCommand ??=
             new DelegateCommand(() => phoneNumberSubject.OnNext(PatientPhoneNumber));
 
         #endregion
 
-        protected override Task InitializeAsync(INavigationParameters parameters)
-        {
+        #endregion
 
-            GetSystemConfig(); //don't await so the execution is not blocked
-            return base.InitializeAsync(parameters);
-        }
 
         #region GetData
 
@@ -219,7 +240,7 @@ namespace ICU.Planner.ViewModels
             }
             catch (Exception e)
             {
-                Log.Write(e);
+                Logger.Log(e);
             }
             finally
             {
@@ -227,24 +248,13 @@ namespace ICU.Planner.ViewModels
             }
         }
 
-        private async Task GetSystemConfig()
-        {
-            //attempt to download the system config untill successfull
-            while (true)
-            {
-                try
-                {
-                    SystemConfig = await Constants.URLs.SystemConfigApi.GetJsonAsync<SystemConfig>();
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Log.Write(e);
-                    await Task.Delay(.5.Seconds());
-                }
-            }
-        }
+
         #endregion
 
+        private static void SetDefaultCpaxObjects(Patient patient)
+        {
+            if (patient.CurrentCPAX is null) patient.CurrentCPAX = new CPAX { PatientId = patient.Id.Value };
+            if (patient.GoalCPAX is null) patient.GoalCPAX = new CPAX { PatientId = patient.Id.Value };
+        }
     }
 }

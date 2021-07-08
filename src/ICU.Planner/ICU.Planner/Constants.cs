@@ -10,21 +10,28 @@ namespace ICU.Planner
         {
             public static string ApiBaseUri =>
 
-            "http://localhost/ICU.API/";
-            //"http://192.168.0.3/ICU.API/";
-            // "https://azure api here /api/";
+                "https://comp-3000-icu-api.azurewebsites.net/"
+            //"http://localhost/ICU.API/"
+            //"http://192.168.0.3/ICU.API/"
+            ;
 
             public static string PatientsApi = $"{ApiBaseUri}Patients";
             public static string GoalsApi = $"{ApiBaseUri}Goals";
+            public static string CpaxApi = $"{ApiBaseUri}CPAX";
             public static string PatientImagesApi = $"{ApiBaseUri}PatientImages";
             public static string SystemConfigApi = $"{ApiBaseUri}SystemConfig";
         }
         public static readonly string[] FormsFlags = { };
 
+        public static string DefaultHospitalValue { get; internal set; } = "Plymouth";
+        public static string DefaultWardValue { get; internal set; } = "ICU";
+
         public static class Keys
         {
 
             public const string PatientIdentifierKey = "PatientIdentifier";
+
+            public const string IsNewPatientRecord = "IsNewPatientRecord";
         }
 
         public static class ResourceKeys

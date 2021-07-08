@@ -6,20 +6,25 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation.AspNetCore" Version="9.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.2">
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.16">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.1-dev-00188" />
-    <PackageReference Include="Serilog.Exceptions.EntityFrameworkCore" Version="6.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="3.1.16" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,7 +36,15 @@
   <ItemGroup>
     <Folder Include="PatientImages\" />
     <Folder Include="Resources\" />
+    <Folder Include="PatientImages\" />
   </ItemGroup>
 
 
+  <ItemGroup>
+    <None Remove="Microsoft.ApplicationInsights" />
+    <None Remove="PatientImages\" />
+    <None Remove="AspNetCore.HealthChecks.SqlServer" />
+    <None Remove="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+    <None Remove="Swashbuckle.AspNetCore.Newtonsoft" />
+  </ItemGroup>
 </Project>

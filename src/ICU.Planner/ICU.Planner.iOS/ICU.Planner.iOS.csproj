@@ -14,10 +14,11 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <ProvisioningType>manual</ProvisioningType>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
@@ -29,6 +30,8 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+<RunCodeAnalysis>true</RunCodeAnalysis><CodesignKey>iPhone Developer</CodesignKey>
+<MtouchFastDev>true</MtouchFastDev>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -39,7 +42,7 @@
     <MtouchLink>None</MtouchLink>
     <MtouchArch>i386, x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
+<RunCodeAnalysis>true</RunCodeAnalysis>  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -68,9 +71,11 @@
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
+    <MtouchLink>SdkOnly</MtouchLink>
+<MtouchUseLlvm>true</MtouchUseLlvm>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -85,6 +90,7 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
+    <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>none</DebugType>
@@ -98,6 +104,7 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
+    <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -111,85 +118,31 @@
     <ImageAsset Include="Assets.xcassets\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ios-marketing-appstore.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-notifications%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-notifications%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-settings%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-settings%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-spotlight%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-spotlight%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-app%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-app%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-notifications.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-notifications%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-settings.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-settings%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-spotlight.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-spotlight%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-app.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-app%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-pro-app%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-carplay%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-carplay%403x.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-20x20@1x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-20x20@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-20x20@3x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-29x29@1x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-29x29@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-29x29@3x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-40x40@1x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-40x40@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-40x40@3x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-57x57@1x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-57x57@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-60x60@1x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-60x60@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-60x60@3x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-72x72@1x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-72x72@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-76x76@1x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-76x76@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-76x76@3x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-App-83.5x83.5@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-Small-50x50@1x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-Small-50x50@2x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\ItunesArtwork@2x.png">
-      <Visible>false</Visible>
+      <Visible>False</Visible>
     </ImageAsset>
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Default-568h@2x.png" />
-    <BundleResource Include="Resources\Default-Portrait.png" />
-    <BundleResource Include="Resources\Default-Portrait@2x.png" />
-    <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default@2x.png" />
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
@@ -199,24 +152,21 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Prism.Magician">
-      <Version>8.0.152-beta</Version>
-    </PackageReference>
-    <PackageReference Include="Shiny">
-      <Version>2.0.0.2462-preview</Version>
-    </PackageReference>
     <PackageReference Include="Xamarin.CommunityToolkit">
-      <Version>1.0.2</Version>
+      <Version>1.2.0-pre2</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Essentials.Interfaces" Version="1.6.1" />
-    <PackageReference Include="Prism.DryIoc.Forms" Version="8.1.28-pre" />
+    <PackageReference Include="Prism.DryIoc.Forms" Version="8.1.97" />
     <PackageReference Include="Xamarin.Forms.Visual.Material">
+      <Version>5.0.0.2012</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Forms">
       <Version>5.0.0.2012</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ICU.Planner\ICU.Planner.csproj">
-      <Project>{A682884C-CB44-4A89-B752-27BB634E0ABE}</Project>
+      <Project>{462A3FEF-115C-4E7C-AA88-6E8BEAD8CA31}</Project>
       <Name>ICU.Planner</Name>
     </ProjectReference>
   </ItemGroup>

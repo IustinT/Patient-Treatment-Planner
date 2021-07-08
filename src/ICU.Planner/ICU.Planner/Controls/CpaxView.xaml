@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="ICU.Planner.Controls.CpaxView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ICU.Planner.Controls"
+    xmlns:system="clr-namespace:System;assembly=netstandard"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    x:Name="this">
+
+    <StackLayout
+        Orientation="Vertical"
+        Spacing="20">
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Respiratory, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.Respiratory, Source={Reference this}}"
+            HeaderValue="Respiratory Function" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Grip, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.Grip, Source={Reference this}}"
+            HeaderValue="Grip" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Cough, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.Cough, Source={Reference this}}"
+            HeaderValue="Cough" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.BedMovement, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.BedMovement, Source={Reference this}}"
+            HeaderValue="Bed Movement" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.DynamicSitting, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.DynamicSitting, Source={Reference this}}"
+            HeaderValue="Dynamic Sitting" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.StandingBalance, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.StandingBalance, Source={Reference this}}"
+            HeaderValue="Standing Balance" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.SitToStand, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.SitToStand, Source={Reference this}}"
+            HeaderValue="Sit To Stand" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.BedToChair, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.BedToChair, Source={Reference this}}"
+            HeaderValue="Bed To Chair" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Stepping, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.Stepping, Source={Reference this}}"
+            HeaderValue="Stepping" />
+
+        <controls:CpaxPropertyView
+            CurrentValue="{Binding CurrentCpax.Transfer, Source={Reference this}}"
+            GoalValue="{Binding GoalCpax.Transfer, Source={Reference this}}"
+            HeaderValue="Transfer" />
+
+    </StackLayout>
+
+</ContentView>

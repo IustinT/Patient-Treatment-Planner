@@ -10,7 +10,7 @@
 
         <Entry
             IsReadOnly="True"
-            Placeholder="Identifier"
+            Placeholder="Patient's Phone Number"
             Text="{Binding Patient.PhoneNumber, Mode=OneWay}" />
         <Entry Placeholder="Name" Text="{Binding Patient.Name}" />
         <Entry Placeholder="Hospital" Text="{Binding Patient.Hospital}" />
@@ -24,7 +24,7 @@
             IsSpellCheckEnabled="False"
             IsTextPredictionEnabled="False"
             IsVisible="{Binding IsVisible, Source={Reference DatePicker}, Converter={xct:InvertedBoolConverter}}"
-            Placeholder="Date"
+            Placeholder="Admission Date"
             Text="{Binding Patient.AdmissionDate, StringFormat='{0:d MMMM yyyy}', Mode=OneWay}"
             VerticalTextAlignment="Center" />
 

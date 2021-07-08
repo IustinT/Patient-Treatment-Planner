@@ -25,7 +25,6 @@ namespace ICU.Planner.UWP
         public App()
         {
             this.InitializeComponent();
-            this.ShinyInit(new Startup());
             this.Suspending += OnSuspending;
         }
 

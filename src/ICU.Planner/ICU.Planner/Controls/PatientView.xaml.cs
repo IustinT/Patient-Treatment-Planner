@@ -1,5 +1,5 @@
 ﻿using ICU.Data.Models;
-
+using Prism.Ioc;
 using System;
 using System.Threading.Tasks;
 
@@ -17,14 +17,15 @@ namespace ICU.Planner.Controls
         public PatientView()
         {
             InitializeComponent();
-            DeviceInfo = Shiny.ShinyHost.Resolve<IDeviceInfo>();
+
+            DeviceInfo = Prism.PrismApplicationBase.Current.Container.Resolve<IDeviceInfo>();
             isIos = DeviceInfo.Platform == DevicePlatform.iOS;
         }
 
-        public static readonly BindableProperty PatientProperty =
-            BindableProperty.Create(nameof(Patient), typeof(Patient), typeof(PatientView));
+        public static readonly BindableProperty PatientProperty = BindableProperty.Create(nameof(Patient), typeof(Patient), typeof(PatientView));
 
         public Patient Patient { get => (Patient)GetValue(PatientProperty); set => SetValue(PatientProperty, value); }
+
         private void DatePickerContainer_OnFocused(object sender, EventArgs e)
         {
             if (!DatePicker.IsFocused)

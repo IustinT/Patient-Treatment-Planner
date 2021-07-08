@@ -8,19 +8,6 @@ using System.Linq;
 
 namespace ICU.Data.Models
 {
-    public class SystemConfig
-    {
-        public List<ImageCategory> ImageCategories { get; set; }
-    }
-
-    public class DataTransferObject
-    {
-        public Patient Patient { get; set; }
-
-        public IEnumerable<Goal> Goals { get; set; }
-
-    }
-
     public class Patient
     {
         public long? Id { get; set; }
@@ -30,11 +17,32 @@ namespace ICU.Data.Models
         public string Ward { get; set; }
         public string Hospital { get; set; }
 
+        [JsonIgnore] //ignore as relevant data will be in MiniGoals and MainGoal
+        public List<Goal> Goals { get; set; }
+        public List<Goal> MiniGoals { get; set; }
+        public Goal MainGoal { get; set; }
+
+        public List<Achievement> Achievemts { get; set; }
+
+        [JsonIgnore]//ignore this as the relevant data will be in Current and Goal cpax
+        public List<CPAX> CPAXes { get; set; }
+
+        public CPAX CurrentCPAX { get; set; }
+
+        public CPAX GoalCPAX { get; set; }
+
+        public List<ImageCategoryWithFiles> Images { get; set; }
     }
 
     public class CPAX
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
+
+        public long? PatientId { get; set; }
+        [JsonIgnore]
+        public virtual Patient Patient { get; set; }
+        public DateTime? DateTime { get; set; }
+
         public int Grip { get; set; }
         public int Respiratory { get; set; }
         public int Cough { get; set; }
@@ -45,45 +53,58 @@ namespace ICU.Data.Models
         public int BedToChair { get; set; }
         public int Stepping { get; set; }
         public int Transfer { get; set; }
-    }
 
-    public class PatientCPAXMap
-    {
-        public Guid Id { get; set; }
-        public Guid CpaxId { get; set; }
-        public CPAX CPAX { get; set; }
-        public long PatientId { get; set; }
-        public Patient Patient { get; set; }
-        public DateTime DateTime { get; set; }
-
-        /// <summary>
-        /// The Goal CPAX values for the <see cref="Patient"/>
-        /// </summary>
         public bool IsGoal { get; set; }
 
         /// <summary>
-        /// The latest CPAX values for the <see cref="Patient"/>
+        /// Compares all values of both objects' properties.
         /// </summary>
-        public bool IsLatest { get; set; }
+        /// <param name="obj">The other <see cref="CPAX"/> object.</param>
+        /// <returns><see langword="True"/> if all properties have same values in both objects. <see langword="False"/> otherwise.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is CPAX other
+                && Grip == other.Grip
+                && Respiratory == other.Respiratory
+                && Cough == other.Cough
+                && BedMovement == other.BedMovement
+                && DynamicSitting == other.DynamicSitting
+                && StandingBalance == other.StandingBalance
+                && SitToStand == other.SitToStand
+                && BedToChair == other.BedToChair
+                && Stepping == other.Stepping
+                && Transfer == other.Transfer;
+        }
+
+        /// <summary>
+        /// Indicates if all properties have default value of zero.
+        /// </summary>
+        /// <returns><see langword="True"/> if all properties have value of zero. <see langword="False"/> otherwise.</returns>
+        public bool IsEmpty() =>
+            (Grip + Respiratory + Cough + BedMovement
+            + DynamicSitting + StandingBalance + SitToStand + BedToChair
+            + Stepping + Transfer) is 0;
     }
 
     public class Goal
     {
         public Guid Id { get; set; }
         public long PatientId { get; set; }
-
         [JsonIgnore]
-        public Patient Patient { get; set; }
+        public virtual Patient Patient { get; set; }
+
         public string Value { get; set; }
         public bool? IsMainGoal { get; set; }
 
     }
 
-    public class Achievemt
+    public class Achievement
     {
         public Guid Id { get; set; }
         public long PatientId { get; set; }
-        public Patient Patient { get; set; }
+        [JsonIgnore]
+        public virtual Patient Patient { get; set; }
+
         public string Value { get; set; }
         public DateTime DateTime { get; set; }
     }
@@ -96,9 +117,22 @@ namespace ICU.Data.Models
         public bool Deleted { get; set; }
     }
 
-    public class PatientImagesByCategoryId
+    public class ImageCategoryWithFiles : ImageCategory
     {
+        public List<ImageFile> ImageFiles { get; set; }
+    }
+
+    public class ImageFile
+    {
+        public long PatientId { get; set; }
         public int CategoryId { get; set; }
-        public List<string> Names { get; set; }
+        public string FileName { get; set; }
+        public string Uri { get; set; }
+    }
+
+    public class CpaxDTO
+    {
+        public CPAX CurrentCpax { get; set; }
+        public CPAX GoalCpax { get; set; }
     }
 }

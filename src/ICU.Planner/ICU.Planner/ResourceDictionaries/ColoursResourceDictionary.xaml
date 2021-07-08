@@ -6,6 +6,8 @@
     <Color x:Key="NhsUkRedColor">#d5281b</Color>
     <Color x:Key="OrangeColor">#F57838</Color>
 
+    <Color x:Key="PageBackgroundColor">#F8f8f8</Color>
+
     <Color x:Key="MainTextColor">#707070</Color>
 
     <Color x:Key="CalendarDaySelectedColor">#4f99ff</Color>
