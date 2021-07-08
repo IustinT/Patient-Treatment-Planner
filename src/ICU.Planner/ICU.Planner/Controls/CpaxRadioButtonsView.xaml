@@ -8,10 +8,6 @@
     xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     x:Name="this">
 
-    <ContentView.Resources>
-        <converters:TestConverter x:Key="testConverter" />
-    </ContentView.Resources>
-
     <StackLayout
         Orientation="Horizontal"
         RadioButtonGroup.SelectedValue="{Binding Value, Mode=TwoWay, Source={Reference this}}"
@@ -66,7 +62,9 @@
             </ResourceDictionary>
         </StackLayout.Resources>
 
-        <RadioButton x:Name="Option1Button" CheckedChanged="RadioButton_CheckedChanged">
+        <RadioButton
+            x:Name="Option1Button"
+            CheckedChanged="RadioButton_CheckedChanged">
             <RadioButton.Value>
                 <system:Int32>1</system:Int32>
             </RadioButton.Value>
