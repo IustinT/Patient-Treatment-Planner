@@ -33,12 +33,14 @@
 	<key>CFBundleIdentifier</key>
 	<string>icu.planner.ios</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.2</string>
+	<string>1.0.3</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Using photos.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Using camera.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 </dict>
 </plist>
