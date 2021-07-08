@@ -141,6 +141,14 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 512.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 1024.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 1536.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 512.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 1024.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 1536.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -153,10 +161,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.CommunityToolkit">
-      <Version>1.2.0-pre2</Version>
+      <Version>1.2.0</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Essentials.Interfaces" Version="1.6.1" />
-    <PackageReference Include="Prism.DryIoc.Forms" Version="8.1.97" />
+    <PackageReference Include="Prism.DryIoc.Forms" Version="8.2.6-pre" />
     <PackageReference Include="Xamarin.Forms.Visual.Material">
       <Version>5.0.0.2012</Version>
     </PackageReference>
