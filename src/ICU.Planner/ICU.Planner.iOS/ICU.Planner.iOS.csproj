@@ -141,6 +141,14 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 512.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 1024.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 1536.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 512.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 1024.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 1536.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
