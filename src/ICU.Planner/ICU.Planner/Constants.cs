@@ -30,6 +30,8 @@ namespace ICU.Planner
         {
 
             public const string PatientIdentifierKey = "PatientIdentifier";
+
+            public const string IsNewPatientRecord = "IsNewPatientRecord";
         }
 
         public static class ResourceKeys
