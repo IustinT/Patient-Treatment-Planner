@@ -14,9 +14,10 @@
         <converters:TestConverter x:Key="testConverter" />
     </ContentPage.Resources>
 
-    <ScrollView>
+    <ScrollView x:Name="pageScrollView">
         <StackLayout
-            Padding="5"
+            x:Name="pageContentContainer"
+            Padding="5,15"
             Orientation="Vertical"
             Spacing="15">
 
@@ -25,12 +26,22 @@
                 Padding="0"
                 BackgroundColor="White"
                 HasShadow="True">
-                <xct:Expander x:Name="personalInfoExpander" ForceUpdateSizeCommand="{Binding PersonalInfoForceUpdateSizeCommand}">
-                    <xct:Expander.Header>
-                        <Grid Padding="15,20" ColumnDefinitions="*,Auto">
-                            <Label FontFamily="RM" Text="Personal Information" />
+                <xct:Expander
+                    x:Name="personalInfoExpander"
+                    ForceUpdateSizeCommand="{Binding PersonalInfoForceUpdateSizeCommand}"
+                    IsExpanded="{Binding PersonalInfoViewIsExpanded}">
 
-                            <controls:ExpanderIconView Grid.Column="1" IsExpanded="{Binding IsExpanded, Source={Reference personalInfoExpander}}" />
+                    <xct:Expander.Header>
+                        <Grid
+                            Padding="15,20"
+                            ColumnDefinitions="*,Auto">
+                            <Label
+                                FontFamily="RM"
+                                Text="Personal Information" />
+
+                            <controls:ExpanderIconView
+                                Grid.Column="1"
+                                IsExpanded="{Binding IsExpanded, Source={Reference personalInfoExpander}}" />
 
                         </Grid>
                     </xct:Expander.Header>
@@ -40,7 +51,9 @@
                         Orientation="Vertical"
                         Spacing="5">
 
-                        <controls:PatientView IsEnabled="False" Patient="{Binding Patient}" />
+                        <controls:PatientView
+                            IsEnabled="False"
+                            Patient="{Binding Patient}" />
 
                         <!--  Button is displayed when expander is collapsed  -->
                         <Button
@@ -59,13 +72,23 @@
                 BackgroundColor="White"
                 HasShadow="True">
 
-                <xct:Expander x:Name="mainGoalExpander" ForceUpdateSizeCommand="{Binding MainGoalForceUpdateSizeCommand}">
+                <xct:Expander
+                    x:Name="mainGoalExpander"
+                    ForceUpdateSizeCommand="{Binding MainGoalForceUpdateSizeCommand}"
+                    IsExpanded="{Binding MainGoalViewIsExpanded}">
+
                     <xct:Expander.Header>
-                        <Grid Padding="15,20" ColumnDefinitions="*,Auto">
+                        <Grid
+                            Padding="15,20"
+                            ColumnDefinitions="*,Auto">
 
-                            <Label FontFamily="RM" Text="Main Goal" />
+                            <Label
+                                FontFamily="RM"
+                                Text="Main Goal" />
 
-                            <controls:ExpanderIconView Grid.Column="1" IsExpanded="{Binding IsExpanded, Source={Reference mainGoalExpander}}" />
+                            <controls:ExpanderIconView
+                                Grid.Column="1"
+                                IsExpanded="{Binding IsExpanded, Source={Reference mainGoalExpander}}" />
 
                         </Grid>
                     </xct:Expander.Header>
@@ -109,13 +132,23 @@
                 Padding="0"
                 BackgroundColor="White"
                 HasShadow="True">
-                <xct:Expander x:Name="miniGoalsExpander" ForceUpdateSizeCommand="{Binding MiniGoalsForceUpdateSizeCommand}">
+                <xct:Expander
+                    x:Name="miniGoalsExpander"
+                    ForceUpdateSizeCommand="{Binding MiniGoalsForceUpdateSizeCommand}"
+                    IsExpanded="{Binding MiniGoalsViewIsExpanded}">
+
                     <xct:Expander.Header>
-                        <Grid Padding="15,20" ColumnDefinitions="*,Auto">
+                        <Grid
+                            Padding="15,20"
+                            ColumnDefinitions="*,Auto">
 
-                            <Label FontFamily="RM" Text="Mini Goals" />
+                            <Label
+                                FontFamily="RM"
+                                Text="Mini Goals" />
 
-                            <controls:ExpanderIconView Grid.Column="1" IsExpanded="{Binding IsExpanded, Source={Reference miniGoalsExpander}}" />
+                            <controls:ExpanderIconView
+                                Grid.Column="1"
+                                IsExpanded="{Binding IsExpanded, Source={Reference miniGoalsExpander}}" />
 
                         </Grid>
                     </xct:Expander.Header>
@@ -125,7 +158,9 @@
                         Orientation="Vertical"
                         Spacing="5">
 
-                        <StackLayout BindableLayout.ItemsSource="{Binding Patient.MiniGoals}" Spacing="5">
+                        <StackLayout
+                            BindableLayout.ItemsSource="{Binding Patient.MiniGoals}"
+                            Spacing="5">
 
                             <BindableLayout.EmptyView>
                                 <Label Text="No mini goals found." />
@@ -159,12 +194,22 @@
                 Padding="0"
                 BackgroundColor="White"
                 HasShadow="True">
-                <xct:Expander x:Name="cpaxExpander" ForceUpdateSizeCommand="{Binding CpaxForceUpdateSizeCommand}">
-                    <xct:Expander.Header>
-                        <Grid Padding="15,20" ColumnDefinitions="*,Auto">
-                            <Label FontFamily="RM" Text="CPAX" />
+                <xct:Expander
+                    x:Name="cpaxExpander"
+                    ForceUpdateSizeCommand="{Binding CpaxForceUpdateSizeCommand}"
+                    IsExpanded="{Binding CpaxViewIsExpanded}">
 
-                            <controls:ExpanderIconView Grid.Column="1" IsExpanded="{Binding IsExpanded, Source={Reference cpaxExpander}}" />
+                    <xct:Expander.Header>
+                        <Grid
+                            Padding="15,20"
+                            ColumnDefinitions="*,Auto">
+                            <Label
+                                FontFamily="RM"
+                                Text="CPAX" />
+
+                            <controls:ExpanderIconView
+                                Grid.Column="1"
+                                IsExpanded="{Binding IsExpanded, Source={Reference cpaxExpander}}" />
 
                         </Grid>
                     </xct:Expander.Header>
@@ -179,7 +224,9 @@
                             Style="{StaticResource SaveButtonStyle}"
                             Text="Save CPAX values" />
 
-                        <controls:CpaxView CurrentCpax="{Binding BindingContext.CurrentCPAX, Source={Reference this}}" GoalCpax="{Binding BindingContext.GoalCPAX, Source={Reference this}}" />
+                        <controls:CpaxView
+                            CurrentCpax="{Binding Patient.CurrentCPAX}"
+                            GoalCpax="{Binding Patient.GoalCPAX}" />
 
                         <Button
                             Command="{Binding SaveCpaxCommand}"
@@ -192,7 +239,9 @@
             </Frame>
 
             <!--  Images by category  -->
-            <StackLayout BindableLayout.ItemsSource="{Binding Patient.Images}" Spacing="15">
+            <StackLayout
+                BindableLayout.ItemsSource="{Binding Patient.Images}"
+                Spacing="15">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
                         <!--  Image Category  -->
@@ -203,11 +252,17 @@
                             <xct:Expander x:Name="imagesExpander">
                                 <xct:Expander.Header>
 
-                                    <Grid Padding="15,20" ColumnDefinitions="*,Auto">
+                                    <Grid
+                                        Padding="15,20"
+                                        ColumnDefinitions="*,Auto">
 
-                                        <Label FontFamily="RM" Text="{Binding Name}" />
+                                        <Label
+                                            FontFamily="RM"
+                                            Text="{Binding Name}" />
 
-                                        <controls:ExpanderIconView Grid.Column="1" IsExpanded="{Binding IsExpanded, Source={Reference imagesExpander}}" />
+                                        <controls:ExpanderIconView
+                                            Grid.Column="1"
+                                            IsExpanded="{Binding IsExpanded, Source={Reference imagesExpander}}" />
 
 
                                     </Grid>
@@ -238,7 +293,11 @@
                                                     Padding="4"
                                                     BorderColor="LightGray">
 
-                                                    <AbsoluteLayout HeightRequest="{OnIdiom Default=250, Phone=150}" WidthRequest="{OnIdiom Default=250, Phone=150}">
+                                                    <AbsoluteLayout
+                                                        HeightRequest="{OnIdiom Default=250,
+                                                                                Phone=150}"
+                                                        WidthRequest="{OnIdiom Default=250,
+                                                                               Phone=150}">
                                                         <Image
                                                             AbsoluteLayout.LayoutBounds="0,0,1,1"
                                                             AbsoluteLayout.LayoutFlags="All"
@@ -246,10 +305,9 @@
                                                             Source="{Binding Uri}" />
 
                                                         <Button
-                                                            Padding="2"
                                                             AbsoluteLayout.LayoutBounds=".90,.90,50,50 "
                                                             AbsoluteLayout.LayoutFlags="PositionProportional"
-                                                            Command="{Binding BindingContext.DeleteImageCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={Type ContentPage}}}"
+                                                            Command="{Binding BindingContext.DeleteImageCommand, Source={Reference this}}"
                                                             CommandParameter="{Binding}"
                                                             Style="{StaticResource IconDeleteButtonStyle}" />
 
