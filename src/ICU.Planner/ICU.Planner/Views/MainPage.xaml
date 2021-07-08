@@ -8,7 +8,9 @@
     ControlTemplate="{StaticResource TemplateWithActivityIndicator}"
     IsBusy="{Binding IsBusy}">
 
-    <Grid ColumnSpacing="0" RowDefinitions="Auto,*">
+    <Grid
+        ColumnSpacing="0"
+        RowDefinitions="Auto,*">
 
         <Grid.ColumnDefinitions>
 
@@ -18,7 +20,7 @@
                         x:TypeArguments="GridLength"
                         Default="1*"
                         Phone="0"
-                        Tablet="0,5*" />
+                        Tablet="0.5*" />
                 </ColumnDefinition.Width>
             </ColumnDefinition>
 
@@ -38,7 +40,7 @@
                         x:TypeArguments="GridLength"
                         Default="1*"
                         Phone="0"
-                        Tablet="0,5*" />
+                        Tablet="0.5*" />
                 </ColumnDefinition.Width>
             </ColumnDefinition>
 
@@ -72,7 +74,9 @@
                 SelectionMode="Single">
 
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout ItemSpacing="10" Orientation="Vertical" />
+                    <LinearItemsLayout
+                        ItemSpacing="10"
+                        Orientation="Vertical" />
                 </CollectionView.ItemsLayout>
 
                 <CollectionView.Resources>
@@ -86,10 +90,14 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Orientation="Vertical">
-                            <StackLayout Margin="5,0" Orientation="Vertical">
+                            <StackLayout
+                                Margin="5,0"
+                                Orientation="Vertical">
 
                                 <FlexLayout>
-                                    <Label FontFamily="RM" Text="{Binding Name}" />
+                                    <Label
+                                        FontFamily="RM"
+                                        Text="{Binding Name}" />
                                     <Label Text="{Binding PhoneNumber}" />
                                 </FlexLayout>
 
