@@ -8,7 +8,9 @@
     xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     x:Name="this">
 
-    <StackLayout Orientation="Vertical" Spacing="20">
+    <StackLayout
+        Orientation="Vertical"
+        Spacing="20">
 
         <controls:CpaxPropertyView
             CurrentValue="{Binding CurrentCpax.Respiratory, Source={Reference this}}"
