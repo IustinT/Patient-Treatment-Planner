@@ -146,7 +146,9 @@ namespace ICU.Planner.ViewModels
 
                         SetDefaultCpaxObjects(newPatientRecord);
 
-                        await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), newPatientRecord));
+                        await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage,
+                            (nameof(Patient), newPatientRecord),
+                            (Constants.Keys.IsNewPatientRecord, true));
                     }
                     else
                         PatientPhoneNumber = newPatientRecord.PhoneNumber;
