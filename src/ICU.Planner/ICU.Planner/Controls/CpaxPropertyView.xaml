@@ -4,8 +4,6 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:ICU.Planner.Controls"
-    xmlns:system="clr-namespace:System;assembly=netstandard"
-    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     x:Name="this">
 
     <AbsoluteLayout>
@@ -25,7 +23,7 @@
 
             <Grid
                 ColumnDefinitions="Auto,*"
-                ColumnSpacing="10"
+                ColumnSpacing="50"
                 RowDefinitions="1*,1*"
                 RowSpacing="5">
 
@@ -47,7 +45,7 @@
                 <controls:CpaxRadioButtonsView
                     Grid.Row="0"
                     Grid.Column="1"
-                    HorizontalOptions="Start"
+                    HorizontalOptions="Center"
                     VerticalOptions="Center"
                     Value="{Binding CurrentValue, Source={Reference this}}" />
 
@@ -56,7 +54,7 @@
                     Grid.Column="1"
                     ChechedBgColor="LightGreen"
                     ChechedBorderColor="Green"
-                    HorizontalOptions="Start"
+                    HorizontalOptions="Center"
                     VerticalOptions="Center"
                     Value="{Binding GoalValue, Source={Reference this}}" />
 

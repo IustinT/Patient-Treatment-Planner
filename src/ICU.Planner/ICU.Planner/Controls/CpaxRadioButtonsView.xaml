@@ -3,15 +3,13 @@
     x:Class="ICU.Planner.Controls.CpaxRadioButtonsView"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converters="clr-namespace:ICU.Planner.Converters"
     xmlns:system="clr-namespace:System;assembly=netstandard"
-    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     x:Name="this">
 
     <StackLayout
         Orientation="Horizontal"
         RadioButtonGroup.SelectedValue="{Binding Value, Mode=TwoWay, Source={Reference this}}"
-        Spacing="10">
+        Spacing="5">
         <StackLayout.Resources>
             <ResourceDictionary>
                 <ControlTemplate x:Key="CpaxRadioButtonControlTemplate">
@@ -22,10 +20,10 @@
                         HasShadow="False"
                         HorizontalOptions="Start"
                         VerticalOptions="Start">
-                        <Grid Margin="4">
+                        <Grid>
 
                             <Label
-                                Margin="16,10"
+                                Margin="20,12"
                                 FontAttributes="Bold"
                                 FontFamily="RM"
                                 FontSize="Subtitle"
