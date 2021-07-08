@@ -9,7 +9,7 @@
         x:Key="BasePageStyle"
         ApplyToDerivedTypes="True"
         TargetType="Page">
-        <Setter Property="BackgroundColor" Value="#F8F8F8" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PageBackgroundColor}" />
         <Setter Property="Visual" Value="Material" />
     </Style>
 
@@ -25,7 +25,15 @@
         <!--<Setter Property="ControlTemplate" Value="{StaticResource TemplateWithActivityIndicator}" />-->
     </Style>
 
-    <Style ApplyToDerivedTypes="True" TargetType="InputView">
+    <Style
+        ApplyToDerivedTypes="True"
+        TargetType="ActivityIndicator">
+        <Setter Property="Color" Value="{StaticResource NhsUkBlueColor}" />
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        TargetType="InputView">
         <Setter Property="PlaceholderColor" Value="Black" />
         <Setter Property="TextColor" Value="Black" />
 
@@ -41,16 +49,19 @@
             </Trigger>
         </Style.Triggers>
 
-
     </Style>
 
-    <Style ApplyToDerivedTypes="True" TargetType="Picker">
+    <Style
+        ApplyToDerivedTypes="True"
+        TargetType="Picker">
         <Setter Property="TitleColor" Value="#707070" />
         <Setter Property="TextColor" Value="#707070" />
         <Setter Property="ios:Picker.UpdateMode" Value="WhenFinished" />
     </Style>
 
-    <Style ApplyToDerivedTypes="True" TargetType="Label">
+    <Style
+        ApplyToDerivedTypes="True"
+        TargetType="Label">
         <Setter Property="TextColor" Value="#707070" />
         <Setter Property="FontFamily" Value="RR" />
         <Setter Property="VerticalTextAlignment" Value="Center" />
@@ -122,22 +133,32 @@
     </Style>
 
     <Style
-        x:Key="AddButtonStyle"
+        x:Key="ActionButtonStyle"
         BasedOn="{StaticResource BaseButtonStyle}"
         TargetType="Button">
-        <Setter Property="Text" Value="Add" />
         <Setter Property="Padding" Value="5" />
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="BorderWidth" Value="0" />
         <Setter Property="Margin" Value="0" />
-        <Setter Property="VerticalOptions" Value="Start" />
+        <Setter Property="VerticalOptions" Value="Center" />
         <Setter Property="IsVisible" Value="{Binding IsEnabled, Source={RelativeSource Mode=Self}}" />
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource BaseImageButtonStyle}"
+        TargetType="ImageButton" />
+    <Style
+        x:Key="AddButtonStyle"
+        BasedOn="{StaticResource ActionButtonStyle}"
+        TargetType="Button">
+        <Setter Property="Text" Value="Add" />
         <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource AddIcon}" />
     </Style>
 
     <Style
         x:Key="SaveButtonStyle"
-        BasedOn="{StaticResource AddButtonStyle}"
+        BasedOn="{StaticResource ActionButtonStyle}"
         TargetType="Button">
         <Setter Property="Text" Value="Save" />
         <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource SaveIcon}" />
@@ -145,29 +166,17 @@
 
     <Style
         x:Key="EditButtonStyle"
-        BasedOn="{StaticResource BaseButtonStyle}"
+        BasedOn="{StaticResource ActionButtonStyle}"
         TargetType="Button">
         <Setter Property="Text" Value="Edit" />
-        <Setter Property="Padding" Value="5" />
-        <Setter Property="CornerRadius" Value="5" />
-        <Setter Property="BorderWidth" Value="0" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="VerticalOptions" Value="Start" />
-        <Setter Property="IsVisible" Value="{Binding IsEnabled, Source={RelativeSource Mode=Self}}" />
         <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource EditIcon}" />
     </Style>
 
     <Style
         x:Key="IconDeleteButtonStyle"
-        BasedOn="{StaticResource BaseButtonStyle}"
+        BasedOn="{StaticResource ActionButtonStyle}"
         TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource NhsUkRedColor}" />
-        <Setter Property="Padding" Value="5" />
-        <Setter Property="CornerRadius" Value="5" />
-        <Setter Property="IsVisible" Value="{Binding IsEnabled, Source={RelativeSource Mode=Self}}" />
-        <Setter Property="BorderWidth" Value="0" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="VerticalOptions" Value="Start" />
         <Setter Property="extensions:ButtonExtension.FontImageSource" Value="{StaticResource DeleteIcon}" />
     </Style>
 
@@ -175,14 +184,5 @@
         ApplyToDerivedTypes="True"
         BasedOn="{StaticResource BaseButtonStyle}"
         TargetType="Button" />
-
-    <Style
-        ApplyToDerivedTypes="True"
-        BasedOn="{StaticResource BaseImageButtonStyle}"
-        TargetType="ImageButton" />
-
-    <Style ApplyToDerivedTypes="True" TargetType="ActivityIndicator">
-        <Setter Property="Color" Value="{StaticResource NhsUkBlueColor}" />
-    </Style>
 
 </ResourceDictionary>
