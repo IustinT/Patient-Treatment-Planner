@@ -33,7 +33,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>icu.planner.ios</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.1</string>
+	<string>1.0.2</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Using photos.</string>
 	<key>NSCameraUsageDescription</key>
