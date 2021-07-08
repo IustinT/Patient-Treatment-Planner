@@ -27,7 +27,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleDisplayName</key>
-	<string>Treatment Planner DEMO</string>
+	<string>Planner DEMO</string>
 	<key>CFBundleName</key>
 	<string>Treatment Planner DEMO</string>
 	<key>CFBundleIdentifier</key>
