@@ -27,9 +27,9 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleDisplayName</key>
-	<string>ICU Planner</string>
+	<string>Treatment Planner DEMO</string>
 	<key>CFBundleName</key>
-	<string>ICU Planner</string>
+	<string>Treatment Planner DEMO</string>
 	<key>CFBundleIdentifier</key>
 	<string>icu.planner.ios</string>
 	<key>CFBundleVersion</key>
