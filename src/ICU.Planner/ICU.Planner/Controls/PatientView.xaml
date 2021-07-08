@@ -10,7 +10,7 @@
 
         <Entry
             IsReadOnly="True"
-            Placeholder="Identifier"
+            Placeholder="Patient's Phone Number"
             Text="{Binding Patient.PhoneNumber, Mode=OneWay}" />
         <Entry Placeholder="Name" Text="{Binding Patient.Name}" />
         <Entry Placeholder="Hospital" Text="{Binding Patient.Hospital}" />
