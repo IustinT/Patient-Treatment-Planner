@@ -25,6 +25,7 @@ namespace ICU.Planner.ViewModels
     public partial class PatientOverviewPageViewModel : IntermediaryViewModelBase
     {
 
+
         private ICommand editPatientCommand;
         private ICommand addMainGoalCommand;
         private ICommand addGoalCommand;
@@ -43,19 +44,24 @@ namespace ICU.Planner.ViewModels
             MediaPicker = mediaPicker;
             FileSystem = fileSystem;
 
+            _cpaxViewIsExpanded = _mainGoalViewIsExpanded =
+                _miniGoalsViewIsExpanded = _personalInfoViewIsExpanded = true;
         }
 
         #region Properties
 
         [Bindable] public Patient Patient { get; set; }
-        [Bindable] public CPAX CurrentCPAX { get; set; }
-        [Bindable] public CPAX GoalCPAX { get; set; }
-        [Bindable] public int Dfg { get; set; } = 4;
 
+        //these command properties don't need to be [Bindable] because Binding is set ToSource
         public ICommand PersonalInfoForceUpdateSizeCommand { get; set; }
         public ICommand MainGoalForceUpdateSizeCommand { get; set; }
         public ICommand MiniGoalsForceUpdateSizeCommand { get; set; }
         public ICommand CpaxForceUpdateSizeCommand { get; set; }
+
+        [Bindable] public bool CpaxViewIsExpanded { get; set; }
+        [Bindable] public bool PersonalInfoViewIsExpanded { get; set; }
+        [Bindable] public bool MainGoalViewIsExpanded { get; set; }
+        [Bindable] public bool MiniGoalsViewIsExpanded { get; set; }
 
         public IMediaPicker MediaPicker { get; }
         public IFileSystem FileSystem { get; }
@@ -68,13 +74,21 @@ namespace ICU.Planner.ViewModels
             {
                 Title = $"Patient - {patient.Name}";
                 Patient = patient;
-                CurrentCPAX = patient.CurrentCPAX;
-                GoalCPAX = patient.GoalCPAX;
 
                 PersonalInfoForceUpdateSizeCommand?.Execute(null);
                 MainGoalForceUpdateSizeCommand?.Execute(null);
                 MiniGoalsForceUpdateSizeCommand?.Execute(null);
                 CpaxForceUpdateSizeCommand?.Execute(null);
+
+                parameters.TryGetValue(Constants.Keys.IsNewPatientRecord, out bool isNewPatientRecord);
+
+                //expand views if this is a new patient record
+                //collapse views if this is not a new patient record
+                CpaxViewIsExpanded =
+                    MainGoalViewIsExpanded =
+                    MiniGoalsViewIsExpanded =
+                    PersonalInfoViewIsExpanded =
+                    isNewPatientRecord;
 
             }
             else
@@ -99,7 +113,8 @@ namespace ICU.Planner.ViewModels
             {
                 SetIsBusy();
 
-                var r = await ShowDialogAsync(Navigation.DialogKeys.PatientFormDialog, new Prism.Services.Dialogs.DialogParameters { { nameof(Patient), patient } });
+                var r = await ShowDialogAsync(Navigation.DialogKeys.PatientFormDialog,
+                    new Prism.Services.Dialogs.DialogParameters { { nameof(Patient), patient } });
 
                 if (r.Exception != null) throw r.Exception;
 
@@ -287,17 +302,14 @@ namespace ICU.Planner.ViewModels
                 var t = Constants.URLs.CpaxApi
                       .PostJsonAsync(new CpaxDTO
                       {
-                          CurrentCpax = CurrentCPAX,
-                          GoalCpax = GoalCPAX
+                          CurrentCpax = Patient.CurrentCPAX,
+                          GoalCpax = Patient.GoalCPAX
                       });
 
                 var payload = await t.ReceiveJson<CpaxDTO>();
 
                 Patient.CurrentCPAX = payload.CurrentCpax;
                 Patient.GoalCPAX = payload.GoalCpax;
-
-                CurrentCPAX = payload.CurrentCpax;
-                GoalCPAX = payload.GoalCpax;
 
                 RaisePropertyChangedPatient();
                 CpaxForceUpdateSizeCommand?.Execute(null);
