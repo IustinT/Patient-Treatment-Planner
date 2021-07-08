@@ -18,9 +18,9 @@
         <Frame
             Margin="0"
             Padding="10,22,5,10"
-            AbsoluteLayout.LayoutBounds="0,12,1,AutoSize"
+            AbsoluteLayout.LayoutBounds="0,14,1,AutoSize"
             AbsoluteLayout.LayoutFlags="WidthProportional"
-            BorderColor="Gray"
+            BorderColor="DimGray"
             HasShadow="False">
 
             <Grid
