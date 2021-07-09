@@ -22,7 +22,7 @@ namespace ICU.Planner.Controls
 
         public static readonly BindableProperty ChechedBorderColorProperty =
           BindableProperty
-          .Create(nameof(ChechedBorderColor), typeof(Color), typeof(CpaxRadioButtonsView), Color.Red, BindingMode.OneTime);
+          .Create(nameof(ChechedBorderColor), typeof(Color), typeof(CpaxRadioButtonsView), Color.OrangeRed, BindingMode.OneTime);
 
         /*
          
