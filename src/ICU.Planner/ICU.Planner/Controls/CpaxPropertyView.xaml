@@ -23,7 +23,7 @@
 
             <Grid
                 ColumnDefinitions="Auto,*"
-                ColumnSpacing="50"
+                ColumnSpacing="5"
                 RowDefinitions="1*,1*"
                 RowSpacing="5">
 
@@ -45,8 +45,6 @@
                 <controls:CpaxRadioButtonsView
                     Grid.Row="0"
                     Grid.Column="1"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
                     Value="{Binding CurrentValue, Source={Reference this}}" />
 
                 <controls:CpaxRadioButtonsView
@@ -54,8 +52,6 @@
                     Grid.Column="1"
                     ChechedBgColor="LightGreen"
                     ChechedBorderColor="Green"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
                     Value="{Binding GoalValue, Source={Reference this}}" />
 
             </Grid>
