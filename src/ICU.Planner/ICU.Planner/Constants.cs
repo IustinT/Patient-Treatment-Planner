@@ -25,6 +25,7 @@ namespace ICU.Planner
 
         public static string DefaultHospitalValue { get; internal set; } = "Plymouth";
         public static string DefaultWardValue { get; internal set; } = "ICU";
+        public const int MinimumDigitsForPatientSearch = 5;
 
         public static class Keys
         {
