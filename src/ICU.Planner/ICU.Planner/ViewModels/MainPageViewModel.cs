@@ -52,7 +52,7 @@ namespace ICU.Planner.ViewModels
                 .Throttle(500.Milliseconds())
                 .Subscribe(async phoneNumber =>
                 {
-                    if (phoneNumber is null || phoneNumber.Length <= 5)
+                    if (phoneNumber is null || phoneNumber.Length < Constants.MinimumDigitsForPatientSearch)
                     {
                         if (Patients.Any())
                             await MainThread.InvokeOnMainThreadAsync(() =>
@@ -60,7 +60,7 @@ namespace ICU.Planner.ViewModels
                                 Patients.Clear();
                             });
                     }
-                    else if (phoneNumber.Length > 5)
+                    else if (phoneNumber.Length >= Constants.MinimumDigitsForPatientSearch)
                         await SearchPatientRecords(phoneNumber);
                 })
                 .DisposedBy(Disposables);
@@ -73,10 +73,30 @@ namespace ICU.Planner.ViewModels
 
         public IMainThread MainThread { get; }
 
+        /// <summary>
+        /// The text displayed to the user when no patient records are displayed
+        /// </summary>
+        [Bindable] public string EmptyPatientsListText { get; set; }
+
         public string PatientPhoneNumber
         {
             get => patientPhoneNumber;
-            set => SetProperty(ref patientPhoneNumber, value, () => phoneNumberSubject.OnNext(value));
+            set
+            {
+                SetProperty(ref patientPhoneNumber, value, () => phoneNumberSubject.OnNext(value));
+
+                EmptyPatientsListText = string.IsNullOrEmpty(value) switch
+                {
+                    true => "Please type a (partial) phone number in the search box.",
+                    false => value.Length switch
+                    {
+                        < Constants.MinimumDigitsForPatientSearch =>
+                        $"Please type {Constants.MinimumDigitsForPatientSearch} or more digits.",
+
+                        _ => null
+                    }
+                };
+            }
         }
 
         [Bindable] public bool IsSearching { get; set; }
@@ -92,7 +112,6 @@ namespace ICU.Planner.ViewModels
             new DelegateCommand(async () => await CreateNewPatientRecordCommandExecute(PatientPhoneNumber), GoCommandCanExecute)
             .ObservesProperty(() => IsNotBusy)
             .ObservesProperty(() => PatientPhoneNumber);
-
 
         private bool GoCommandCanExecute() =>
             IsNotBusy && !string.IsNullOrEmpty(PatientPhoneNumber) && PatientPhoneNumber.Length == 11;
@@ -234,6 +253,9 @@ namespace ICU.Planner.ViewModels
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
+                    if (!patientRecords.Any())
+                        EmptyPatientsListText = $@"No records found for ""{phoneNumber}""";
+
                     Patients.Clear();
                     patientRecords.ForEach(record => Patients.Add(record));
                 });
