@@ -30,8 +30,9 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
-<RunCodeAnalysis>true</RunCodeAnalysis><CodesignKey>iPhone Developer</CodesignKey>
-<MtouchFastDev>true</MtouchFastDev>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchFastDev>true</MtouchFastDev>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -42,7 +43,8 @@
     <MtouchLink>None</MtouchLink>
     <MtouchArch>i386, x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-<RunCodeAnalysis>true</RunCodeAnalysis>  </PropertyGroup>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -75,7 +77,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     <MtouchLink>SdkOnly</MtouchLink>
-<MtouchUseLlvm>true</MtouchUseLlvm>
+    <MtouchUseLlvm>true</MtouchUseLlvm>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -118,37 +120,93 @@
     <ImageAsset Include="Assets.xcassets\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ios-marketing-appstore.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-notifications%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-notifications%403x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-settings%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-settings%403x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-spotlight%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-spotlight%403x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-app%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-app%403x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-notifications.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-notifications%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-settings.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-settings%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-spotlight.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-spotlight%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-app.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-app%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-pro-app%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-carplay%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-carplay%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ios-marketing-appstore.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-notifications%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-notifications%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-settings%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-settings%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-spotlight%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-spotlight%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-app%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-iphone-app%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-notifications.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-notifications%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-settings.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-settings%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-spotlight.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-spotlight%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-app.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-app%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-ipad-pro-app%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-carplay%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\appicon-carplay%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 512.png" />
-    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 1024.png" />
-    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 1536.png" />
-    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 512.png" />
-    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 1024.png" />
-    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 1536.png" />
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 512.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 1024.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\Image.imageset\rehab legend 1536.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 512.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 1024.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Assets.xcassets\LaunchStoryImage.imageset\rehab legend 1536.png">
+      <Visible>false</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
