@@ -1,9 +1,7 @@
-﻿using ICU.Data.Configuration;
-using ICU.Data.Models;
+﻿using ICU.Data.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-using System;
 using System.Reflection;
 
 /*
@@ -35,7 +33,8 @@ namespace ICU.Data
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<ImageCategory> ImageCategories { get; set; }
         public DbSet<CPAX> CPAXes { get; set; }
-
+        public DbSet<ExerciseCategory> ExerciseCategories { get; set; }
+        public DbSet<Exercise> Exercises { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

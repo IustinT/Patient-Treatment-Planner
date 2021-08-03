@@ -1,6 +1,4 @@
-﻿
-using Newtonsoft.Json;
-
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,12 +17,13 @@ namespace ICU.Data.Models
 
         [JsonIgnore] //ignore as relevant data will be in MiniGoals and MainGoal
         public List<Goal> Goals { get; set; }
+
         public List<Goal> MiniGoals { get; set; }
         public Goal MainGoal { get; set; }
 
         public List<Achievement> Achievemts { get; set; }
 
-        [JsonIgnore]//ignore this as the relevant data will be in Current and Goal cpax
+        [JsonIgnore] //ignore this as the relevant data will be in Current and Goal cpax
         public List<CPAX> CPAXes { get; set; }
 
         public CPAX CurrentCPAX { get; set; }
@@ -39,8 +38,10 @@ namespace ICU.Data.Models
         public Guid? Id { get; set; }
 
         public long? PatientId { get; set; }
+
         [JsonIgnore]
         public virtual Patient Patient { get; set; }
+
         public DateTime? DateTime { get; set; }
 
         public int Grip { get; set; }
@@ -64,16 +65,16 @@ namespace ICU.Data.Models
         public override bool Equals(object obj)
         {
             return obj is CPAX other
-                && Grip == other.Grip
-                && Respiratory == other.Respiratory
-                && Cough == other.Cough
-                && BedMovement == other.BedMovement
-                && DynamicSitting == other.DynamicSitting
-                && StandingBalance == other.StandingBalance
-                && SitToStand == other.SitToStand
-                && BedToChair == other.BedToChair
-                && Stepping == other.Stepping
-                && Transfer == other.Transfer;
+                   && Grip == other.Grip
+                   && Respiratory == other.Respiratory
+                   && Cough == other.Cough
+                   && BedMovement == other.BedMovement
+                   && DynamicSitting == other.DynamicSitting
+                   && StandingBalance == other.StandingBalance
+                   && SitToStand == other.SitToStand
+                   && BedToChair == other.BedToChair
+                   && Stepping == other.Stepping
+                   && Transfer == other.Transfer;
         }
 
         /// <summary>
@@ -82,14 +83,15 @@ namespace ICU.Data.Models
         /// <returns><see langword="True"/> if all properties have value of zero. <see langword="False"/> otherwise.</returns>
         public bool IsEmpty() =>
             (Grip + Respiratory + Cough + BedMovement
-            + DynamicSitting + StandingBalance + SitToStand + BedToChair
-            + Stepping + Transfer) is 0;
+             + DynamicSitting + StandingBalance + SitToStand + BedToChair
+             + Stepping + Transfer) is 0;
     }
 
     public class Goal
     {
         public Guid Id { get; set; }
         public long PatientId { get; set; }
+
         [JsonIgnore]
         public virtual Patient Patient { get; set; }
 
@@ -102,6 +104,7 @@ namespace ICU.Data.Models
     {
         public Guid Id { get; set; }
         public long PatientId { get; set; }
+
         [JsonIgnore]
         public virtual Patient Patient { get; set; }
 
@@ -128,6 +131,29 @@ namespace ICU.Data.Models
         public int CategoryId { get; set; }
         public string FileName { get; set; }
         public string Uri { get; set; }
+    }
+
+    public class Exercise
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public int CategoryId { get; set; }
+        public ExerciseCategory Category { get; set; }
+
+        public string Aim { get; set; }
+        public string Instructions { get; set; }
+        public string Variations { get; set; }
+        public string Precautions { get; set; }
+
+    }
+
+    public class ExerciseCategory
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int DisplayOrder { get; set; }
+        public bool Deleted { get; set; }
+
     }
 
     public class CpaxDTO
