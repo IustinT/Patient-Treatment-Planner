@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ICU.Data.Models
 {
@@ -31,6 +30,14 @@ namespace ICU.Data.Models
         public CPAX GoalCPAX { get; set; }
 
         public List<ImageCategoryWithFiles> Images { get; set; }
+
+        public int? MondayExerciseTime { get; set; }
+        public int? TuesdayExerciseTime { get; set; }
+        public int? WednesdayExerciseTime { get; set; }
+        public int? ThursdayExerciseTime { get; set; }
+        public int? FridayExerciseTime { get; set; }
+        public int? SaturdayExerciseTime { get; set; }
+        public int? SunExerciseTime { get; set; }
     }
 
     public class CPAX
@@ -112,12 +119,8 @@ namespace ICU.Data.Models
         public DateTime DateTime { get; set; }
     }
 
-    public class ImageCategory
+    public class ImageCategory : BaseCategory
     {
-        public int? Id { get; set; }
-        public string Name { get; set; }
-        public int DisplayOrder { get; set; }
-        public bool Deleted { get; set; }
     }
 
     public class ImageCategoryWithFiles : ImageCategory
@@ -147,13 +150,31 @@ namespace ICU.Data.Models
 
     }
 
-    public class ExerciseCategory
+    public class ExerciseCategory : BaseCategory
     {
-        public int Id { get; set; }
+    }
+
+    public abstract class BaseCategory
+    {
+        public int? Id { get; set; }
         public string Name { get; set; }
         public int DisplayOrder { get; set; }
         public bool Deleted { get; set; }
+    }
 
+    /// <summary>
+    /// A map table between <see cref="Patient"/> and <see cref="Exercise"/>,
+    /// indicating the number of <see cref="PatientExercise.Repetitions"/>.
+    /// </summary>
+    public class PatientExercise
+    {
+        public long PatientId { get; set; }
+        public virtual Patient Patient { get; set; }
+
+        public long ExerciseId { get; set; }
+        public virtual Exercise Exercise { get; set; }
+
+        public int Repetitions { get; set; }
     }
 
     public class CpaxDTO

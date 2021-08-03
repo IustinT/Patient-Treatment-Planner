@@ -35,6 +35,7 @@ namespace ICU.Data
         public DbSet<CPAX> CPAXes { get; set; }
         public DbSet<ExerciseCategory> ExerciseCategories { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
+        public DbSet<PatientExercise> PatientExercises { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
