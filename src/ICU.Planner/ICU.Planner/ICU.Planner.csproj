@@ -100,7 +100,7 @@
     </ItemGroup>
 
     <!--Needed to allow Prism.Magician to re-generate files when these files are included in compilation above-->
-    <Target Name="RemoveGeneratedFilesDir" BeforeTargets="UpdateGeneratedFiles" Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Target Name="RemoveGeneratedFilesDir" BeforeTargets="_CheckForUnsupportedTargetFramework" Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <RemoveDir Directories="$(IntermediateOutputPath)\generated\"/>
     </Target>
 </Project>
