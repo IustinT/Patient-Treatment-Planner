@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-
 using System;
 using System.Collections.Generic;
 
@@ -30,6 +29,8 @@ namespace ICU.Data.Models
         public CPAX GoalCPAX { get; set; }
 
         public List<ImageCategoryWithFiles> Images { get; set; }
+
+        public virtual List<PatientExercise> ExercisesAssignment { get; set; }
 
         public int? MondayExerciseTime { get; set; }
         public int? TuesdayExerciseTime { get; set; }
@@ -120,8 +121,7 @@ namespace ICU.Data.Models
     }
 
     public class ImageCategory : BaseCategory
-    {
-    }
+    { }
 
     public class ImageCategoryWithFiles : ImageCategory
     {
@@ -148,11 +148,15 @@ namespace ICU.Data.Models
         public string Variations { get; set; }
         public string Precautions { get; set; }
 
+        /// <summary>
+        /// Not Mapped to database.
+        /// A flag indicating if this <see cref="Exercise"/> is included in the <see cref="Patient"/>'s plan.
+        /// </summary>
+        public bool IsIncludedInPlan { get; set; }
     }
 
     public class ExerciseCategory : BaseCategory
-    {
-    }
+    { }
 
     public abstract class BaseCategory
     {
@@ -169,9 +173,13 @@ namespace ICU.Data.Models
     public class PatientExercise
     {
         public long PatientId { get; set; }
+
+        [JsonIgnore]
         public virtual Patient Patient { get; set; }
 
         public long ExerciseId { get; set; }
+
+        [JsonIgnore]
         public virtual Exercise Exercise { get; set; }
 
         public int Repetitions { get; set; }

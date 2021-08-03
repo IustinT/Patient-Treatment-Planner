@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ICU.Data.Models;
 
@@ -19,6 +18,9 @@ namespace ICU.Data.Configuration
                 .WithMany()
                 .HasForeignKey(f => f.CategoryId)
                 .IsRequired();
+
+            builder.Ignore(p => p.IsIncludedInPlan);
+
         }
 
     }
