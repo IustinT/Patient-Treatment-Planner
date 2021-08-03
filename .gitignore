@@ -364,3 +364,4 @@ FodyWeavers.xsd
 .DS_Store
 Archive/
 src/ICU/.idea/
+src/ICU.API/ExerciseImages/
