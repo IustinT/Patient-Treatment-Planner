@@ -366,3 +366,4 @@ Archive/
 src/ICU/.idea/
 src/ICU.API/ExerciseImages/
 .idea
+src/ICU.API/ICU.API.Log*.txt
