@@ -10,9 +10,9 @@ namespace ICU.Planner
         {
             public static string ApiBaseUri =>
 
-                "https://comp-3000-icu-api.azurewebsites.net/"
+             //   "https://comp-3000-icu-api.azurewebsites.net/"
             //"http://localhost/ICU.API/"
-            //"http://192.168.0.3/ICU.API/"
+            "http://192.168.0.3/ICU.API/"
             ;
 
             public static string PatientsApi = $"{ApiBaseUri}Patients";
@@ -20,6 +20,7 @@ namespace ICU.Planner
             public static string CpaxApi = $"{ApiBaseUri}CPAX";
             public static string PatientImagesApi = $"{ApiBaseUri}PatientImages";
             public static string SystemConfigApi = $"{ApiBaseUri}SystemConfig";
+            public static string ExercisesApi = $"{ApiBaseUri}Exercises";
         }
         public static readonly string[] FormsFlags = { };
 

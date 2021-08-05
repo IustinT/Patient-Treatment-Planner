@@ -99,6 +99,7 @@ namespace ICU.API.Controllers
                 .Include(i => i.CPAXes)
                 .Include(i => i.Goals)
                 .Include(i => i.Achievemts)
+                .Include(i => i.ExercisesAssignment)
                 .FirstOrDefaultAsync(patient => patient.Id == patientId);
 
             if (patient is null) return null;

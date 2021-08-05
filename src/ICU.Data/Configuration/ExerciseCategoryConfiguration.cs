@@ -9,6 +9,9 @@ namespace ICU.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<ExerciseCategory> builder)
         {
+            builder.HasMany(e => e.Exercises)
+                .WithOne(w => w.Category)
+                .HasForeignKey(f => f.CategoryId);
         }
 
     }

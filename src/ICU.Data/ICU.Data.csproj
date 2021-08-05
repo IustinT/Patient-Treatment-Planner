@@ -11,6 +11,8 @@
     <Compile Remove="Migrations\20210803113954_AddPatientExecisesTable.Designer.cs" />
     <Compile Remove="Migrations\20210803120053_AddPatientExecisesTable.cs" />
     <Compile Remove="Migrations\20210803120053_AddPatientExecisesTable.Designer.cs" />
+    <Compile Remove="Migrations\20210804115525_LinkExerciseToCategory.cs" />
+    <Compile Remove="Migrations\20210804115525_LinkExerciseToCategory.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

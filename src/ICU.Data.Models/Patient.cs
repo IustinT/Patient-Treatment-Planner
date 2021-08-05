@@ -153,10 +153,17 @@ namespace ICU.Data.Models
         /// A flag indicating if this <see cref="Exercise"/> is included in the <see cref="Patient"/>'s plan.
         /// </summary>
         public bool IsIncludedInPlan { get; set; }
+
+        /// <summary>
+        /// Not mapped to db.
+        /// </summary>
+        public int RepetitionsInPlan { get; set; }
     }
 
     public class ExerciseCategory : BaseCategory
-    { }
+    {
+        public virtual IEnumerable<Exercise> Exercises { get; set; }
+    }
 
     public abstract class BaseCategory
     {
@@ -182,6 +189,12 @@ namespace ICU.Data.Models
         [JsonIgnore]
         public virtual Exercise Exercise { get; set; }
 
+        public int Repetitions { get; set; }
+    }
+
+    public class ExerciseRepetition
+    {
+        public long Id { get; set; }
         public int Repetitions { get; set; }
     }
 

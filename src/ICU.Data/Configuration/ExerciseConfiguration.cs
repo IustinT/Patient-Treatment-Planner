@@ -15,7 +15,7 @@ namespace ICU.Data.Configuration
                 .HasMaxLength(450);
 
             builder.HasOne(p => p.Category)
-                .WithMany()
+                .WithMany(w => w.Exercises)
                 .HasForeignKey(f => f.CategoryId)
                 .IsRequired();
 

@@ -12,6 +12,14 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ExerciseImages\**" />
+    <Content Remove="ExerciseImages\**" />
+    <EmbeddedResource Remove="ExerciseImages\**" />
+    <None Remove="ExerciseImages\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.16" />
@@ -33,18 +41,4 @@
     <ProjectReference Include="..\ICU.Data\ICU.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="PatientImages\" />
-    <Folder Include="Resources\" />
-    <Folder Include="PatientImages\" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <None Remove="Microsoft.ApplicationInsights" />
-    <None Remove="PatientImages\" />
-    <None Remove="AspNetCore.HealthChecks.SqlServer" />
-    <None Remove="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
-    <None Remove="Swashbuckle.AspNetCore.Newtonsoft" />
-  </ItemGroup>
 </Project>
