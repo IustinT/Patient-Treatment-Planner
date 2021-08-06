@@ -20,6 +20,7 @@ namespace ICU.Data.Configuration
                 .IsRequired();
 
             builder.Ignore(p => p.IsIncludedInPlan);
+            builder.Ignore(p => p.RepetitionsInPlan);
 
         }
 

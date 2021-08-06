@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DynamicData;
 using ICU.Data.Models;
+using ICU.Planner.Controls;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 
@@ -50,7 +51,6 @@ namespace ICU.Planner.Pages
                         })
                 );
 
-
                 var grid = new Grid
                 {
                     ColumnDefinitions = colDef,
@@ -88,7 +88,7 @@ namespace ICU.Planner.Pages
                     Grid.SetColumn(inPlanCheckbox, 2);
                     Grid.SetRow(inPlanCheckbox, rowNumber);
 
-                    var repetitionsPicker = new Picker
+                    var repetitionsPicker = new BorderlessPicker
                     {
                         BindingContext = exercise,
                         ItemsSource = RepetitionsInPlanOptions,
@@ -104,6 +104,7 @@ namespace ICU.Planner.Pages
                     grid.Children.Add(nameLabel);
                     grid.Children.Add(repetitionsPicker);
                     grid.Children.Add(inPlanCheckbox);
+
                 }
 
                 return grid;

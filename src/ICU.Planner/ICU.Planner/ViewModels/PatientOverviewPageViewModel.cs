@@ -13,6 +13,7 @@ using Prism.Magician;
 using Prism.Navigation;
 using Xamarin.Essentials.Interfaces;
 using System.IO;
+using Microsoft.AppCenter.Crashes;
 using Prism.Logging;
 
 namespace ICU.Planner.ViewModels
@@ -60,11 +61,19 @@ namespace ICU.Planner.ViewModels
         public ICommand MainGoalForceUpdateSizeCommand { get; set; }
         public ICommand MiniGoalsForceUpdateSizeCommand { get; set; }
         public ICommand CpaxForceUpdateSizeCommand { get; set; }
+        public ICommand ExercisesForceUpdateSizeCommand { get; set; }
 
         [Bindable] public bool CpaxViewIsExpanded { get; set; }
         [Bindable] public bool PersonalInfoViewIsExpanded { get; set; }
         [Bindable] public bool MainGoalViewIsExpanded { get; set; }
         [Bindable] public bool MiniGoalsViewIsExpanded { get; set; }
+        [Bindable] public bool ExercisesViewIsExpanded { get; set; }
+
+        /// <summary>
+        /// Indicates the Exercises schedule is set: at same time for all week days when True,
+        /// at different times when False.
+        /// </summary>
+        [Bindable] public bool ScheduleExercisesByWeek { get; set; }
 
         public IMediaPicker MediaPicker { get; }
         public IFileSystem FileSystem { get; }
@@ -95,13 +104,32 @@ namespace ICU.Planner.ViewModels
                             PersonalInfoViewIsExpanded =
                                 isNewPatientRecord;
 
+                //set which exercise is assigned and how many repetitions
                 if (!isNewPatientRecord && ExerciseCategories != null && patient.ExercisesAssignment != null)
-                    foreach (var exerciseCategory in ExerciseCategories)
-                    foreach (var exercise in exerciseCategory.Exercises)
-                    {
-                        exercise.IsIncludedInPlan =
-                            patient.ExercisesAssignment.Any(a => a.ExerciseId == exercise.Id);
-                    }
+
+                {
+                    ExerciseCategories
+                        .SelectMany(s => s.Exercises)
+                        .Where(w => Patient.ExercisesAssignment.Any(a => a.ExerciseId == w.Id))
+                        .ToList()
+                        .ForEach(exercise =>
+                        {
+                            exercise.IsIncludedInPlan = true;
+                            exercise.RepetitionsInPlan = Patient.ExercisesAssignment
+                                .First(f => f.ExerciseId == exercise.Id).Repetitions;
+                        });
+
+                    //refresh view
+                    ExerciseCategories = ExerciseCategories.ToList();
+                    ExercisesForceUpdateSizeCommand?.Execute(null);
+                }
+
+                ScheduleExercisesByWeek = patient.MondayExerciseTime == patient.TuesdayExerciseTime
+                                          && patient.TuesdayExerciseTime == patient.WednesdayExerciseTime
+                                          && patient.WednesdayExerciseTime == patient.ThursdayExerciseTime
+                                          && patient.ThursdayExerciseTime == patient.FridayExerciseTime
+                                          && patient.FridayExerciseTime == patient.SaturdayExerciseTime
+                                          && patient.SaturdayExerciseTime == patient.SunExerciseTime;
 
             }
             else
@@ -445,85 +473,78 @@ namespace ICU.Planner.ViewModels
 
         #endregion
 
-        #region ExerciseCheckChangedCommand
-
-        private ICommand? _exerciseCheckChangedCommand;
-
-        public ICommand ExerciseCheckChangedCommand => _exerciseCheckChangedCommand ??=
-            new DelegateCommand<Exercise>(ExerciseCheckChangedCommandExecute)
-                .ObservesProperty(() => IsNotBusy)
-                .ObservesProperty(() => ExerciseCategories)
-                .ObservesProperty(() => Patient);
-
-        private void ExerciseCheckChangedCommandExecute(Exercise exercise)
-        {
-            if (exercise is null || IsBusy) return;
-            exercise.IsIncludedInPlan = !exercise.IsIncludedInPlan;
-            exercise.RepetitionsInPlan = 0;
-
-            //TODO Will this work?
-            //RaisePropertyChanged(nameof(ExerciseCategories));
-            ExerciseCategories = ExerciseCategories.ToList();
-        }
-
-        #endregion
-
         #region UpdatePlanCommand
 
         private ICommand? _updatePlanCommand;
 
         public ICommand UpdatePlanCommand => _updatePlanCommand ??=
-            new DelegateCommand(UpdatePlanCommandExecute)
+            new DelegateCommand(async () => await UpdatePlanCommandExecute())
                 .ObservesProperty(() => IsNotBusy)
                 .ObservesProperty(() => ExerciseCategories)
                 .ObservesProperty(() => Patient);
 
-        private void UpdatePlanCommandExecute()
+        private async Task UpdatePlanCommandExecute()
         {
             if (IsBusy) return;
-
-            var patientExercises = ExerciseCategories
-                .SelectMany(s => s.Exercises)
-                .Where(w => w.IsIncludedInPlan)
-                .ToList();
-
-            var isNothingToSend = !patientExercises.Any();
-
-            if (Patient.ExercisesAssignment != null)
+            try
             {
-                var totalChangedRecords = patientExercises
+                var patientExercises = ExerciseCategories
+                    .SelectMany(s => s.Exercises)
+                    .Where(w => w.IsIncludedInPlan)
+                    .ToList();
 
-                                              //count newly added
-                                              .Count(w => !Patient.ExercisesAssignment
-                                                  .Any(a => a.ExerciseId == w.Id
+                var isNothingToSend = !patientExercises.Any();
+
+                if (Patient.ExercisesAssignment != null)
+                {
+                    var totalChangedRecords = patientExercises
+
+                                                  //count newly added
+                                                  .Count(w => !Patient.ExercisesAssignment
+                                                      .Any(a => a.ExerciseId == w.Id
+                                                      )
                                                   )
-                                              )
 
-                                          //count removed
-                                          + Patient.ExercisesAssignment
-                                              .Count(c => !patientExercises
-                                                  .Any(a => a.Id == c.ExerciseId
+                                              //count removed
+                                              + Patient.ExercisesAssignment
+                                                  .Count(c => !patientExercises
+                                                      .Any(a => a.Id == c.ExerciseId
+                                                      )
                                                   )
-                                              )
 
-                                          //count modified repetition value
-                                          + patientExercises.Count(c =>
-                                              Patient.ExercisesAssignment.Any(w =>
-                                                  w.ExerciseId == c.Id && w.Repetitions != c.RepetitionsInPlan
-                                              )
-                                          );
+                                              //count modified repetition value
+                                              + patientExercises.Count(c =>
+                                                  Patient.ExercisesAssignment.Any(w =>
+                                                      w.ExerciseId == c.Id && w.Repetitions != c.RepetitionsInPlan
+                                                  )
+                                              );
 
-                isNothingToSend = isNothingToSend && totalChangedRecords == 0;
+                    isNothingToSend = isNothingToSend && totalChangedRecords == 0;
 
+                }
+
+                if (isNothingToSend)
+                {
+                    //await DisplayDialog("Treatment Plan", "The treatment plan was not changed. Nothing to send.");
+                    return;
+                }
+
+                var payload = patientExercises
+                    .Select(s => new ExerciseRepetition
+                    {
+                        Id = s.Id,
+                        Repetitions = s.RepetitionsInPlan
+                    })
+                    .ToList();
+
+                await Constants.URLs.ExercisesApi
+                    .AppendPathSegment(Patient.Id)
+                    .PostJsonAsync(payload);
             }
-
-            if (isNothingToSend)
+            catch (Exception e)
             {
-                //await DisplayDialog("Treatment Plan", "The treatment plan was not changed. Nothing to send.");
-                return;
+                Crashes.TrackError(e);
             }
-
-            var payload = patientExercises.Select(s => new ExerciseRepetition { Id = s.Id, Repetitions = s.RepetitionsInPlan }).ToList();
         }
 
         #endregion

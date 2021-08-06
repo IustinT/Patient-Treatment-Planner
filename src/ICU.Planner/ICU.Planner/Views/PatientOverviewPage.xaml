@@ -334,13 +334,16 @@
 
             </StackLayout>
 
-
             <!--  Exercises by category  -->
             <Frame
                 Padding="0"
                 BackgroundColor="White"
                 HasShadow="True" >
-                <xct:Expander x:Name="exercisesExpander" >
+                <xct:Expander
+                    x:Name="exercisesExpander"
+                    ForceUpdateSizeCommand="{Binding ExercisesForceUpdateSizeCommand}"
+                    IsExpanded="{Binding ExercisesViewIsExpanded}" >
+
                     <xct:Expander.Header>
 
                         <Grid
@@ -358,35 +361,95 @@
                         </Grid>
                     </xct:Expander.Header>
 
-                    <StackLayout
-                        BindableLayout.ItemsSource="{Binding ExerciseCategories }"
-                        Spacing="15" >
+                    <StackLayout Spacing="10" Orientation="Vertical" >
 
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:ExerciseCategory" >
-                                <!--  Exercise Category  -->
+                        <StackLayout
+                            BindableLayout.ItemsSource="{Binding ExerciseCategories }"
+                            Spacing="15" >
 
-                                <StackLayout Spacing="10" >
-                                    <!-- Category Name -->
-                                    <Label Text="{Binding Name}" />
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:ExerciseCategory" >
+                                    <!--  Exercise Category  -->
 
-                                    <!--  Exercises for current category  -->
-                                    <StackLayout
-                                        BindingContext="{Binding Exercises}"
-                                        BindingContextChanged="ExercisesListContainer_OnBindingContextChanged"
-                                        Padding="5"
-                                        Orientation="Vertical"
-                                        Spacing="5" >
+                                    <StackLayout Spacing="10" >
+                                        <!-- Category Name -->
+                                        <Label Text="{Binding Name}" />
 
-                                        <!-- The content is set in code behind -->
+                                        <!--  Exercises for current category  -->
+                                        <StackLayout
+                                            BindingContext="{Binding Exercises}"
+                                            BindingContextChanged="ExercisesListContainer_OnBindingContextChanged"
+                                            Padding="5"
+                                            Orientation="Vertical"
+                                            Spacing="5" >
+
+                                            <!-- The content is set in code behind -->
+                                        </StackLayout>
                                     </StackLayout>
-                                </StackLayout>
 
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
 
-                        <Button Text="Save Plan" />
+                        </StackLayout>
 
+                        <!-- Scheduler -->
+                        <!-- Use another layout to remove spacing between elements -->
+                        <StackLayout Orientation="Vertical" Spacing="0" >
+                            <Label Text="Exercises Start Date:" />
+                            <DatePicker Format="ddd, dd MMMM yyyy" />
+                            <Label
+                                Text="This date will be used by the patient's partner app for sending exercise reminders."
+                                FontSize="Micro" />
+                        </StackLayout>
+
+                        <FlexLayout
+                            JustifyContent="SpaceAround"
+                            Direction="Row" >
+
+                            <!-- Set to Week by default -->
+                            <RadioButton Value="True" Content="Schedule by Week"
+                                         IsChecked="{Binding ScheduleExercisesByWeek}" />
+                            <RadioButton Value="False" Content="Schedule by Day"
+                                         IsChecked="{Binding ScheduleExercisesByWeek, Converter={xct:InvertedBoolConverter}}" />
+                        </FlexLayout>
+
+                        <!-- Binding time - translate date to int? use a Converter? -->
+                        <TimePicker
+                            Time="{Binding Patient.MondayExerciseTime}"
+                            Format="HH:mm"
+                            IsVisible="{Binding ScheduleExercisesByWeek}" />
+
+                        <Grid
+                            ColumnDefinitions="Auto,Auto"
+                            RowDefinitions="1*,1*,1*,1*,1*,1*,1*"
+                            IsVisible="{Binding ScheduleExercisesByWeek, Converter={xct:InvertedBoolConverter}}" >
+
+                            <Grid.Resources>
+                                <Style
+                                    TargetType="TimePicker" >
+                                    <Setter Property="Grid.Column" Value="1" />
+                                </Style>
+                            </Grid.Resources>
+                            <Label Text="Monday" Grid.Row="0" /> <TimePicker Grid.Row="0" />
+
+                            <Label Text="Tuesday" Grid.Row="1" /> <TimePicker Grid.Row="1" />
+
+                            <Label Text="Wednesday" Grid.Row="2" /> <TimePicker Grid.Row="2" />
+
+                            <Label Text="Thursday" Grid.Row="3" /> <TimePicker Grid.Row="3" />
+
+                            <Label Text="Friday" Grid.Row="4" /> <TimePicker Grid.Row="4" />
+
+                            <Label Text="Saturday" Grid.Row="5" /> <TimePicker Grid.Row="5" />
+
+                            <Label Text="Sunday" Grid.Row="6" /> <TimePicker Grid.Row="6" />
+
+                        </Grid>
+
+                        <Button
+                            Command="{Binding UpdatePlanCommand}"
+                            Text="Save Plan"
+                            Style="{StaticResource SaveButtonStyle}" />
                     </StackLayout>
                 </xct:Expander>
             </Frame>
