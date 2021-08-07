@@ -41,40 +41,5 @@ namespace ICU.API.Controllers
             return Ok(results);
         }
 
-        [HttpPost]
-        [Route("{patientId}")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task PostAsync([FromRoute] long patientId, [FromBody] List<ExerciseRepetition> payload)
-        {
-            var patient = await Context.Patients
-                .Include(i => i.ExercisesAssignment)
-                .FirstAsync(f => f.Id == patientId);
-
-            if (patient.ExercisesAssignment != null)
-            {
-                //remove all existing exercise assignments for this patient
-                //because we're going to save new assignments
-                Context.PatientExercises.RemoveRange(patient.ExercisesAssignment);
-
-                //save changes so we can add same primary keys, if any
-                await Context.SaveChangesAsync();
-            }
-
-            if (payload.Any())
-            {
-                Context.PatientExercises.AddRange(
-                    payload.Select(s => new PatientExercise
-                    {
-                        Patient = patient,
-                        ExerciseId = s.Id,
-                        Repetitions = s.Repetitions
-                    }));
-
-                //save new assignments
-                await Context.SaveChangesAsync();
-            }
-        }
-
     }
 }

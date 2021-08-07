@@ -415,7 +415,7 @@
 
                         <!-- Binding time - translate date to int? use a Converter? -->
                         <TimePicker
-                            Time="{Binding Patient.MondayExerciseTime}"
+                            Time="{Binding Patient.MondayExerciseTime, Converter={converters:TimespanMinutesConverter}, Mode=TwoWay}"
                             Format="HH:mm"
                             IsVisible="{Binding ScheduleExercisesByWeek}" />
 
@@ -428,21 +428,43 @@
                                 <Style
                                     TargetType="TimePicker" >
                                     <Setter Property="Grid.Column" Value="1" />
+                                    <Setter Property="Format" Value="HH:mm" />
                                 </Style>
                             </Grid.Resources>
-                            <Label Text="Monday" Grid.Row="0" /> <TimePicker Grid.Row="0" />
+                            <Label Text="Monday" Grid.Row="0" />
+                            <TimePicker
+                                Grid.Row="0"
+                                Time="{Binding Patient.MondayExerciseTime, Converter={converters:TimespanMinutesConverter}}" />
 
-                            <Label Text="Tuesday" Grid.Row="1" /> <TimePicker Grid.Row="1" />
+                            <Label Text="Tuesday" Grid.Row="1" />
+                            <TimePicker
+                                Time="{Binding Patient.TuesdayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="1" />
 
-                            <Label Text="Wednesday" Grid.Row="2" /> <TimePicker Grid.Row="2" />
+                            <Label Text="Wednesday" Grid.Row="2" />
+                            <TimePicker
+                                Time="{Binding Patient.WednesdayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="2" />
 
-                            <Label Text="Thursday" Grid.Row="3" /> <TimePicker Grid.Row="3" />
+                            <Label Text="Thursday" Grid.Row="3" />
+                            <TimePicker
+                                Time="{Binding Patient.ThursdayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="3" />
 
-                            <Label Text="Friday" Grid.Row="4" /> <TimePicker Grid.Row="4" />
+                            <Label Text="Friday" Grid.Row="4" />
+                            <TimePicker
+                                Time="{Binding Patient.FridayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="4" />
 
-                            <Label Text="Saturday" Grid.Row="5" /> <TimePicker Grid.Row="5" />
+                            <Label Text="Saturday" Grid.Row="5" />
+                            <TimePicker
+                                Time="{Binding Patient.SaturdayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="5" />
 
-                            <Label Text="Sunday" Grid.Row="6" /> <TimePicker Grid.Row="6" />
+                            <Label Text="Sunday" Grid.Row="6" />
+                            <TimePicker
+                                Time="{Binding Patient.SunExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="6" />
 
                         </Grid>
 

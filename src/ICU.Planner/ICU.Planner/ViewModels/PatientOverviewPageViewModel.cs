@@ -537,9 +537,25 @@ namespace ICU.Planner.ViewModels
                     })
                     .ToList();
 
-                await Constants.URLs.ExercisesApi
+                if (ScheduleExercisesByWeek)
+                    Patient.TuesdayExerciseTime = Patient.WednesdayExerciseTime =
+                        Patient.ThursdayExerciseTime = Patient.FridayExerciseTime =
+                            Patient.SaturdayExerciseTime = Patient.SunExerciseTime =
+                                Patient.MondayExerciseTime;
+
+                //TODO maybe saving the ExerciseTime
+                await Constants.URLs.TreatmentPlanApi
                     .AppendPathSegment(Patient.Id)
+                    .AppendPathSegment(Patient.MondayExerciseTime)
+                    .AppendPathSegment(Patient.TuesdayExerciseTime)
+                    .AppendPathSegment(Patient.WednesdayExerciseTime)
+                    .AppendPathSegment(Patient.ThursdayExerciseTime)
+                    .AppendPathSegment(Patient.FridayExerciseTime)
+                    .AppendPathSegment(Patient.SaturdayExerciseTime)
+                    .AppendPathSegment(Patient.SunExerciseTime)
                     .PostJsonAsync(payload);
+
+                RaisePropertyChangedPatient();
             }
             catch (Exception e)
             {
