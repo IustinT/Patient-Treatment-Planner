@@ -1,7 +1,7 @@
 ﻿using Android.Content;
 using ICU.Planner.Controls;
 using Xamarin.Forms;
-using Xamarin.Forms.Platform.Android;
+using Xamarin.Forms.Platform.Android.AppCompat;
 
 [assembly: ExportRenderer(typeof(BorderlessPicker), typeof(ICU.Planner.Droid.Renderers.BorderlessPickerRenderer))]
 
