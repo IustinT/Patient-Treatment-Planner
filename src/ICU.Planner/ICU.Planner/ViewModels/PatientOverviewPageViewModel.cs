@@ -15,12 +15,14 @@ using Xamarin.Essentials.Interfaces;
 using System.IO;
 using Microsoft.AppCenter.Crashes;
 using Prism.Logging;
+using ReactiveUI;
 
 namespace ICU.Planner.ViewModels
 {
     public partial class PatientOverviewPageViewModel : IntermediaryViewModelBase
     {
 
+        #region PrivateFields
 
         private ICommand editPatientCommand;
         private ICommand addMainGoalCommand;
@@ -30,11 +32,16 @@ namespace ICU.Planner.ViewModels
         private ICommand addImageCommand;
         private ICommand _deleteImageCommand;
 
+        private bool _cpaxViewIsExpanded;
+        private bool exercisesViewIsExpanded;
+
         private IList<ExerciseCategory> _exerciseCategories;
 
-        protected PatientOverviewPageViewModel(BaseServices baseServices,
-                                               IMediaPicker mediaPicker,
-                                               IFileSystem fileSystem)
+        #endregion
+
+        public PatientOverviewPageViewModel(BaseServices baseServices,
+                                            IMediaPicker mediaPicker,
+                                            IFileSystem fileSystem)
             : base(baseServices)
         {
             Title = "Patient Page";
@@ -44,6 +51,7 @@ namespace ICU.Planner.ViewModels
 
             _cpaxViewIsExpanded = _mainGoalViewIsExpanded =
                 _miniGoalsViewIsExpanded = _personalInfoViewIsExpanded = true;
+
         }
 
         #region Properties
@@ -63,11 +71,37 @@ namespace ICU.Planner.ViewModels
         public ICommand CpaxForceUpdateSizeCommand { get; set; }
         public ICommand ExercisesForceUpdateSizeCommand { get; set; }
 
-        [Bindable] public bool CpaxViewIsExpanded { get; set; }
+        public bool CpaxViewIsExpanded
+        {
+            get => _cpaxViewIsExpanded;
+            set
+            {
+                SetProperty(ref _cpaxViewIsExpanded, value);
+                Observable.Return(value)
+                    .Throttle(200.Milliseconds())
+                    .Where(w => w)
+                    .Take(1)
+                    .Subscribe(_ => CpaxForceUpdateSizeCommand?.Execute(null));
+            }
+        }
+
         [Bindable] public bool PersonalInfoViewIsExpanded { get; set; }
         [Bindable] public bool MainGoalViewIsExpanded { get; set; }
         [Bindable] public bool MiniGoalsViewIsExpanded { get; set; }
-        [Bindable] public bool ExercisesViewIsExpanded { get; set; }
+
+        public bool ExercisesViewIsExpanded
+        {
+            get => exercisesViewIsExpanded;
+            set
+            {
+                SetProperty(ref exercisesViewIsExpanded, value);
+                Observable.Return(value)
+                    .Throttle(200.Milliseconds())
+                    .Where(w => w)
+                    .Take(1)
+                    .Subscribe(_ => ExercisesForceUpdateSizeCommand?.Execute(null));
+            }
+        }
 
         /// <summary>
         /// Indicates the Exercises schedule is set: at same time for all week days when True,
