@@ -531,7 +531,7 @@ namespace ICU.Planner.ViewModels
             if (IsBusy) return;
             try
             {
-                var patientExercises = ExerciseCategories
+                var patientExercises = (ExerciseCategories ?? Array.Empty<ExerciseCategory>())
                     .SelectMany(s => s.Exercises)
                     .Where(w => w.IsIncludedInPlan)
                     .ToList();
