@@ -10,9 +10,9 @@ namespace ICU.Planner
         {
             public static string ApiBaseUri =>
 
-             //   "https://comp-3000-icu-api.azurewebsites.net/"
+                "https://comp-3000-icu-api.azurewebsites.net/"
             //"http://localhost/ICU.API/"
-            "http://192.168.0.3/ICU.API/"
+            //"http://192.168.0.3/ICU.API/"
             ;
 
             public static string PatientsApi = $"{ApiBaseUri}Patients";
