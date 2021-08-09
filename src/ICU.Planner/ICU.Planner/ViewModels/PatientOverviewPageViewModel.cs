@@ -536,43 +536,13 @@ namespace ICU.Planner.ViewModels
                     .Where(w => w.IsIncludedInPlan)
                     .ToList();
 
-                var isNothingToSend = !patientExercises.Any();
+                if (ScheduleExercisesByWeek)
+                    Patient.TuesdayExerciseTime = Patient.WednesdayExerciseTime =
+                        Patient.ThursdayExerciseTime = Patient.FridayExerciseTime =
+                            Patient.SaturdayExerciseTime = Patient.SunExerciseTime =
+                                Patient.MondayExerciseTime;
 
-                if (Patient.ExercisesAssignment != null)
-                {
-                    var totalChangedRecords = patientExercises
-
-                                                  //count newly added
-                                                  .Count(w => !Patient.ExercisesAssignment
-                                                      .Any(a => a.ExerciseId == w.Id
-                                                      )
-                                                  )
-
-                                              //count removed
-                                              + Patient.ExercisesAssignment
-                                                  .Count(c => !patientExercises
-                                                      .Any(a => a.Id == c.ExerciseId
-                                                      )
-                                                  )
-
-                                              //count modified repetition value
-                                              + patientExercises.Count(c =>
-                                                  Patient.ExercisesAssignment.Any(w =>
-                                                      w.ExerciseId == c.Id && w.Repetitions != c.RepetitionsInPlan
-                                                  )
-                                              );
-
-                    isNothingToSend = isNothingToSend && totalChangedRecords == 0;
-
-                }
-
-                if (isNothingToSend)
-                {
-                    //await DisplayDialog("Treatment Plan", "The treatment plan was not changed. Nothing to send.");
-                    return;
-                }
-
-                var payload = patientExercises
+                var exerciseAssignments = patientExercises
                     .Select(s => new ExerciseRepetition
                     {
                         Id = s.Id,
@@ -580,13 +550,6 @@ namespace ICU.Planner.ViewModels
                     })
                     .ToList();
 
-                if (ScheduleExercisesByWeek)
-                    Patient.TuesdayExerciseTime = Patient.WednesdayExerciseTime =
-                        Patient.ThursdayExerciseTime = Patient.FridayExerciseTime =
-                            Patient.SaturdayExerciseTime = Patient.SunExerciseTime =
-                                Patient.MondayExerciseTime;
-
-                //TODO maybe saving the ExerciseTime
                 await Constants.URLs.TreatmentPlanApi
                     .AppendPathSegment(Patient.Id)
                     .AppendPathSegment(Patient.MondayExerciseTime)
@@ -596,7 +559,7 @@ namespace ICU.Planner.ViewModels
                     .AppendPathSegment(Patient.FridayExerciseTime)
                     .AppendPathSegment(Patient.SaturdayExerciseTime)
                     .AppendPathSegment(Patient.SunExerciseTime)
-                    .PostJsonAsync(payload);
+                    .PostJsonAsync(exerciseAssignments);
 
                 RaisePropertyChangedPatient();
             }
