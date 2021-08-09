@@ -92,12 +92,12 @@ namespace ICU.Planner.Pages
                     {
                         BindingContext = exercise,
                         ItemsSource = RepetitionsInPlanOptions,
-                        Margin = 0
+                        Margin = 0,
+                        //set repetitions value, default to the first entry in the options list
+                        SelectedItem = exercise.RepetitionsInPlan is 0
+                            ? RepetitionsInPlanOptions[0]
+                            : exercise.RepetitionsInPlan
                     };
-
-                    //set default value
-                    repetitionsPicker.SelectedItem = RepetitionsInPlanOptions
-                        .FirstOrDefault(f => f == exercise.RepetitionsInPlan);
 
                     //set binding
                     repetitionsPicker.SetBinding(Picker.SelectedItemProperty, nameof(Exercise.RepetitionsInPlan));
