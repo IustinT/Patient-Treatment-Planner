@@ -94,10 +94,19 @@ namespace ICU.Planner.Pages
                         ItemsSource = RepetitionsInPlanOptions,
                         Margin = 0
                     };
+
+                    //set default value
+                    repetitionsPicker.SelectedItem = RepetitionsInPlanOptions
+                        .FirstOrDefault(f => f == exercise.RepetitionsInPlan);
+
+                    //set binding
                     repetitionsPicker.SetBinding(Picker.SelectedItemProperty, nameof(Exercise.RepetitionsInPlan));
+
+                    //bind IsVisible to be displayed only when included in plan
                     repetitionsPicker.SetBinding(Picker.IsVisibleProperty,
                         new Binding(nameof(CheckBox.IsChecked), BindingMode.OneWay, source: inPlanCheckbox));
-                    repetitionsPicker.SelectedItem = RepetitionsInPlanOptions[0];
+
+                    //position in Grid
                     Grid.SetColumn(repetitionsPicker, 1);
                     Grid.SetRow(repetitionsPicker, rowNumber);
 

@@ -41,13 +41,15 @@ namespace ICU.Planner.ViewModels
 
         public PatientOverviewPageViewModel(BaseServices baseServices,
                                             IMediaPicker mediaPicker,
-                                            IFileSystem fileSystem)
+                                            IFileSystem fileSystem,
+                                            IMainThread mainThread)
             : base(baseServices)
         {
             Title = "Patient Page";
 
             MediaPicker = mediaPicker;
             FileSystem = fileSystem;
+            MainThread = mainThread;
 
             _cpaxViewIsExpanded = _mainGoalViewIsExpanded =
                 _miniGoalsViewIsExpanded = _personalInfoViewIsExpanded = true;
@@ -77,13 +79,17 @@ namespace ICU.Planner.ViewModels
             set
             {
                 SetProperty(ref _cpaxViewIsExpanded, value);
-                Observable.Return(value)
-                    .Throttle(200.Milliseconds())
-                    .Where(w => w)
-                    .Take(1)
-                    .Subscribe(_ => CpaxForceUpdateSizeCommand?.Execute(null));
+
+                if (value)
+                    RunExpanderResizeAction(() => CpaxForceUpdateSizeCommand?.Execute(null));
             }
         }
+
+        private void RunExpanderResizeAction(Action action) =>
+            Task.Delay(400)
+                .ContinueWith(_ =>
+                    MainThread.BeginInvokeOnMainThread(action)
+                ).ConfigureAwait(false);
 
         [Bindable] public bool PersonalInfoViewIsExpanded { get; set; }
         [Bindable] public bool MainGoalViewIsExpanded { get; set; }
@@ -95,11 +101,9 @@ namespace ICU.Planner.ViewModels
             set
             {
                 SetProperty(ref exercisesViewIsExpanded, value);
-                Observable.Return(value)
-                    .Throttle(200.Milliseconds())
-                    .Where(w => w)
-                    .Take(1)
-                    .Subscribe(_ => ExercisesForceUpdateSizeCommand?.Execute(null));
+
+                if (value)
+                    RunExpanderResizeAction(() => ExercisesForceUpdateSizeCommand?.Execute(null));
             }
         }
 
@@ -111,6 +115,11 @@ namespace ICU.Planner.ViewModels
 
         public IMediaPicker MediaPicker { get; }
         public IFileSystem FileSystem { get; }
+
+        public IMainThread MainThread
+        {
+            get;
+        }
 
         #endregion
 

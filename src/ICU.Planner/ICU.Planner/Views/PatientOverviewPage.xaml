@@ -199,7 +199,9 @@
                 Padding="0"
                 BackgroundColor="White"
                 HasShadow="True" >
+
                 <xct:Expander
+                    ExpandAnimationLength="0"
                     x:Name="cpaxExpander"
                     ForceUpdateSizeCommand="{Binding CpaxForceUpdateSizeCommand}"
                     IsExpanded="{Binding CpaxViewIsExpanded}" >
@@ -254,7 +256,10 @@
                             Padding="0"
                             BackgroundColor="White"
                             HasShadow="True" >
-                            <xct:Expander x:Name="imagesExpander" >
+
+                            <xct:Expander
+                                x:Name="imagesExpander"
+                                ExpandAnimationLength="0" >
                                 <xct:Expander.Header>
 
                                     <Grid
@@ -339,7 +344,9 @@
                 Padding="0"
                 BackgroundColor="White"
                 HasShadow="True" >
+
                 <xct:Expander
+                    ExpandAnimationLength="0"
                     x:Name="exercisesExpander"
                     ForceUpdateSizeCommand="{Binding ExercisesForceUpdateSizeCommand}"
                     IsExpanded="{Binding ExercisesViewIsExpanded}" >
@@ -420,7 +427,8 @@
                             IsVisible="{Binding ScheduleExercisesByWeek}" />
 
                         <Grid
-                            ColumnDefinitions="Auto,Auto"
+                            HorizontalOptions="Center"
+                            ColumnDefinitions="1*,1*"
                             RowDefinitions="1*,1*,1*,1*,1*,1*,1*"
                             IsVisible="{Binding ScheduleExercisesByWeek, Converter={xct:InvertedBoolConverter}}" >
 
