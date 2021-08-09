@@ -103,7 +103,7 @@ namespace ICU.Planner.Pages
                     repetitionsPicker.SetBinding(Picker.SelectedItemProperty, nameof(Exercise.RepetitionsInPlan));
 
                     //bind IsVisible to be displayed only when included in plan
-                    repetitionsPicker.SetBinding(Picker.IsVisibleProperty,
+                    repetitionsPicker.SetBinding(IsVisibleProperty,
                         new Binding(nameof(CheckBox.IsChecked), BindingMode.OneWay, source: inPlanCheckbox));
 
                     //position in Grid
