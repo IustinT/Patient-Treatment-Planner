@@ -19,7 +19,7 @@
     <EmbeddedResource Remove="ExerciseImages\**" />
     <None Remove="ExerciseImages\**" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.16" />
