@@ -380,7 +380,14 @@
 
                                     <StackLayout Spacing="10" >
                                         <!-- Category Name -->
-                                        <Label Text="{Binding Name}" />
+                                        <Label
+                                            Text="{Binding Name, StringFormat='{0} Exercises'}"
+                                            FontFamily="RM"
+                                            Margin="2,0"
+                                            Padding="5"
+                                            HorizontalTextAlignment="Start"
+                                            HorizontalOptions="Fill"
+                                            BackgroundColor="LightGray" />
 
                                         <!--  Exercises for current category  -->
                                         <StackLayout
