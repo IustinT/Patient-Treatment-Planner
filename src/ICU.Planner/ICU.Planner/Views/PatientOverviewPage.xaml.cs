@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DynamicData;
+using DynamicData.Binding;
 using ICU.Data.Models;
 using ICU.Planner.Controls;
 using Xamarin.Forms;
@@ -38,7 +39,7 @@ namespace ICU.Planner.Pages
                 var colDef = new ColumnDefinitionCollection
                 {
                     new() { Width = GridLength.Star },
-                    new() { Width = GridLength.Auto },
+                    new() { Width = new GridLength(1, GridUnitType.Star) },
                     new() { Width = GridLength.Auto }
                 };
 
@@ -80,23 +81,22 @@ namespace ICU.Planner.Pages
 
                     var nameLabel = new Label { Text = exercise.Name, BindingContext = exercise };
                     nameLabel.SetBinding(Label.TextProperty, nameof(Exercise.Name));
-                    Grid.SetColumn(nameLabel, 0);
-                    Grid.SetRow(nameLabel, rowNumber);
 
-                    var inPlanCheckbox = new CheckBox { BindingContext = exercise };
+                    var inPlanCheckbox = new CheckBox
+                        { BindingContext = exercise, HorizontalOptions = LayoutOptions.Center };
                     inPlanCheckbox.SetBinding(CheckBox.IsCheckedProperty, nameof(Exercise.IsIncludedInPlan));
-                    Grid.SetColumn(inPlanCheckbox, 2);
-                    Grid.SetRow(inPlanCheckbox, rowNumber);
 
                     var repetitionsPicker = new BorderlessPicker
                     {
                         BindingContext = exercise,
                         ItemsSource = RepetitionsInPlanOptions,
+                        HorizontalTextAlignment = TextAlignment.Center,
                         Margin = 0,
                         //set repetitions value, default to the first entry in the options list
                         SelectedItem = exercise.RepetitionsInPlan is 0
                             ? RepetitionsInPlanOptions[0]
                             : exercise.RepetitionsInPlan
+
                     };
 
                     //set binding
@@ -107,9 +107,16 @@ namespace ICU.Planner.Pages
                         new Binding(nameof(CheckBox.IsChecked), BindingMode.OneWay, source: inPlanCheckbox));
 
                     //position in Grid
-                    Grid.SetColumn(repetitionsPicker, 1);
-                    Grid.SetRow(repetitionsPicker, rowNumber);
 
+                    Grid.SetColumn(nameLabel, 0);
+                    Grid.SetColumn(repetitionsPicker, 1);
+                    Grid.SetColumn(inPlanCheckbox, 2);
+
+                    Grid.SetRow(nameLabel, rowNumber);
+                    Grid.SetRow(repetitionsPicker, rowNumber);
+                    Grid.SetRow(inPlanCheckbox, rowNumber);
+
+                    //todo test without name and google
                     grid.Children.Add(nameLabel);
                     grid.Children.Add(repetitionsPicker);
                     grid.Children.Add(inPlanCheckbox);
