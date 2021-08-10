@@ -95,8 +95,14 @@ namespace ICU.Planner.Pages
                         //set repetitions value, default to the first entry in the options list
                         SelectedItem = exercise.RepetitionsInPlan is 0
                             ? RepetitionsInPlanOptions[0]
-                            : exercise.RepetitionsInPlan
+                            : exercise.RepetitionsInPlan,
 
+                    };
+
+                    repetitionsPicker.PropertyChanged += (sender, args) =>
+                    {
+                        if (args.PropertyName == IsVisibleProperty.PropertyName && sender is View v)
+                            Grid.SetColumnSpan(nameLabel, v.IsVisible ? 1 : 2);
                     };
 
                     //set binding
