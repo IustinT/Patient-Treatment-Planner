@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <ContentPage
     x:Class="ICU.Planner.Pages.PatientOverviewPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
     xmlns:controls="clr-namespace:ICU.Planner.Controls"
     xmlns:converters="clr-namespace:ICU.Planner.Converters"
     xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    xmlns:viewModels="clr-namespace:ICU.Planner.ViewModels;assembly=ICU.Planner"
+    xmlns:models="clr-namespace:ICU.Data.Models;assembly=ICU.Data.Models"
     x:Name="this"
     Title="{Binding Title}"
-    IsBusy="{Binding IsBusy}">
+    IsBusy="{Binding IsBusy}"
+    x:DataType="viewModels:PatientOverviewPageViewModel" >
 
     <ContentPage.Resources>
         <converters:TestConverter x:Key="testConverter" />
     </ContentPage.Resources>
 
-    <ScrollView x:Name="pageScrollView">
+    <ScrollView x:Name="pageScrollView" >
         <StackLayout
             x:Name="pageContentContainer"
             Padding="5,15"
             Orientation="Vertical"
-            Spacing="15">
+            Spacing="15" >
 
             <!--  Patient Info  -->
             <Frame
                 Padding="0"
                 BackgroundColor="White"
-                HasShadow="True">
+                HasShadow="True" >
                 <xct:Expander
                     x:Name="personalInfoExpander"
                     ForceUpdateSizeCommand="{Binding PersonalInfoForceUpdateSizeCommand}"
-                    IsExpanded="{Binding PersonalInfoViewIsExpanded}">
+                    IsExpanded="{Binding PersonalInfoViewIsExpanded}" >
 
                     <xct:Expander.Header>
                         <Grid
                             Padding="15,20"
-                            ColumnDefinitions="*,Auto">
+                            ColumnDefinitions="*,Auto" >
                             <Label
                                 FontFamily="RM"
                                 Text="Personal Information" />
@@ -49,7 +54,7 @@
                     <StackLayout
                         Padding="5"
                         Orientation="Vertical"
-                        Spacing="5">
+                        Spacing="5" >
 
                         <controls:PatientView
                             IsEnabled="False"
@@ -70,17 +75,17 @@
             <Frame
                 Padding="0"
                 BackgroundColor="White"
-                HasShadow="True">
+                HasShadow="True" >
 
                 <xct:Expander
                     x:Name="mainGoalExpander"
                     ForceUpdateSizeCommand="{Binding MainGoalForceUpdateSizeCommand}"
-                    IsExpanded="{Binding MainGoalViewIsExpanded}">
+                    IsExpanded="{Binding MainGoalViewIsExpanded}" >
 
                     <xct:Expander.Header>
                         <Grid
                             Padding="15,20"
-                            ColumnDefinitions="*,Auto">
+                            ColumnDefinitions="*,Auto" >
 
                             <Label
                                 FontFamily="RM"
@@ -96,9 +101,9 @@
                     <StackLayout
                         Padding="5"
                         Orientation="Vertical"
-                        Spacing="5">
+                        Spacing="5" >
 
-                        <Grid ColumnDefinitions="*,Auto">
+                        <Grid ColumnDefinitions="*,Auto" >
 
                             <Label Text="{Binding Patient.MainGoal.Value}" />
 
@@ -131,16 +136,16 @@
             <Frame
                 Padding="0"
                 BackgroundColor="White"
-                HasShadow="True">
+                HasShadow="True" >
                 <xct:Expander
                     x:Name="miniGoalsExpander"
                     ForceUpdateSizeCommand="{Binding MiniGoalsForceUpdateSizeCommand}"
-                    IsExpanded="{Binding MiniGoalsViewIsExpanded}">
+                    IsExpanded="{Binding MiniGoalsViewIsExpanded}" >
 
                     <xct:Expander.Header>
                         <Grid
                             Padding="15,20"
-                            ColumnDefinitions="*,Auto">
+                            ColumnDefinitions="*,Auto" >
 
                             <Label
                                 FontFamily="RM"
@@ -156,19 +161,19 @@
                     <StackLayout
                         Padding="5"
                         Orientation="Vertical"
-                        Spacing="5">
+                        Spacing="5" >
 
                         <StackLayout
                             BindableLayout.ItemsSource="{Binding Patient.MiniGoals}"
-                            Spacing="5">
+                            Spacing="5" >
 
                             <BindableLayout.EmptyView>
                                 <Label Text="No mini goals found." />
                             </BindableLayout.EmptyView>
 
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid ColumnDefinitions="*,Auto">
+                                <DataTemplate x:DataType="models:Goal" >
+                                    <Grid ColumnDefinitions="*,Auto" >
                                         <Label Text="{Binding Value}" />
                                         <Button
                                             Grid.Column="1"
@@ -193,16 +198,18 @@
             <Frame
                 Padding="0"
                 BackgroundColor="White"
-                HasShadow="True">
+                HasShadow="True" >
+
                 <xct:Expander
+                    ExpandAnimationLength="0"
                     x:Name="cpaxExpander"
                     ForceUpdateSizeCommand="{Binding CpaxForceUpdateSizeCommand}"
-                    IsExpanded="{Binding CpaxViewIsExpanded}">
+                    IsExpanded="{Binding CpaxViewIsExpanded}" >
 
                     <xct:Expander.Header>
                         <Grid
                             Padding="15,20"
-                            ColumnDefinitions="*,Auto">
+                            ColumnDefinitions="*,Auto" >
                             <Label
                                 FontFamily="RM"
                                 Text="CPAX" />
@@ -217,7 +224,7 @@
                     <StackLayout
                         Padding="5"
                         Orientation="Vertical"
-                        Spacing="25">
+                        Spacing="25" >
 
                         <Button
                             Command="{Binding SaveCpaxCommand}"
@@ -241,20 +248,23 @@
             <!--  Images by category  -->
             <StackLayout
                 BindableLayout.ItemsSource="{Binding Patient.Images}"
-                Spacing="15">
+                Spacing="15" >
                 <BindableLayout.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:ImageCategoryWithFiles" >
                         <!--  Image Category  -->
                         <Frame
                             Padding="0"
                             BackgroundColor="White"
-                            HasShadow="True">
-                            <xct:Expander x:Name="imagesExpander">
+                            HasShadow="True" >
+
+                            <xct:Expander
+                                x:Name="imagesExpander"
+                                ExpandAnimationLength="0" >
                                 <xct:Expander.Header>
 
                                     <Grid
                                         Padding="15,20"
-                                        ColumnDefinitions="*,Auto">
+                                        ColumnDefinitions="*,Auto" >
 
                                         <Label
                                             FontFamily="RM"
@@ -264,7 +274,6 @@
                                             Grid.Column="1"
                                             IsExpanded="{Binding IsExpanded, Source={Reference imagesExpander}}" />
 
-
                                     </Grid>
                                 </xct:Expander.Header>
 
@@ -272,32 +281,32 @@
                                 <StackLayout
                                     Padding="5"
                                     Orientation="Vertical"
-                                    Spacing="5">
+                                    Spacing="5" >
                                     <FlexLayout
                                         AlignItems="Start"
                                         BindableLayout.ItemsSource="{Binding ImageFiles}"
                                         Direction="Row"
                                         HorizontalOptions="Fill"
                                         JustifyContent="SpaceAround"
-                                        Wrap="Wrap">
+                                        Wrap="Wrap" >
 
                                         <BindableLayout.EmptyView>
                                             <Label Text="No images found." />
                                         </BindableLayout.EmptyView>
 
                                         <BindableLayout.ItemTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate x:DataType="models:ImageFile" >
                                                 <!--  Image  -->
                                                 <Frame
                                                     Margin="4"
                                                     Padding="4"
-                                                    BorderColor="LightGray">
+                                                    BorderColor="LightGray" >
 
                                                     <AbsoluteLayout
                                                         HeightRequest="{OnIdiom Default=250,
                                                                                 Phone=150}"
                                                         WidthRequest="{OnIdiom Default=250,
-                                                                               Phone=150}">
+                                                                               Phone=150}" >
                                                         <Image
                                                             AbsoluteLayout.LayoutBounds="0,0,1,1"
                                                             AbsoluteLayout.LayoutFlags="All"
@@ -329,6 +338,158 @@
                 </BindableLayout.ItemTemplate>
 
             </StackLayout>
+
+            <!--  Exercises by category  -->
+            <Frame
+                Padding="0"
+                BackgroundColor="White"
+                HasShadow="True" >
+
+                <xct:Expander
+                    ExpandAnimationLength="0"
+                    x:Name="exercisesExpander"
+                    ForceUpdateSizeCommand="{Binding ExercisesForceUpdateSizeCommand}"
+                    IsExpanded="{Binding ExercisesViewIsExpanded}" >
+
+                    <xct:Expander.Header>
+
+                        <Grid
+                            Padding="15,20"
+                            ColumnDefinitions="*,Auto" >
+
+                            <Label
+                                FontFamily="RM"
+                                Text="Treatment Plan" />
+
+                            <controls:ExpanderIconView
+                                Grid.Column="1"
+                                IsExpanded="{Binding IsExpanded, Source={Reference exercisesExpander}}" />
+
+                        </Grid>
+                    </xct:Expander.Header>
+
+                    <StackLayout Spacing="10" Orientation="Vertical" >
+
+                        <StackLayout
+                            BindableLayout.ItemsSource="{Binding ExerciseCategories }"
+                            Spacing="15" >
+
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:ExerciseCategory" >
+                                    <!--  Exercise Category  -->
+
+                                    <StackLayout Spacing="10" >
+                                        <!-- Category Name -->
+                                        <Label
+                                            Text="{Binding Name, StringFormat='{0} Exercises'}"
+                                            FontFamily="RM"
+                                            Margin="2,0"
+                                            Padding="5"
+                                            HorizontalTextAlignment="Start"
+                                            HorizontalOptions="Fill"
+                                            BackgroundColor="LightGray" />
+
+                                        <!--  Exercises for current category  -->
+                                        <StackLayout
+                                            BindingContext="{Binding Exercises}"
+                                            BindingContextChanged="ExercisesListContainer_OnBindingContextChanged"
+                                            Padding="5"
+                                            Orientation="Vertical"
+                                            Spacing="5" >
+
+                                            <!-- The content is set in code behind -->
+                                        </StackLayout>
+                                    </StackLayout>
+
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+
+                        </StackLayout>
+
+                        <!-- Scheduler -->
+                        <!-- Use another layout to remove spacing between elements -->
+                        <StackLayout Orientation="Vertical" Spacing="0" >
+                            <Label Text="Exercises Start Date:" />
+                            <DatePicker Format="ddd, dd MMMM yyyy" />
+                            <Label
+                                Text="This date will be used by the patient's partner app for sending exercise reminders."
+                                FontSize="Micro" />
+                        </StackLayout>
+
+                        <FlexLayout
+                            JustifyContent="SpaceAround"
+                            Direction="Row" >
+
+                            <!-- Set to Week by default -->
+                            <RadioButton Value="True" Content="Schedule by Week"
+                                         IsChecked="{Binding ScheduleExercisesByWeek}" />
+                            <RadioButton Value="False" Content="Schedule by Day"
+                                         IsChecked="{Binding ScheduleExercisesByWeek, Converter={xct:InvertedBoolConverter}}" />
+                        </FlexLayout>
+
+                        <!-- Binding time - translate date to int? use a Converter? -->
+                        <TimePicker
+                            Time="{Binding Patient.MondayExerciseTime, Converter={converters:TimespanMinutesConverter}, Mode=TwoWay}"
+                            Format="HH:mm"
+                            IsVisible="{Binding ScheduleExercisesByWeek}" />
+
+                        <Grid
+                            HorizontalOptions="Center"
+                            ColumnDefinitions="1*,1*"
+                            RowDefinitions="1*,1*,1*,1*,1*,1*,1*"
+                            IsVisible="{Binding ScheduleExercisesByWeek, Converter={xct:InvertedBoolConverter}}" >
+
+                            <Grid.Resources>
+                                <Style
+                                    TargetType="TimePicker" >
+                                    <Setter Property="Grid.Column" Value="1" />
+                                    <Setter Property="Format" Value="HH:mm" />
+                                </Style>
+                            </Grid.Resources>
+                            <Label Text="Monday" Grid.Row="0" />
+                            <TimePicker
+                                Grid.Row="0"
+                                Time="{Binding Patient.MondayExerciseTime, Converter={converters:TimespanMinutesConverter}}" />
+
+                            <Label Text="Tuesday" Grid.Row="1" />
+                            <TimePicker
+                                Time="{Binding Patient.TuesdayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="1" />
+
+                            <Label Text="Wednesday" Grid.Row="2" />
+                            <TimePicker
+                                Time="{Binding Patient.WednesdayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="2" />
+
+                            <Label Text="Thursday" Grid.Row="3" />
+                            <TimePicker
+                                Time="{Binding Patient.ThursdayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="3" />
+
+                            <Label Text="Friday" Grid.Row="4" />
+                            <TimePicker
+                                Time="{Binding Patient.FridayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="4" />
+
+                            <Label Text="Saturday" Grid.Row="5" />
+                            <TimePicker
+                                Time="{Binding Patient.SaturdayExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="5" />
+
+                            <Label Text="Sunday" Grid.Row="6" />
+                            <TimePicker
+                                Time="{Binding Patient.SunExerciseTime, Converter={converters:TimespanMinutesConverter}}"
+                                Grid.Row="6" />
+
+                        </Grid>
+
+                        <Button
+                            Command="{Binding UpdatePlanCommand}"
+                            Text="Save Plan"
+                            Style="{StaticResource SaveButtonStyle}" />
+                    </StackLayout>
+                </xct:Expander>
+            </Frame>
 
         </StackLayout>
     </ScrollView>

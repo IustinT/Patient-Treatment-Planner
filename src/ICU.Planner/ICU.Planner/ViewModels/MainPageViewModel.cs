@@ -1,10 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
-
 using Humanizer;
-
 using ICU.Data.Models;
-
 using Prism.Commands;
 using Prism.Logging;
 using Prism.Magician;
@@ -17,13 +14,13 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows.Input;
-
 using Xamarin.Essentials.Interfaces;
 
 namespace ICU.Planner.ViewModels
 {
     public partial class MainPageViewModel : IntermediaryViewModelBase
     {
+
         #region Fields
 
         private readonly Subject<string> phoneNumberSubject = new Subject<string>();
@@ -39,7 +36,7 @@ namespace ICU.Planner.ViewModels
 
         public MainPageViewModel(BaseServices baseServices,
                                  IMainThread mainThread)
-                                : base(baseServices)
+            : base(baseServices)
         {
             Patients = new ObservableCollection<Patient>();
             MainThread = mainThread;
@@ -47,20 +44,17 @@ namespace ICU.Planner.ViewModels
 
             phoneNumberSubject
                 .Select(phoneNumber => phoneNumber?.Trim())
-                .DistinctUntilChanged()// - interferes with the pull to refresh as it never executes
-                                       //.Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
+                .DistinctUntilChanged() // - interferes with the pull to refresh as it never executes
+                //.Where(phoneNumber => phoneNumber != null && phoneNumber.Length > 5)
                 .Throttle(500.Milliseconds())
                 .Subscribe(async phoneNumber =>
                 {
-                    if (phoneNumber is null || phoneNumber.Length <= 5)
+                    if (phoneNumber is null || phoneNumber.Length < Constants.MinimumDigitsForPatientSearch)
                     {
                         if (Patients.Any())
-                            await MainThread.InvokeOnMainThreadAsync(() =>
-                            {
-                                Patients.Clear();
-                            });
+                            await MainThread.InvokeOnMainThreadAsync(() => { Patients.Clear(); });
                     }
-                    else if (phoneNumber.Length > 5)
+                    else if (phoneNumber.Length >= Constants.MinimumDigitsForPatientSearch)
                         await SearchPatientRecords(phoneNumber);
                 })
                 .DisposedBy(Disposables);
@@ -73,15 +67,36 @@ namespace ICU.Planner.ViewModels
 
         public IMainThread MainThread { get; }
 
+        /// <summary>
+        /// The text displayed to the user when no patient records are displayed
+        /// </summary>
+        [Bindable] public string EmptyPatientsListText { get; set; }
+
         public string PatientPhoneNumber
         {
             get => patientPhoneNumber;
-            set => SetProperty(ref patientPhoneNumber, value, () => phoneNumberSubject.OnNext(value));
+            set
+            {
+                SetProperty(ref patientPhoneNumber, value, () => phoneNumberSubject.OnNext(value));
+
+                EmptyPatientsListText = string.IsNullOrEmpty(value) switch
+                {
+                    true => "Please type a (partial) phone number in the search box.",
+                    false => value.Length switch
+                    {
+                        < Constants.MinimumDigitsForPatientSearch =>
+                            $"Please type {Constants.MinimumDigitsForPatientSearch} or more digits.",
+
+                        _ => null
+                    }
+                };
+            }
         }
 
         [Bindable] public bool IsSearching { get; set; }
 
         public ObservableCollection<Patient> Patients { get; }
+
         #endregion
 
         #region Commands
@@ -89,10 +104,10 @@ namespace ICU.Planner.ViewModels
         #region CreateNewPatientRecordCommand
 
         public ICommand CreateNewPatientRecordCommand => _createNewPatientRecordCommand ??=
-            new DelegateCommand(async () => await CreateNewPatientRecordCommandExecute(PatientPhoneNumber), GoCommandCanExecute)
-            .ObservesProperty(() => IsNotBusy)
-            .ObservesProperty(() => PatientPhoneNumber);
-
+            new DelegateCommand(async () => await CreateNewPatientRecordCommandExecute(PatientPhoneNumber),
+                    GoCommandCanExecute)
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => PatientPhoneNumber);
 
         private bool GoCommandCanExecute() =>
             IsNotBusy && !string.IsNullOrEmpty(PatientPhoneNumber) && PatientPhoneNumber.Length == 11;
@@ -112,7 +127,8 @@ namespace ICU.Planner.ViewModels
                 SetIsBusy();
 
                 //display the new patient dialog
-                var parameters = new Prism.Services.Dialogs.DialogParameters { { Constants.Keys.PatientIdentifierKey, phoneNumber } };
+                var parameters = new Prism.Services.Dialogs.DialogParameters
+                    { { Constants.Keys.PatientIdentifierKey, phoneNumber } };
 
                 var r = await ShowDialogAsync(Navigation.DialogKeys.PatientFormDialog, parameters);
 
@@ -127,14 +143,15 @@ namespace ICU.Planner.ViewModels
                         try
                         {
                             newPatientRecord = await Constants.URLs.PatientsApi
-                                   .PostJsonAsync(newPatientRecord)
-                                   .ReceiveJson<Patient>();
+                                .PostJsonAsync(newPatientRecord)
+                                .ReceiveJson<Patient>();
                             shouldRetryPost = false;
                         }
                         catch (Exception postException)
                         {
                             Logger.Log(postException);
-                            shouldRetryPost = await DisplayDialog("Save Failed. Retry?", postException.Message, "Retry", "Cancel");
+                            shouldRetryPost = await DisplayDialog("Save Failed. Retry?", postException.Message, "Retry",
+                                "Cancel");
                             await Task.Delay(.5.Seconds());
                         }
                     } while (shouldRetryPost);
@@ -169,9 +186,10 @@ namespace ICU.Planner.ViewModels
         #region PatientSelectionChangedCommand
 
         public ICommand PatientSelectionChangedCommand => _patientSelectionChangedCommand ??=
-            new DelegateCommand<Patient>(async patient => await PatientSelectionChangedCommandExecute(patient), PatientSelectionChangedCommandCanExecute)
-            .ObservesProperty(() => IsNotBusy)
-            .ObservesProperty(() => Patients);
+            new DelegateCommand<Patient>(async patient => await PatientSelectionChangedCommandExecute(patient),
+                    PatientSelectionChangedCommandCanExecute)
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => Patients);
 
         private bool PatientSelectionChangedCommandCanExecute(Patient patient) => IsNotBusy && patient != null;
 
@@ -184,13 +202,18 @@ namespace ICU.Planner.ViewModels
                 SetIsBusy();
 
                 //get all the patient data
-                var payload = await Constants.URLs.PatientsApi
+                var patient = await Constants.URLs.PatientsApi
                     .AppendPathSegment(selectedPatient.Id)
                     .GetJsonAsync<Patient>();
 
-                SetDefaultCpaxObjects(payload);
+                //get all the patient data
+                var exercises = await Constants.URLs.ExercisesApi
+                    .GetJsonAsync<List<ExerciseCategory>>();
 
-                var r = await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage, (nameof(Patient), payload));
+                SetDefaultCpaxObjects(patient);
+
+                var r = await HandleNavigationRequest(Navigation.NavigationKeys.PatientOverviewPage,
+                    (nameof(Patient), patient), ("ExerciseCategories", exercises));
 
             }
             catch (Exception e)
@@ -205,10 +228,10 @@ namespace ICU.Planner.ViewModels
             }
         }
 
-
         #endregion
 
         #region SearchCommand
+
         public ICommand SearchCommand => _searchCommand ??=
             new DelegateCommand(() => phoneNumberSubject.OnNext(PatientPhoneNumber));
 
@@ -234,6 +257,9 @@ namespace ICU.Planner.ViewModels
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
+                    if (!patientRecords.Any())
+                        EmptyPatientsListText = $@"No records found for ""{phoneNumber}""";
+
                     Patients.Clear();
                     patientRecords.ForEach(record => Patients.Add(record));
                 });
@@ -247,7 +273,6 @@ namespace ICU.Planner.ViewModels
                 IsSearching = false;
             }
         }
-
 
         #endregion
 

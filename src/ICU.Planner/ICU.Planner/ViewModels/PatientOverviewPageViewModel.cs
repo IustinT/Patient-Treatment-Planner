@@ -4,27 +4,25 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-
 using Flurl;
 using Flurl.Http;
-
 using Humanizer;
-
 using ICU.Data.Models;
-
 using Prism.Commands;
 using Prism.Magician;
 using Prism.Navigation;
-
 using Xamarin.Essentials.Interfaces;
 using System.IO;
+using Microsoft.AppCenter.Crashes;
 using Prism.Logging;
+using ReactiveUI;
 
 namespace ICU.Planner.ViewModels
 {
     public partial class PatientOverviewPageViewModel : IntermediaryViewModelBase
     {
 
+        #region PrivateFields
 
         private ICommand editPatientCommand;
         private ICommand addMainGoalCommand;
@@ -34,43 +32,102 @@ namespace ICU.Planner.ViewModels
         private ICommand addImageCommand;
         private ICommand _deleteImageCommand;
 
-        protected PatientOverviewPageViewModel(BaseServices baseServices,
-                                               IMediaPicker mediaPicker,
-                                               IFileSystem fileSystem)
+        private bool _cpaxViewIsExpanded;
+        private bool exercisesViewIsExpanded;
+
+        private IList<ExerciseCategory> _exerciseCategories;
+
+        #endregion
+
+        public PatientOverviewPageViewModel(BaseServices baseServices,
+                                            IMediaPicker mediaPicker,
+                                            IFileSystem fileSystem,
+                                            IMainThread mainThread)
             : base(baseServices)
         {
             Title = "Patient Page";
 
             MediaPicker = mediaPicker;
             FileSystem = fileSystem;
+            MainThread = mainThread;
 
             _cpaxViewIsExpanded = _mainGoalViewIsExpanded =
                 _miniGoalsViewIsExpanded = _personalInfoViewIsExpanded = true;
+
         }
 
         #region Properties
 
         [Bindable] public Patient Patient { get; set; }
 
+        public IList<ExerciseCategory> ExerciseCategories
+        {
+            get => _exerciseCategories;
+            set => SetProperty(ref _exerciseCategories, value);
+        }
+
         //these command properties don't need to be [Bindable] because Binding is set ToSource
         public ICommand PersonalInfoForceUpdateSizeCommand { get; set; }
         public ICommand MainGoalForceUpdateSizeCommand { get; set; }
         public ICommand MiniGoalsForceUpdateSizeCommand { get; set; }
         public ICommand CpaxForceUpdateSizeCommand { get; set; }
+        public ICommand ExercisesForceUpdateSizeCommand { get; set; }
 
-        [Bindable] public bool CpaxViewIsExpanded { get; set; }
+        public bool CpaxViewIsExpanded
+        {
+            get => _cpaxViewIsExpanded;
+            set
+            {
+                SetProperty(ref _cpaxViewIsExpanded, value);
+
+                if (value)
+                    RunExpanderResizeAction(() => CpaxForceUpdateSizeCommand?.Execute(null));
+            }
+        }
+
+        private void RunExpanderResizeAction(Action action) =>
+            Task.Delay(400)
+                .ContinueWith(_ =>
+                    MainThread.BeginInvokeOnMainThread(action)
+                ).ConfigureAwait(false);
+
         [Bindable] public bool PersonalInfoViewIsExpanded { get; set; }
         [Bindable] public bool MainGoalViewIsExpanded { get; set; }
         [Bindable] public bool MiniGoalsViewIsExpanded { get; set; }
 
+        public bool ExercisesViewIsExpanded
+        {
+            get => exercisesViewIsExpanded;
+            set
+            {
+                SetProperty(ref exercisesViewIsExpanded, value);
+
+                if (value)
+                    RunExpanderResizeAction(() => ExercisesForceUpdateSizeCommand?.Execute(null));
+            }
+        }
+
+        /// <summary>
+        /// Indicates the Exercises schedule is set: at same time for all week days when True,
+        /// at different times when False.
+        /// </summary>
+        [Bindable] public bool ScheduleExercisesByWeek { get; set; }
+
         public IMediaPicker MediaPicker { get; }
         public IFileSystem FileSystem { get; }
+
+        public IMainThread MainThread
+        {
+            get;
+        }
 
         #endregion
 
         protected override async Task InitializeAsync(INavigationParameters parameters)
         {
-            if (parameters.TryGetValue(nameof(Patient), out Patient patient) && patient != null && patient.Id.HasValue)
+            ExerciseCategories = parameters.GetValue<IList<ExerciseCategory>>(nameof(ExerciseCategories));
+
+            if (parameters.TryGetValue(nameof(Patient), out Patient patient) && patient is { Id: { } })
             {
                 Title = $"Patient - {patient.Name}";
                 Patient = patient;
@@ -86,9 +143,36 @@ namespace ICU.Planner.ViewModels
                 //collapse views if this is not a new patient record
                 CpaxViewIsExpanded =
                     MainGoalViewIsExpanded =
-                    MiniGoalsViewIsExpanded =
-                    PersonalInfoViewIsExpanded =
-                    isNewPatientRecord;
+                        MiniGoalsViewIsExpanded =
+                            PersonalInfoViewIsExpanded =
+                                isNewPatientRecord;
+
+                //set which exercise is assigned and how many repetitions
+                if (!isNewPatientRecord && ExerciseCategories != null && patient.ExercisesAssignment != null)
+
+                {
+                    ExerciseCategories
+                        .SelectMany(s => s.Exercises)
+                        .Where(w => Patient.ExercisesAssignment.Any(a => a.ExerciseId == w.Id))
+                        .ToList()
+                        .ForEach(exercise =>
+                        {
+                            exercise.IsIncludedInPlan = true;
+                            exercise.RepetitionsInPlan = Patient.ExercisesAssignment
+                                .First(f => f.ExerciseId == exercise.Id).Repetitions;
+                        });
+
+                    //refresh view
+                    ExerciseCategories = ExerciseCategories.ToList();
+                    ExercisesForceUpdateSizeCommand?.Execute(null);
+                }
+
+                ScheduleExercisesByWeek = patient.MondayExerciseTime == patient.TuesdayExerciseTime
+                                          && patient.TuesdayExerciseTime == patient.WednesdayExerciseTime
+                                          && patient.WednesdayExerciseTime == patient.ThursdayExerciseTime
+                                          && patient.ThursdayExerciseTime == patient.FridayExerciseTime
+                                          && patient.FridayExerciseTime == patient.SaturdayExerciseTime
+                                          && patient.SaturdayExerciseTime == patient.SunExerciseTime;
 
             }
             else
@@ -101,9 +185,9 @@ namespace ICU.Planner.ViewModels
 
         public ICommand EditPatientCommand => editPatientCommand ??=
             new DelegateCommand(async () => await EditPatientCommandExecute(Patient),
-                                EditPatientCommandCanExecute)
-            .ObservesProperty(() => Patient)
-            .ObservesProperty(() => IsBusy);
+                    EditPatientCommandCanExecute)
+                .ObservesProperty(() => Patient)
+                .ObservesProperty(() => IsBusy);
 
         private async Task EditPatientCommandExecute(Patient patient)
         {
@@ -137,7 +221,8 @@ namespace ICU.Planner.ViewModels
                         }
                         catch (Exception postException)
                         {
-                            shouldRetryPost = await DisplayDialog("Save Failed. Retry?", postException.Message, "Retry", "Cancel");
+                            shouldRetryPost = await DisplayDialog("Save Failed. Retry?", postException.Message, "Retry",
+                                "Cancel");
                             await Task.Delay(.5.Seconds());
                         }
                     } while (shouldRetryPost);
@@ -165,8 +250,8 @@ namespace ICU.Planner.ViewModels
 
         public ICommand DeleteGoalCommand => deleteGoalCommand ??=
             new DelegateCommand<Goal>(async goal => await DeleteGoalCommandExecute(goal))
-            .ObservesProperty(() => IsNotBusy)
-            .ObservesProperty(() => Patient);
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => Patient);
 
         private async Task DeleteGoalCommandExecute(Goal goal)
         {
@@ -192,7 +277,8 @@ namespace ICU.Planner.ViewModels
             {
                 Logger.Log(e);
             }
-            finally { }
+            finally
+            { }
         }
 
         #endregion
@@ -201,8 +287,8 @@ namespace ICU.Planner.ViewModels
 
         public ICommand AddMainGoalCommand => addMainGoalCommand ??=
             new DelegateCommand(async () => await AddMainGoalCommandExecute(), AddMainGoalCommandCanExecute)
-            .ObservesProperty(() => IsNotBusy)
-            .ObservesProperty(() => Patient);
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => Patient);
 
         private bool AddMainGoalCommandCanExecute() => Patient != null && Patient.MainGoal is null;
 
@@ -211,11 +297,11 @@ namespace ICU.Planner.ViewModels
             try
             {
                 var goalValue = await PageDialogService
-                     .DisplayPromptAsync(
-                    "New Main Goal",
-                    "Please type in the patient's main goal",
-                    maxLength: 450,
-                    keyboardType: Prism.AppModel.KeyboardType.Plain);
+                    .DisplayPromptAsync(
+                        "New Main Goal",
+                        "Please type in the patient's main goal",
+                        maxLength: 450,
+                        keyboardType: Prism.AppModel.KeyboardType.Plain);
 
                 if (!string.IsNullOrWhiteSpace(goalValue))
                 {
@@ -244,19 +330,19 @@ namespace ICU.Planner.ViewModels
 
         public ICommand AddGoalCommand => addGoalCommand ??=
             new DelegateCommand(async () => await AddGoalCommandExecute())
-            .ObservesProperty(() => IsNotBusy)
-            .ObservesProperty(() => Patient);
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => Patient);
 
         private async Task AddGoalCommandExecute()
         {
             try
             {
                 var goalValue = await PageDialogService
-                     .DisplayPromptAsync(
-                    "New Goal",
-                    "Please type in the patient's new goal",
-                    maxLength: 450,
-                    keyboardType: Prism.AppModel.KeyboardType.Plain);
+                    .DisplayPromptAsync(
+                        "New Goal",
+                        "Please type in the patient's new goal",
+                        maxLength: 450,
+                        keyboardType: Prism.AppModel.KeyboardType.Plain);
 
                 if (!string.IsNullOrWhiteSpace(goalValue))
                 {
@@ -290,8 +376,8 @@ namespace ICU.Planner.ViewModels
 
         public ICommand SaveCpaxCommand => saveCpaxCommand ??=
             new DelegateCommand(async () => await SaveCpaxCommandExecute())
-            .ObservesProperty(() => IsNotBusy)
-            .ObservesProperty(() => Patient);
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => Patient);
 
         private async Task SaveCpaxCommandExecute()
         {
@@ -300,11 +386,11 @@ namespace ICU.Planner.ViewModels
                 SetIsBusy();
 
                 var t = Constants.URLs.CpaxApi
-                      .PostJsonAsync(new CpaxDTO
-                      {
-                          CurrentCpax = Patient.CurrentCPAX,
-                          GoalCpax = Patient.GoalCPAX
-                      });
+                    .PostJsonAsync(new CpaxDTO
+                    {
+                        CurrentCpax = Patient.CurrentCPAX,
+                        GoalCpax = Patient.GoalCPAX
+                    });
 
                 var payload = await t.ReceiveJson<CpaxDTO>();
 
@@ -329,9 +415,10 @@ namespace ICU.Planner.ViewModels
         #region DeleteImageCommand
 
         public ICommand DeleteImageCommand => _deleteImageCommand ??=
-            new DelegateCommand<ImageFile>(async imageUri => await DeleteImageCommandExecute(imageUri, Patient.Id.Value))
-            .ObservesProperty(() => IsNotBusy)
-            .ObservesProperty(() => Patient);
+            new DelegateCommand<ImageFile>(
+                    async imageUri => await DeleteImageCommandExecute(imageUri, Patient.Id.Value))
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => Patient);
 
         private async Task DeleteImageCommandExecute(ImageFile imageFile, long patientId)
         {
@@ -356,16 +443,19 @@ namespace ICU.Planner.ViewModels
             {
                 Logger.Log(e);
             }
-            finally { }
+            finally
+            { }
         }
 
         #endregion
 
         #region AddImageCommand
+
         public ICommand AddImageCommand => addImageCommand ??=
-            new DelegateCommand<ImageCategory>(async imageCategory => await AddImageCommandExecute(imageCategory, Patient.Id.Value))
-            .ObservesProperty(() => IsNotBusy)
-            .ObservesProperty(() => Patient);
+            new DelegateCommand<ImageCategory>(async imageCategory =>
+                    await AddImageCommandExecute(imageCategory, Patient.Id.Value))
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => Patient);
 
         private async Task AddImageCommandExecute(ImageCategory imageCategory, long patientId)
         {
@@ -375,14 +465,16 @@ namespace ICU.Planner.ViewModels
             {
                 var source = MediaPicker.IsCaptureSupported switch
                 {
-                    true => await PageDialogService.DisplayActionSheetAsync("Select source:", "Cancel", "Gallery", "Camera"),
+                    true => await PageDialogService.DisplayActionSheetAsync("Select source:", "Cancel", "Gallery",
+                        "Camera"),
                     _ => "Gallery"
                 };
 
                 var photo = source switch
                 {
                     "Camera" => await MediaPicker.CapturePhotoAsync(),
-                    "Gallery" => await MediaPicker.PickPhotoAsync(new Xamarin.Essentials.MediaPickerOptions { Title = imageCategory.Name ?? "Select a Photo" }),
+                    "Gallery" => await MediaPicker.PickPhotoAsync(new Xamarin.Essentials.MediaPickerOptions
+                        { Title = imageCategory.Name ?? "Select a Photo" }),
                     _ => null
                 };
 
@@ -398,10 +490,10 @@ namespace ICU.Planner.ViewModels
                 }
 
                 var serverFileName = (
-                    await Constants.URLs.PatientImagesApi
-                    .AppendPathSegments(patientId, imageCategory.Id.Value)
-                    .PostMultipartAsync(builder => builder.AddFile("file1", newFilePath))
-                    .ReceiveJson<List<ImageFile>>())
+                        await Constants.URLs.PatientImagesApi
+                            .AppendPathSegments(patientId, imageCategory.Id.Value)
+                            .PostMultipartAsync(builder => builder.AddFile("file1", newFilePath))
+                            .ReceiveJson<List<ImageFile>>())
                     .FirstOrDefault(); //we're uploading only one image
 
                 //display the added image
@@ -423,11 +515,64 @@ namespace ICU.Planner.ViewModels
         }
 
         #endregion
+
+        #region UpdatePlanCommand
+
+        private ICommand? _updatePlanCommand;
+
+        public ICommand UpdatePlanCommand => _updatePlanCommand ??=
+            new DelegateCommand(async () => await UpdatePlanCommandExecute())
+                .ObservesProperty(() => IsNotBusy)
+                .ObservesProperty(() => ExerciseCategories)
+                .ObservesProperty(() => Patient);
+
+        private async Task UpdatePlanCommandExecute()
+        {
+            if (IsBusy) return;
+            try
+            {
+                var patientExercises = (ExerciseCategories ?? Array.Empty<ExerciseCategory>())
+                    .SelectMany(s => s.Exercises)
+                    .Where(w => w.IsIncludedInPlan)
+                    .ToList();
+
+                if (ScheduleExercisesByWeek)
+                    Patient.TuesdayExerciseTime = Patient.WednesdayExerciseTime =
+                        Patient.ThursdayExerciseTime = Patient.FridayExerciseTime =
+                            Patient.SaturdayExerciseTime = Patient.SunExerciseTime =
+                                Patient.MondayExerciseTime;
+
+                var exerciseAssignments = patientExercises
+                    .Select(s => new ExerciseRepetition
+                    {
+                        Id = s.Id,
+                        Repetitions = s.RepetitionsInPlan
+                    })
+                    .ToList();
+
+                await Constants.URLs.TreatmentPlanApi
+                    .AppendPathSegment(Patient.Id)
+                    .AppendPathSegment(Patient.MondayExerciseTime)
+                    .AppendPathSegment(Patient.TuesdayExerciseTime)
+                    .AppendPathSegment(Patient.WednesdayExerciseTime)
+                    .AppendPathSegment(Patient.ThursdayExerciseTime)
+                    .AppendPathSegment(Patient.FridayExerciseTime)
+                    .AppendPathSegment(Patient.SaturdayExerciseTime)
+                    .AppendPathSegment(Patient.SunExerciseTime)
+                    .PostJsonAsync(exerciseAssignments);
+
+                RaisePropertyChangedPatient();
+            }
+            catch (Exception e)
+            {
+                Crashes.TrackError(e);
+            }
+        }
+
         #endregion
 
-        #region GetData
-
         #endregion
+
 
         private void RaisePropertyChangedPatient()
         {

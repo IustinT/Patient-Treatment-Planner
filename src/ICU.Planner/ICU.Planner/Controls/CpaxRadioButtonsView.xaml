@@ -3,109 +3,115 @@
     x:Class="ICU.Planner.Controls.CpaxRadioButtonsView"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converters="clr-namespace:ICU.Planner.Converters"
     xmlns:system="clr-namespace:System;assembly=netstandard"
-    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     x:Name="this">
 
-    <StackLayout
-        Orientation="Horizontal"
-        RadioButtonGroup.SelectedValue="{Binding Value, Mode=TwoWay, Source={Reference this}}"
-        Spacing="10">
-        <StackLayout.Resources>
-            <ResourceDictionary>
-                <ControlTemplate x:Key="CpaxRadioButtonControlTemplate">
-                    <Frame
-                        Padding="0"
-                        BackgroundColor="{TemplateBinding BackgroundColor}"
-                        BorderColor="{TemplateBinding BorderColor}"
-                        HasShadow="False"
-                        HorizontalOptions="Start"
-                        VerticalOptions="Start">
-                        <Grid Margin="4">
+    <ContentView.Content>
+        <Grid
+            ColumnDefinitions="*,*,*,*,*"
+            ColumnSpacing="5"
+            RadioButtonGroup.SelectedValue="{Binding Value, Mode=TwoWay, Source={Reference this}}">
 
-                            <Label
-                                Margin="16,10"
-                                FontAttributes="Bold"
-                                FontFamily="RM"
-                                FontSize="Subtitle"
-                                Text="{TemplateBinding Value}" />
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <ControlTemplate x:Key="CpaxRadioButtonControlTemplate">
+                        <Frame
+                            Padding="0"
+                            BackgroundColor="{TemplateBinding BackgroundColor}"
+                            BorderColor="{TemplateBinding BorderColor}"
+                            HasShadow="False">
+                            <Grid>
 
-                        </Grid>
+                                <Label
+                                    Padding="0,10"
+                                    FontAttributes="Bold"
+                                    FontFamily="RM"
+                                    FontSize="Subtitle"
+                                    HorizontalOptions="Fill"
+                                    HorizontalTextAlignment="Center"
+                                    Text="{TemplateBinding Value}" />
 
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CheckedStates">
-                                    <VisualState x:Name="Checked">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="{Binding ChechedBgColor, Source={Reference this}}" />
-                                            <Setter Property="BorderColor" Value="{Binding ChechedBorderColor, Source={Reference this}}" />
-                                        </VisualState.Setters>
-                                    </VisualState>
+                            </Grid>
 
-                                    <VisualState x:Name="Unchecked">
-                                        <VisualState.Setters />
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateGroupList>
-                        </VisualStateManager.VisualStateGroups>
-                    </Frame>
-                </ControlTemplate>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CheckedStates">
+                                        <VisualState x:Name="Checked">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="{Binding ChechedBgColor, Source={Reference this}}" />
+                                                <Setter Property="BorderColor" Value="{Binding ChechedBorderColor, Source={Reference this}}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
 
-                <Style TargetType="RadioButton">
-                    <Setter Property="ControlTemplate" Value="{StaticResource CpaxRadioButtonControlTemplate}" />
-                    <Setter Property="BackgroundColor" Value="White" />
-                    <Setter Property="BorderColor" Value="Black" />
-                    <Setter Property="TextColor" Value="Black" />
-                    <Setter Property="BorderWidth" Value="1" />
-                </Style>
-            </ResourceDictionary>
-        </StackLayout.Resources>
+                                        <VisualState x:Name="Unchecked">
+                                            <VisualState.Setters />
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
+                        </Frame>
+                    </ControlTemplate>
 
-        <RadioButton
-            x:Name="Option1Button"
-            CheckedChanged="RadioButton_CheckedChanged">
-            <RadioButton.Value>
-                <system:Int32>1</system:Int32>
-            </RadioButton.Value>
-        </RadioButton>
+                    <Style TargetType="RadioButton">
+                        <Setter Property="ControlTemplate" Value="{StaticResource CpaxRadioButtonControlTemplate}" />
+                        <Setter Property="BackgroundColor" Value="White" />
+                        <Setter Property="BorderColor" Value="Black" />
+                        <Setter Property="TextColor" Value="Black" />
+                        <Setter Property="BorderWidth" Value="1" />
+                        <Setter Property="HorizontalOptions" Value="Fill" />
+                        <Setter Property="VerticalOptions" Value="Fill" />
+                    </Style>
+                </ResourceDictionary>
+            </Grid.Resources>
 
-        <RadioButton
-            x:Name="Option2Button"
-            CheckedChanged="RadioButton_CheckedChanged"
-            Content="2">
-            <RadioButton.Value>
-                <system:Int32>2</system:Int32>
-            </RadioButton.Value>
-        </RadioButton>
+            <RadioButton
+                x:Name="Option1Button"
+                Grid.Column="0"
+                CheckedChanged="RadioButton_CheckedChanged">
+                <RadioButton.Value>
+                    <system:Int32>1</system:Int32>
+                </RadioButton.Value>
+            </RadioButton>
 
-        <RadioButton
-            x:Name="Option3Button"
-            CheckedChanged="RadioButton_CheckedChanged"
-            Content="3">
-            <RadioButton.Value>
-                <system:Int32>3</system:Int32>
-            </RadioButton.Value>
-        </RadioButton>
+            <RadioButton
+                x:Name="Option2Button"
+                Grid.Column="1"
+                CheckedChanged="RadioButton_CheckedChanged"
+                Content="2">
+                <RadioButton.Value>
+                    <system:Int32>2</system:Int32>
+                </RadioButton.Value>
+            </RadioButton>
 
-        <RadioButton
-            x:Name="Option4Button"
-            CheckedChanged="RadioButton_CheckedChanged"
-            Content="4">
-            <RadioButton.Value>
-                <system:Int32>4</system:Int32>
-            </RadioButton.Value>
-        </RadioButton>
+            <RadioButton
+                x:Name="Option3Button"
+                Grid.Column="2"
+                CheckedChanged="RadioButton_CheckedChanged"
+                Content="3">
+                <RadioButton.Value>
+                    <system:Int32>3</system:Int32>
+                </RadioButton.Value>
+            </RadioButton>
 
-        <RadioButton
-            x:Name="Option5Button"
-            CheckedChanged="RadioButton_CheckedChanged"
-            Content="5">
-            <RadioButton.Value>
-                <system:Int32>5</system:Int32>
-            </RadioButton.Value>
-        </RadioButton>
+            <RadioButton
+                x:Name="Option4Button"
+                Grid.Column="3"
+                CheckedChanged="RadioButton_CheckedChanged"
+                Content="4">
+                <RadioButton.Value>
+                    <system:Int32>4</system:Int32>
+                </RadioButton.Value>
+            </RadioButton>
 
-    </StackLayout>
-
+            <RadioButton
+                x:Name="Option5Button"
+                Grid.Column="4"
+                CheckedChanged="RadioButton_CheckedChanged"
+                Content="5">
+                <RadioButton.Value>
+                    <system:Int32>5</system:Int32>
+                </RadioButton.Value>
+            </RadioButton>
+        </Grid>
+    </ContentView.Content>
 </ContentView>

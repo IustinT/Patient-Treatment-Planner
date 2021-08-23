@@ -9,7 +9,6 @@ using Xamarin.Forms;
 
 using Application = Windows.UI.Xaml.Application;
 using Frame = Windows.UI.Xaml.Controls.Frame;
-using Shiny;
 
 namespace ICU.Planner.UWP
 {

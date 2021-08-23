@@ -10,8 +10,6 @@
 
     <Color x:Key="MainTextColor">#707070</Color>
 
-    <Color x:Key="CalendarDaySelectedColor">#4f99ff</Color>
-
     <Color x:Key="DialogInsetColorLeft">#000000</Color>
     <Color x:Key="DialogInsetColorTop">#005eb8</Color>
     <Color x:Key="DialogInsetColorRight">#000000</Color>

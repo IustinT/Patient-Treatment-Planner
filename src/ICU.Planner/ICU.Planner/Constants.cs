@@ -20,11 +20,14 @@ namespace ICU.Planner
             public static string CpaxApi = $"{ApiBaseUri}CPAX";
             public static string PatientImagesApi = $"{ApiBaseUri}PatientImages";
             public static string SystemConfigApi = $"{ApiBaseUri}SystemConfig";
+            public static string ExercisesApi = $"{ApiBaseUri}Exercises";
+            public static string TreatmentPlanApi = $"{ApiBaseUri}TreatmentPlan";
         }
         public static readonly string[] FormsFlags = { };
 
         public static string DefaultHospitalValue { get; internal set; } = "Plymouth";
         public static string DefaultWardValue { get; internal set; } = "ICU";
+        public const int MinimumDigitsForPatientSearch = 5;
 
         public static class Keys
         {

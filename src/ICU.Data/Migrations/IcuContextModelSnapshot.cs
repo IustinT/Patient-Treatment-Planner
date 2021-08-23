@@ -43,9 +43,37 @@ namespace ICU.Data.Migrations
                     b.ToTable("Achievements");
                 });
 
+            modelBuilder.Entity("ICU.Data.Models.BaseCategory", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CategoryType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BaseCategory");
+
+                    b.HasDiscriminator<int>("CategoryType");
+                });
+
             modelBuilder.Entity("ICU.Data.Models.CPAX", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -58,7 +86,8 @@ namespace ICU.Data.Migrations
                     b.Property<int>("Cough")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime?>("DateTime")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DynamicSitting")
@@ -70,7 +99,8 @@ namespace ICU.Data.Migrations
                     b.Property<bool>("IsGoal")
                         .HasColumnType("bit");
 
-                    b.Property<long>("PatientId")
+                    b.Property<long?>("PatientId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<int>("Respiratory")
@@ -93,6 +123,40 @@ namespace ICU.Data.Migrations
                     b.HasIndex("PatientId", "IsGoal");
 
                     b.ToTable("CPAXes");
+                });
+
+            modelBuilder.Entity("ICU.Data.Models.Exercise", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Aim")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
+
+                    b.Property<string>("Precautions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Variations")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Exercises");
                 });
 
             modelBuilder.Entity("ICU.Data.Models.Goal", b =>
@@ -120,29 +184,6 @@ namespace ICU.Data.Migrations
                     b.ToTable("Goals");
                 });
 
-            modelBuilder.Entity("ICU.Data.Models.ImageCategory", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasMaxLength(450);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ImageCategories");
-                });
-
             modelBuilder.Entity("ICU.Data.Models.Patient", b =>
                 {
                     b.Property<long?>("Id")
@@ -156,10 +197,16 @@ namespace ICU.Data.Migrations
                         .IsRequired()
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("FridayExerciseTime")
+                        .HasColumnType("int");
+
                     b.Property<string>("Hospital")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasMaxLength(450);
+
+                    b.Property<int?>("MondayExerciseTime")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -171,14 +218,62 @@ namespace ICU.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<int?>("SaturdayExerciseTime")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SunExerciseTime")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ThursdayExerciseTime")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TuesdayExerciseTime")
+                        .HasColumnType("int");
+
                     b.Property<string>("Ward")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasMaxLength(450);
 
+                    b.Property<int?>("WednesdayExerciseTime")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("ICU.Data.Models.PatientExercise", b =>
+                {
+                    b.Property<long>("ExerciseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PatientId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Repetitions")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExerciseId", "PatientId");
+
+                    b.HasIndex("PatientId", "ExerciseId")
+                        .IsUnique();
+
+                    b.ToTable("PatientExercises");
+                });
+
+            modelBuilder.Entity("ICU.Data.Models.ExerciseCategory", b =>
+                {
+                    b.HasBaseType("ICU.Data.Models.BaseCategory");
+
+                    b.HasDiscriminator().HasValue(1);
+                });
+
+            modelBuilder.Entity("ICU.Data.Models.ImageCategory", b =>
+                {
+                    b.HasBaseType("ICU.Data.Models.BaseCategory");
+
+                    b.HasDiscriminator().HasValue(0);
                 });
 
             modelBuilder.Entity("ICU.Data.Models.Achievement", b =>
@@ -199,10 +294,34 @@ namespace ICU.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ICU.Data.Models.Exercise", b =>
+                {
+                    b.HasOne("ICU.Data.Models.ExerciseCategory", "Category")
+                        .WithMany("Exercises")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ICU.Data.Models.Goal", b =>
                 {
                     b.HasOne("ICU.Data.Models.Patient", "Patient")
                         .WithMany("Goals")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ICU.Data.Models.PatientExercise", b =>
+                {
+                    b.HasOne("ICU.Data.Models.Exercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ICU.Data.Models.Patient", "Patient")
+                        .WithMany("ExercisesAssignment")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

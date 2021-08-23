@@ -1,18 +1,14 @@
 ﻿using ICU.Data;
 using ICU.Data.Models;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
-
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ICU.API.Controllers
 {
@@ -103,12 +99,15 @@ namespace ICU.API.Controllers
                 .Include(i => i.CPAXes)
                 .Include(i => i.Goals)
                 .Include(i => i.Achievemts)
+                .Include(i => i.ExercisesAssignment)
                 .FirstOrDefaultAsync(patient => patient.Id == patientId);
 
             if (patient is null) return null;
 
-            patient.CurrentCPAX = patient.CPAXes.OrderByDescending(cpax => cpax.DateTime).FirstOrDefault(cpax => !cpax.IsGoal);
-            patient.GoalCPAX = patient.CPAXes.OrderByDescending(cpax => cpax.DateTime).FirstOrDefault(cpax => cpax.IsGoal);
+            patient.CurrentCPAX = patient.CPAXes.OrderByDescending(cpax => cpax.DateTime)
+                .FirstOrDefault(cpax => !cpax.IsGoal);
+            patient.GoalCPAX = patient.CPAXes.OrderByDescending(cpax => cpax.DateTime)
+                .FirstOrDefault(cpax => cpax.IsGoal);
 
             patient.MiniGoals = patient.Goals.Where(goal => goal.IsMainGoal != true).ToList();
             patient.MainGoal = patient.Goals.FirstOrDefault(goal => goal.IsMainGoal is true);
@@ -117,15 +116,16 @@ namespace ICU.API.Controllers
             var imageCategories = await Context.ImageCategories.ToListAsync();
 
             var imageCategoriesWithFiles = imageCategories.Select(category => new ImageCategoryWithFiles
-            {
-                Name = category.Name,
-                Deleted = category.Deleted,
-                Id = category.Id.Value,
-                DisplayOrder = category.DisplayOrder
-            })
+                {
+                    Name = category.Name,
+                    Deleted = category.Deleted,
+                    Id = category.Id.Value,
+                    DisplayOrder = category.DisplayOrder
+                })
                 .ToList();
 
-            var patientDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), Constants.PatientImagesFolder, patientId.ToString());
+            var patientDirectoryPath = Path.Combine(Directory.GetCurrentDirectory(), Constants.PatientImagesFolder,
+                patientId.ToString());
 
             //get files for each image
             if (Directory.Exists(patientDirectoryPath))
@@ -138,23 +138,24 @@ namespace ICU.API.Controllers
                     if (Directory.Exists(categoryDirectoryForPatient))
                         //add the image file names to the list
                         category.ImageFiles = Directory
-                                        .EnumerateFiles(categoryDirectoryForPatient)
-                                        //get the file name with extension
-                                        .Select(filePath => Path.GetFileName(filePath))
-                                        //only image files
-                                        .Where(fileName => Constants.ImgExtensions.Any(a => a == Path.GetExtension(fileName)))
-                                        .Select(fileName => new ImageFile
-                                        {
-                                            CategoryId = category.Id.Value,
-                                            PatientId = patientId,
-                                            FileName = fileName,
+                            .EnumerateFiles(categoryDirectoryForPatient)
+                            //get the file name with extension
+                            .Select(filePath => Path.GetFileName(filePath))
+                            //only image files
+                            .Where(fileName => Constants.ImgExtensions.Any(a => a == Path.GetExtension(fileName)))
+                            .Select(fileName => new ImageFile
+                                {
+                                    CategoryId = category.Id.Value,
+                                    PatientId = patientId,
+                                    FileName = fileName,
 
-                                            Uri = Uri.EscapeUriString(
-                                                Constants.CreatePatientImageUri(patientId, fileName, category.Id.Value, HttpContext.Request.Scheme, HttpContext.Request.Host.Value)
-                                            ).ToString()
-                                        }
-                                        )
-                                        .ToList();
+                                    Uri = Uri.EscapeUriString(
+                                        Constants.CreatePatientImageUri(patientId, fileName, category.Id.Value,
+                                            HttpContext.Request.Scheme, HttpContext.Request.Host.Value)
+                                    ).ToString()
+                                }
+                            )
+                            .ToList();
 
                 }
 

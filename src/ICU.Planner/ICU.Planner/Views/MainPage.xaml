@@ -129,6 +129,16 @@
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <Frame HasShadow="True">
+                        <Label
+                            FontSize="Subtitle"
+                            HorizontalTextAlignment="Center"
+                            Text="{Binding EmptyPatientsListText}" />
+                    </Frame>
+                </CollectionView.EmptyView>
+
             </CollectionView>
 
         </RefreshView>
