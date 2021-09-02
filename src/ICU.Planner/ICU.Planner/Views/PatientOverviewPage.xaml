@@ -368,8 +368,13 @@
                         </Grid>
                     </xct:Expander.Header>
 
-                    <StackLayout Spacing="10" Orientation="Vertical" >
+                    <StackLayout
+                        Spacing="10"
+                        Orientation="Vertical"
+                        BackgroundColor="{StaticResource PageBackgroundColor}"
+                        Margin="5,0" >
 
+                        <!-- Exercises lists -->
                         <StackLayout
                             BindableLayout.ItemsSource="{Binding ExerciseCategories }"
                             Spacing="15" >
@@ -378,7 +383,11 @@
                                 <DataTemplate x:DataType="models:ExerciseCategory" >
                                     <!--  Exercise Category  -->
 
-                                    <StackLayout Spacing="10" >
+                                    <StackLayout
+                                        BackgroundColor="White"
+                                        Spacing="10"
+                                        Margin="5">
+
                                         <!-- Category Name -->
                                         <Label
                                             Text="{Binding Name, StringFormat='{0} Exercises'}"
@@ -386,8 +395,7 @@
                                             Margin="2,0"
                                             Padding="5"
                                             HorizontalTextAlignment="Start"
-                                            HorizontalOptions="Fill"
-                                            BackgroundColor="LightGray" />
+                                            HorizontalOptions="Fill" />
 
                                         <!--  Exercises for current category  -->
                                         <StackLayout
