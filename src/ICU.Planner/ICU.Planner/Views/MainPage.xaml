@@ -1,16 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <ContentPage
     x:Class="ICU.Planner.Views.MainPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    xmlns:viewModels="clr-namespace:ICU.Planner.ViewModels;assembly=ICU.Planner"
+    xmlns:models="clr-namespace:ICU.Data.Models;assembly=ICU.Data.Models"
     Title="{Binding Title}"
     ControlTemplate="{StaticResource TemplateWithActivityIndicator}"
-    IsBusy="{Binding IsBusy}">
+    IsBusy="{Binding IsBusy}"
+    x:DataType="viewModels:MainPageViewModel" >
 
     <Grid
         ColumnSpacing="0"
-        RowDefinitions="Auto,*">
+        RowDefinitions="Auto,*" >
 
         <Grid.ColumnDefinitions>
 
@@ -46,7 +50,7 @@
 
         </Grid.ColumnDefinitions>
 
-        <StackLayout Grid.Column="1">
+        <StackLayout Grid.Column="1" >
 
             <SearchBar
                 Grid.Row="1"
@@ -61,86 +65,104 @@
                 Text="Create New Record" />
         </StackLayout>
 
-        <RefreshView
+        <StackLayout
             Grid.Row="1"
             Grid.Column="1"
-            Command="{Binding SearchCommand}"
-            IsRefreshing="{Binding IsSearching}">
+            Spacing="35"
+            VerticalOptions="Center"
+            Padding="5">
 
-            <CollectionView
-                ItemsSource="{Binding Patients}"
-                SelectionChangedCommand="{Binding PatientSelectionChangedCommand}"
-                SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Mode=Self}}"
-                SelectionMode="Single">
+            <Label
+                HorizontalTextAlignment="Center"
+                Text="Use the search box above to search for Patient records using the Patient's phone number." />
 
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout
-                        ItemSpacing="10"
-                        Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
+            <Label
+                HorizontalTextAlignment="Center"
+                Text="Type a partial phone number to search for matching records." />
 
-                <CollectionView.Resources>
-                    <Style TargetType="FlexLayout">
-                        <Setter Property="Direction" Value="Row" />
-                        <Setter Property="JustifyContent" Value="SpaceBetween" />
-                        <Setter Property="AlignItems" Value="Center" />
-                    </Style>
-                </CollectionView.Resources>
+            <Label
+                HorizontalTextAlignment="Center"
+                Text="Type a full phone number, 11 digits, to create a new patient record." />
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout Orientation="Vertical">
-                            <StackLayout
-                                Margin="5,0"
-                                Orientation="Vertical">
+        </StackLayout>
 
-                                <FlexLayout>
-                                    <Label
-                                        FontFamily="RM"
-                                        Text="{Binding Name}" />
-                                    <Label Text="{Binding PhoneNumber}" />
-                                </FlexLayout>
+        <CollectionView
+            BackgroundColor="WhiteSmoke"
+            Grid.Row="1"
+            Grid.Column="1"
+            IsVisible="{Binding PatientPhoneNumber, Converter={xct:IsNotNullOrEmptyConverter}}"
+            ItemsSource="{Binding Patients}"
+            SelectionChangedCommand="{Binding PatientSelectionChangedCommand}"
+            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Mode=Self}}"
+            SelectionMode="Single" >
 
-                                <FlexLayout Margin="0,5,0,0">
-                                    <Label>
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="{Binding Hospital}" />
-                                                <Span Text=", " />
-                                                <Span Text="{Binding Ward}" />
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout
+                    ItemSpacing="10"
+                    Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
 
-                                    <Label Text="{Binding AdmissionDate, StringFormat='{0:dd MMM yy}'}" />
-                                </FlexLayout>
+            <CollectionView.Resources>
+                <Style TargetType="FlexLayout" >
+                    <Setter Property="Direction" Value="Row" />
+                    <Setter Property="JustifyContent" Value="SpaceBetween" />
+                    <Setter Property="AlignItems" Value="Center" />
+                </Style>
+            </CollectionView.Resources>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Vertical" x:DataType="models:Patient" >
+                        <StackLayout
+                            Margin="5,0"
+                            Orientation="Vertical" >
+
+                            <FlexLayout>
+                                <Label
+                                    FontFamily="RM"
+                                    Text="{Binding Name}" />
+                                <Label Text="{Binding PhoneNumber}" />
+                            </FlexLayout>
+
+                            <FlexLayout Margin="0,5,0,0" >
+                                <Label>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Hospital}" />
+                                            <Span Text=", " />
+                                            <Span Text="{Binding Ward}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                                <Label Text="{Binding AdmissionDate, StringFormat='{0:dd MMM yy}'}" />
+                            </FlexLayout>
 
 
-                            </StackLayout>
-
-                            <Line
-                                xct:ShadowEffect.Color="Black"
-                                xct:ShadowEffect.Radius="5"
-                                BackgroundColor="{StaticResource MainTextColor}"
-                                HeightRequest="1"
-                                HorizontalOptions="Fill"
-                                StrokeLineCap="Flat"
-                                VerticalOptions="Center" />
                         </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
 
-                <CollectionView.EmptyView>
-                    <Frame HasShadow="True">
-                        <Label
-                            FontSize="Subtitle"
-                            HorizontalTextAlignment="Center"
-                            Text="{Binding EmptyPatientsListText}" />
-                    </Frame>
-                </CollectionView.EmptyView>
+                        <Line
+                            xct:ShadowEffect.Color="Black"
+                            xct:ShadowEffect.Radius="5"
+                            BackgroundColor="{StaticResource MainTextColor}"
+                            HeightRequest="1"
+                            HorizontalOptions="Fill"
+                            StrokeLineCap="Flat"
+                            VerticalOptions="Center" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
 
-            </CollectionView>
+            <CollectionView.EmptyView>
+                <Frame HasShadow="True" >
+                    <Label
+                        FontSize="Subtitle"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding EmptyPatientsListText}" />
+                </Frame>
+            </CollectionView.EmptyView>
 
-        </RefreshView>
+        </CollectionView>
+
     </Grid>
 </ContentPage>
