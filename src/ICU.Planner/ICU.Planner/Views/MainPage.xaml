@@ -135,7 +135,7 @@
                                     </Label.FormattedText>
                                 </Label>
 
-                                <Label Text="{Binding AdmissionDate, StringFormat='{0:dd MMM yy}'}" />
+                                <Label Text="{Binding AdmissionDate, StringFormat='Admission: {0:dd MMM yy}'}" />
                             </FlexLayout>
 
 
