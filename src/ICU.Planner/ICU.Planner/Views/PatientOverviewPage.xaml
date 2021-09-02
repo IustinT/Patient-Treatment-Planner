@@ -386,7 +386,7 @@
                                     <StackLayout
                                         BackgroundColor="White"
                                         Spacing="10"
-                                        Margin="5">
+                                        Margin="5" >
 
                                         <!-- Category Name -->
                                         <Label
@@ -429,10 +429,15 @@
                             Direction="Row" >
 
                             <!-- Set to Week by default -->
-                            <RadioButton Value="True" Content="Schedule by Week"
-                                         IsChecked="{Binding ScheduleExercisesByWeek}" />
-                            <RadioButton Value="False" Content="Schedule by Day"
-                                         IsChecked="{Binding ScheduleExercisesByWeek, Converter={xct:InvertedBoolConverter}}" />
+                            <RadioButton
+                                Value="True"
+                                Content="Same time each day"
+                                IsChecked="{Binding ScheduleExercisesByWeek}" />
+
+                            <RadioButton
+                                Value="False"
+                                Content="Separate Time"
+                                IsChecked="{Binding ScheduleExercisesByWeek, Converter={xct:InvertedBoolConverter}}" />
                         </FlexLayout>
 
                         <!-- Binding time - translate date to int? use a Converter? -->
