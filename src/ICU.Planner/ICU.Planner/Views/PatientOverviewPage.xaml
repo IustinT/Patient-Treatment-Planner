@@ -385,17 +385,18 @@
 
                                     <StackLayout
                                         BackgroundColor="White"
-                                        Spacing="10"
+                                        Spacing="5"
                                         Margin="5" >
 
                                         <!-- Category Name -->
                                         <Label
                                             Text="{Binding Name, StringFormat='{0} Exercises'}"
                                             FontFamily="RM"
-                                            Margin="2,0"
-                                            Padding="5"
+                                            FontSize="Header"
+                                            Padding="10"
                                             HorizontalTextAlignment="Start"
-                                            HorizontalOptions="Fill" />
+                                            HorizontalOptions="Fill"
+                                            BackgroundColor="WhiteSmoke"/>
 
                                         <!--  Exercises for current category  -->
                                         <StackLayout
